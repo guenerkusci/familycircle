@@ -156,6 +156,7 @@ function openFamilyChat(){
  document.getElementById('attach').onclick=()=>galleryInput.click();
  document.getElementById('chatCamera').onclick=()=>cameraInput.click();
  document.getElementById('mic').onclick=()=>toast('Demo: Sprachnachricht wird aufgenommen.');
+ document.getElementById('send').addEventListener('pointerdown',e=>e.preventDefault());
  document.getElementById('send').onclick=sendMessage;
  document.querySelectorAll('[data-person-chat]').forEach(el=>{
    el.onclick=(e)=>{ e.stopPropagation(); openChat(Number(el.dataset.personChat)); };
@@ -204,6 +205,7 @@ function openChat(i){
  document.getElementById('attach').onclick=()=>galleryInput.click();
  document.getElementById('chatCamera').onclick=()=>cameraInput.click();
  document.getElementById('mic').onclick=()=>toast('Demo: Sprachnachricht wird aufgenommen.');
+ document.getElementById('send').addEventListener('pointerdown',e=>e.preventDefault());
  document.getElementById('send').onclick=sendMessage;
  setupChatInput();
 }
@@ -236,37 +238,37 @@ function openContactProfile(i){
 
    <section class="contact-card">
      <button class="contact-row" id="profileMedia"><span>🖼️</span><span class="contact-row-main"><b>Medien, Links & Dateien</b><small>Geteilte Inhalte</small></span><span>›</span></button>
-     <button class="contact-row"><span>💾</span><span class="contact-row-main"><b>Speicher verwalten</b><small>Demo</small></span><span>›</span></button>
-     <button class="contact-row"><span>☆</span><span class="contact-row-main"><b>Mit Stern markiert</b><small>Keine</small></span><span>›</span></button>
+     <button class="contact-row" id="profileStorage"><span>💾</span><span class="contact-row-main"><b>Speicher verwalten</b><small>Demo</small></span><span>›</span></button>
+     <button class="contact-row" id="profileStarred"><span>☆</span><span class="contact-row-main"><b>Mit Stern markiert</b><small>Keine</small></span><span>›</span></button>
    </section>
 
    <section class="contact-card">
-     <button class="contact-row"><span>🔔</span><span class="contact-row-main"><b>Benachrichtigungen</b></span><span>›</span></button>
-     <button class="contact-row"><span>🎨</span><span class="contact-row-main"><b>Chatdesign</b></span><span>›</span></button>
-     <button class="contact-row"><span>📥</span><span class="contact-row-main"><b>In Fotos speichern</b><small>Standard</small></span><span>›</span></button>
+     <button class="contact-row" id="profileNotifications"><span>🔔</span><span class="contact-row-main"><b>Benachrichtigungen</b></span><span>›</span></button>
+     <button class="contact-row" id="profileDesign"><span>🎨</span><span class="contact-row-main"><b>Chatdesign</b></span><span>›</span></button>
+     <button class="contact-row" id="profilePhotos"><span>📥</span><span class="contact-row-main"><b>In Fotos speichern</b><small>Standard</small></span><span>›</span></button>
    </section>
 
    <section class="contact-card">
-     <button class="contact-row"><span>⏱️</span><span class="contact-row-main"><b>Selbstlöschende Nachrichten</b><small>Aus</small></span><span>›</span></button>
-     <button class="contact-row"><span>🔐</span><span class="contact-row-main"><b>Chat sperren</b><small>Diesen Chat auf diesem Gerät schützen</small></span><span>Aus</span></button>
-     <button class="contact-row"><span>🛡️</span><span class="contact-row-main"><b>Erweiterter Chat-Datenschutz</b><small>Aus</small></span><span>›</span></button>
-     <button class="contact-row"><span>🔒</span><span class="contact-row-main"><b>Verschlüsselung</b><small>Nachrichten und Anrufe · Demo</small></span><span>›</span></button>
+     <button class="contact-row" id="profileDisappearing"><span>⏱️</span><span class="contact-row-main"><b>Selbstlöschende Nachrichten</b><small>Aus</small></span><span>›</span></button>
+     <button class="contact-row" id="profileLock"><span>🔐</span><span class="contact-row-main"><b>Chat sperren</b><small>Diesen Chat auf diesem Gerät schützen</small></span><span>Aus</span></button>
+     <button class="contact-row" id="profilePrivacy"><span>🛡️</span><span class="contact-row-main"><b>Erweiterter Chat-Datenschutz</b><small>Aus</small></span><span>›</span></button>
+     <button class="contact-row" id="profileEncryption"><span>🔒</span><span class="contact-row-main"><b>Verschlüsselung</b><small>Nachrichten und Anrufe · Demo</small></span><span>›</span></button>
    </section>
 
    <section class="contact-card">
-     <button class="contact-row"><span>👤</span><span class="contact-row-main"><b>Kontaktdetails</b></span><span>›</span></button>
+     <button class="contact-row" id="profileDetails"><span>👤</span><span class="contact-row-main"><b>Kontaktdetails</b></span><span>›</span></button>
    </section>
 
    <section class="contact-card contact-actions-card">
-     <button class="contact-text-action">Kontakt teilen</button>
-     <button class="contact-text-action">Zu Favoriten hinzufügen</button>
-     <button class="contact-text-action">Chat exportieren</button>
-     <button class="contact-text-action danger">Chat leeren</button>
+     <button class="contact-text-action" id="profileShare">Kontakt teilen</button>
+     <button class="contact-text-action" id="profileFavorite">Zu Favoriten hinzufügen</button>
+     <button class="contact-text-action" id="profileExport">Chat exportieren</button>
+     <button class="contact-text-action danger" id="profileClear">Chat leeren</button>
    </section>
 
    <section class="contact-card contact-actions-card">
-     <button class="contact-text-action danger">${p.name} blockieren</button>
-     <button class="contact-text-action danger">${p.name} melden</button>
+     <button class="contact-text-action danger" id="profileBlock">${p.name} blockieren</button>
+     <button class="contact-text-action danger" id="profileReport">${p.name} melden</button>
    </section>
  </section>`;
  document.getElementById('profileBack').onclick=()=>openChat(i);
@@ -275,7 +277,50 @@ function openContactProfile(i){
  document.getElementById('profileVideo').onclick=()=>startCall(i,true);
  document.getElementById('profileSearch').onclick=()=>toast('Demo: Chat durchsuchen');
  document.getElementById('profileMedia').onclick=()=>openMedia('Medien, Links & Dateien · '+p.name);
+ const demo=(id,msg)=>{const el=document.getElementById(id);if(el)el.onclick=()=>openProfileOption(msg,p)};
+ demo('profileStorage','Speicher verwalten');
+ demo('profileStarred','Mit Stern markiert');
+ demo('profileNotifications','Benachrichtigungen');
+ demo('profileDesign','Chatdesign');
+ demo('profilePhotos','In Fotos speichern');
+ demo('profileDisappearing','Selbstlöschende Nachrichten');
+ demo('profileLock','Chat sperren');
+ demo('profilePrivacy','Erweiterter Chat-Datenschutz');
+ demo('profileEncryption','Verschlüsselung');
+ demo('profileDetails','Kontaktdetails');
+ demo('profileShare','Kontakt teilen');
+ demo('profileFavorite','Zu Favoriten hinzufügen');
+ demo('profileExport','Chat exportieren');
+ demo('profileClear','Chat leeren');
+ demo('profileBlock',p.name+' blockieren');
+ demo('profileReport',p.name+' melden');
  window.scrollTo({top:0,behavior:'instant'});
+}
+
+function openProfileOption(label,p){
+ const s=document.createElement('div'); s.className='sheet';
+ const options={
+  'Speicher verwalten':'Geteilte Medien und Dateien verwalten · Demo',
+  'Mit Stern markiert':'Noch keine markierten Nachrichten.',
+  'Benachrichtigungen':'Benachrichtigungen für diesen Chat: Ein · Demo',
+  'Chatdesign':'Hintergrund und Darstellung auswählen · Demo',
+  'In Fotos speichern':'Standard · Demo',
+  'Selbstlöschende Nachrichten':'Aus · 24 Stunden · 7 Tage · 90 Tage · Demo',
+  'Chat sperren':'Chatsperre auf diesem Gerät ein-/ausschalten · Demo',
+  'Erweiterter Chat-Datenschutz':'Zusätzlichen Schutz für diesen Chat einstellen · Demo',
+  'Verschlüsselung':'Nachrichten und Anrufe sind in der späteren Echtversion Ende-zu-Ende-verschlüsselt.',
+  'Kontaktdetails':p.name+' · '+contactPhone(currentChat),
+  'Kontakt teilen':'Kontakt von '+p.name+' teilen · Demo',
+  'Zu Favoriten hinzufügen':p.name+' zu Favoriten hinzufügen · Demo',
+  'Chat exportieren':'Chat mit '+p.name+' exportieren · Demo',
+  'Chat leeren':'Nachrichten in diesem Chat leeren? · Demo',
+  [p.name+' blockieren']:p.name+' blockieren? · Demo',
+  [p.name+' melden']:p.name+' melden? · Demo'
+ };
+ s.innerHTML=`<div class="sheet-card"><div class="sheet-head"><button class="icon-button close-sheet">✕</button><h3>${label}</h3><span></span></div><div class="profile-option-demo">${options[label]||'Demo-Funktion'}</div><button class="primary wide close-option" style="margin-top:14px">Fertig</button></div>`;
+ document.body.appendChild(s);
+ s.querySelectorAll('.close-sheet,.close-option').forEach(b=>b.onclick=()=>s.remove());
+ s.onclick=e=>{if(e.target===s)s.remove()};
 }
 
 function openMedia(label){
@@ -343,7 +388,11 @@ if(window.visualViewport){
 function sendMessage(){
  const inp=document.getElementById('msg');if(!inp||!inp.value.trim())return;
  document.getElementById('messages').insertAdjacentHTML('beforeend',`<div class="bubble mine"><span class="message-text">${safe(inp.value.trim())}</span><span class="msg-time">jetzt ✓</span></div>`);
- inp.value='';inp.style.height='39px';inp.scrollTop=0;window.scrollTo(0,document.body.scrollHeight);
+ inp.value='';inp.style.height='39px';inp.scrollTop=0;
+ const messages=document.getElementById('messages');
+ if(messages) requestAnimationFrame(()=>messages.scrollTop=messages.scrollHeight);
+ inp.focus({preventScroll:true});
+ updateKeyboardLayout();
 }
 function startCall(i,video){
  const p=chatData[i];const v=document.createElement('div');v.className='call-screen';

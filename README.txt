@@ -37,7 +37,7 @@ V10 – nur die ausdrücklich gewünschten Änderungen:
 - Alles andere basiert unverändert auf V9
 
 
-V11 – nur die ausdrücklich gewünschten Ergänzungen gegenüber V10:
+V12 – nur die ausdrücklich gewünschten Ergänzungen gegenüber V10:
 - Mehrzeiliges Chat-Schreibfeld springt nach Senden sofort in die ursprüngliche Höhe zurück
 - Bei geöffneter Tastatur werden obere Leiste (Status/Feed/Einstellungen) und untere Navigation vollständig ausgeblendet
 - Tippen in den Chatbereich schließt die Tastatur; danach erscheinen beide Leisten wieder

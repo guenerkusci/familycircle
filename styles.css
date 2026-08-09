@@ -296,3 +296,46 @@ body.keyboard-open .chat-composer{
 }
 .contact-text-action + .contact-text-action{border-top:1px solid var(--line)}
 .contact-text-action.danger{color:#D92D20}
+
+/* V12 – keyboard chat layout and functional contact-info rows */
+body.keyboard-open .chat-screen{
+  position:fixed!important;
+  inset:0!important;
+  height:100dvh!important;
+  min-height:0!important;
+  display:flex!important;
+  flex-direction:column!important;
+  background:#ECE7DE!important;
+  z-index:60!important;
+  overflow:hidden!important;
+}
+body.keyboard-open .chat-header{
+  position:relative!important;
+  top:0!important;
+  flex:0 0 auto!important;
+  z-index:72!important;
+  display:flex!important;
+  background:#fff!important;
+}
+body.keyboard-open .messages{
+  flex:1 1 auto!important;
+  min-height:0!important;
+  overflow-y:auto!important;
+  -webkit-overflow-scrolling:touch;
+  padding:12px 11px 10px!important;
+  background:#ECE7DE!important;
+}
+body.keyboard-open .chat-composer{
+  position:relative!important;
+  left:auto!important;right:auto!important;bottom:auto!important;
+  flex:0 0 auto!important;
+  transform:none!important;
+  z-index:73!important;
+  padding:7px 8px calc(7px + env(safe-area-inset-bottom))!important;
+  background:#F2F4F7!important;
+}
+body.keyboard-open .topbar, body.keyboard-open .bottom-nav{display:none!important}
+body.keyboard-open #content{padding:0!important;margin:0!important}
+body.keyboard-open .chat-message-input{margin:0!important}
+@media (min-width:700px){body.keyboard-open .chat-composer{width:auto!important;transform:none!important}}
+.profile-option-demo{padding:18px;border-radius:16px;background:#F2F4F7;line-height:1.45}
