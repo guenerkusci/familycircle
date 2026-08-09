@@ -2,9 +2,11 @@
   "name": "FamilyCircle",
   "short_name": "FamilyCircle",
   "start_url": "./",
+  "scope": "./",
   "display": "standalone",
-  "background_color": "#f4f6f8",
-  "theme_color": "#111827",
+  "background_color": "#F6F8FC",
+  "theme_color": "#FFFFFF",
+  "description": "Private FamilyCircle Demo",
   "icons": [
     {
       "src": "icon-192.png",
