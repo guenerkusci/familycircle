@@ -56,3 +56,14 @@ V13 – gewünschte Ergänzungen gegenüber V12:
 - Beim Circle-Wechsel ändern sich Demo-Mitglieder, Chatdaten und Farbstimmung; die Grundfunktionen bleiben gleich
 - Demo-Schaltfläche „Neuen Circle erstellen“ ist vorbereitet
 - Alle übrigen Funktionen der bisherigen Version bleiben erhalten
+
+
+V14 – Änderungen gegenüber V13:
+- Aktiver Circle-Name oben deutlich größer und prominenter als der aktuelle Bereich (Chats, Kalender usw.)
+- Badge am Circle-Namen zeigt die Summe ungelesener Nachrichten aus anderen Circles
+- Circle-Switcher zeigt pro Circle die Zahl ungelesener Nachrichten
+- Zusätzlich zeigt jeder Circle die letzte Aktivität bzw. letzte Nachricht als Vorschau
+- Aktuell geöffneter Circle ist deutlich markiert
+- Ungelesene Hinweise verschwinden nicht nur durch Öffnen des Circle-Switchers; erst beim Öffnen eines Chats werden sie reduziert
+- 99+ Darstellung für sehr viele ungelesene Nachrichten vorbereitet
+- Alle übrigen V13-Funktionen bleiben erhalten

@@ -4,13 +4,13 @@
   try{
     if ('caches' in window){
       const keys = await caches.keys();
-      await Promise.all(keys.filter(k => k !== 'familycircle-v13').map(k => caches.delete(k)));
+      await Promise.all(keys.filter(k => k !== 'familycircle-v14').map(k => caches.delete(k)));
     }
     if ('serviceWorker' in navigator){
       const regs = await navigator.serviceWorker.getRegistrations();
       for (const reg of regs){
         const url = reg.active?.scriptURL || reg.installing?.scriptURL || reg.waiting?.scriptURL || '';
-        if (url && !url.includes('sw.js?v=13')) {
+        if (url && !url.includes('sw.js?v=14')) {
           await reg.unregister();
         }
       }
@@ -32,6 +32,7 @@ const navItems=[...document.querySelectorAll('.nav-item')];
 const sosBtn=document.getElementById('sosBtn');
 const circleSwitchBtn=document.getElementById('circleSwitchBtn');
 const circleNameTop=document.getElementById('circleNameTop');
+const circleUnreadTop=document.getElementById('circleUnreadTop');
 
 let members=[
  {name:'Mama',avatar:'👩',online:true},{name:'Papa',avatar:'👨',online:true},
@@ -49,7 +50,7 @@ let chatData=[
 
 const circlePresets={
  family:{
-   id:'family',name:'FamilyCircle',label:'Familie',icon:'👨‍👩‍👧‍👦',theme:'family',
+   id:'family',name:'FamilyCircle',label:'Familie',icon:'👨‍👩‍👧‍👦',theme:'family',unread:0,lastActivity:'Keine neuen Nachrichten',
    members:[
     {name:'Mama',avatar:'👩',online:true},{name:'Papa',avatar:'👨',online:true},
     {name:'Lisa',avatar:'👧',online:false},{name:'Noah',avatar:'👦',online:false},
@@ -64,7 +65,7 @@ const circlePresets={
    ]
  },
  friends:{
-   id:'friends',name:'FriendsCircle',label:'Freunde',icon:'🫶',theme:'friends',
+   id:'friends',name:'FriendsCircle',label:'Freunde',icon:'🫶',theme:'friends',unread:5,lastActivity:'Mert: Heute Abend noch spontan?',
    members:[
     {name:'Mert',avatar:'🧑',online:true},{name:'Can',avatar:'🧔',online:true},
     {name:'Seda',avatar:'👩‍🦱',online:false},{name:'Elif',avatar:'👩‍🦰',online:true},
@@ -79,7 +80,7 @@ const circlePresets={
    ]
  },
  girls:{
-   id:'girls',name:'GirlsCircle',label:'Girls',icon:'💗',theme:'girls',
+   id:'girls',name:'GirlsCircle',label:'Girls',icon:'💗',theme:'girls',unread:2,lastActivity:'Lisa: Welches Outfit? 👗',
    members:[
     {name:'Lisa',avatar:'👧',online:true},{name:'Sophie',avatar:'👩',online:true},
     {name:'Mia',avatar:'👩‍🦰',online:false},{name:'Nora',avatar:'👩‍🦱',online:false},
@@ -94,7 +95,7 @@ const circlePresets={
    ]
  },
  work:{
-   id:'work',name:'WorkCircle',label:'Team',icon:'💼',theme:'work',
+   id:'work',name:'WorkCircle',label:'Team',icon:'💼',theme:'work',unread:0,lastActivity:'Anna: Meeting auf 10:30 verschoben',
    members:[
     {name:'Anna',avatar:'👩‍💼',online:true},{name:'David',avatar:'🧑‍💼',online:true},
     {name:'Melis',avatar:'👩‍💻',online:false},{name:'Jan',avatar:'👨‍💻',online:true},
@@ -109,7 +110,7 @@ const circlePresets={
    ]
  },
  sport:{
-   id:'sport',name:'SportCircle',label:'Team',icon:'⚽',theme:'sport',
+   id:'sport',name:'SportCircle',label:'Team',icon:'⚽',theme:'sport',unread:1,lastActivity:'Coach: Training heute 18:30',
    members:[
     {name:'Coach',avatar:'🧑‍🏫',online:true},{name:'Emre',avatar:'🏃',online:true},
     {name:'Leon',avatar:'⚽',online:false},{name:'Sam',avatar:'🥅',online:true},
@@ -127,13 +128,31 @@ const circlePresets={
 
 let currentCircleId='family';
 function activeCircle(){return circlePresets[currentCircleId]||circlePresets.family;}
+function unreadOutsideCurrent(){
+ return Object.values(circlePresets).reduce((sum,c)=>sum+(c.id===currentCircleId?0:(c.unread||0)),0);
+}
+function unreadLabel(n){return n>99?'99+':String(n);}
+function updateCircleHeader(){
+ const c=activeCircle();
+ circleNameTop.textContent=c.name;
+ const total=unreadOutsideCurrent();
+ if(total>0){
+   circleUnreadTop.hidden=false;
+   circleUnreadTop.textContent=unreadLabel(total);
+   circleSwitchBtn.setAttribute('aria-label',`${c.name} · ${total} ungelesene Nachrichten in anderen Circles`);
+ }else{
+   circleUnreadTop.hidden=true;
+   circleUnreadTop.textContent='0';
+   circleSwitchBtn.setAttribute('aria-label',`${c.name} · Circle wechseln`);
+ }
+}
 function applyCircle(id){
  const c=circlePresets[id]; if(!c)return;
  currentCircleId=id;
  members=c.members.map(x=>({...x}));
  chatData=c.chats.map(x=>({...x}));
- circleNameTop.textContent=c.name;
  document.body.dataset.circle=c.theme;
+ updateCircleHeader();
  modalRoot.innerHTML='';
  show('chat');
  toast(c.name+' geöffnet');
@@ -143,11 +162,17 @@ function openCircleSwitcher(){
  modalRoot.innerHTML=`<div class="sheet circle-sheet">
    <div class="sheet-card">
     <div class="sheet-head"><h3>Deine Circles</h3><button id="closeCircleSheet" class="icon-button">✕</button></div>
-    <p class="small muted circle-sheet-intro">Wechsle zwischen deinen privaten Bereichen. Jeder Circle hat eigene Mitglieder, Inhalte und Gestaltung.</p>
+    <p class="small muted circle-sheet-intro">Neue Nachrichten bleiben sichtbar, bis du den jeweiligen Circle bzw. Chat öffnest.</p>
     ${Object.values(circlePresets).map(c=>`<button class="circle-option ${c.id===currentCircleId?'selected':''}" data-circle-id="${c.id}">
       <span class="circle-option-icon">${c.icon}</span>
-      <span class="circle-option-copy"><b>${c.name}</b><small>${c.label} · ${c.members.length-1} Mitglieder</small></span>
-      <span>${c.id===currentCircleId?'✓':'›'}</span>
+      <span class="circle-option-copy">
+        <span class="circle-option-titleline"><b>${c.name}</b>${c.id===currentCircleId?'<small class="circle-current-pill">Aktuell</small>':''}</span>
+        <small>${c.lastActivity||c.label}</small>
+      </span>
+      <span class="circle-option-side">
+        ${c.unread>0?`<span class="circle-unread-badge">${unreadLabel(c.unread)}</span>`:'<span class="circle-no-unread">✓</span>'}
+        <span class="circle-arrow">›</span>
+      </span>
     </button>`).join('')}
     <button id="createCircleDemo" class="circle-create">＋ Neuen Circle erstellen</button>
    </div>
@@ -745,7 +770,7 @@ galleryInput.onchange=e=>{if(e.target.files?.[0]){toast('Demo: '+e.target.files[
 cameraInput.onchange=e=>{if(e.target.files?.[0]){toast('Demo: Kamera-Medium ausgewählt.');e.target.value=''}};
 scoreInput.onchange=e=>{if(e.target.files?.[0]){toast('Demo: Highscore-Screenshot ausgewählt.');e.target.value=''}};
 
-if('serviceWorker' in navigator){navigator.serviceWorker.register('sw.js?v=13');}
+if('serviceWorker' in navigator){navigator.serviceWorker.register('sw.js?v=14');}
 show('chat');
 
-if(circleSwitchBtn){circleSwitchBtn.onclick=openCircleSwitcher; circleNameTop.textContent=activeCircle().name; document.body.dataset.circle=activeCircle().theme;}
+if(circleSwitchBtn){circleSwitchBtn.onclick=openCircleSwitcher; document.body.dataset.circle=activeCircle().theme; updateCircleHeader();}

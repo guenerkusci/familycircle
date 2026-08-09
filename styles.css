@@ -426,3 +426,69 @@ body[data-circle="sport"] .chat-screen{background:#EAF4EA}
 
 /* Keep keyboard-mode composer directly above keyboard with V13 sizing. */
 body.keyboard-open .chat-composer{bottom:0!important}
+
+
+/* V14 – stronger Circle hierarchy + unread activity */
+.circle-switch{
+  font-size:22px!important;
+  line-height:1.05;
+  font-weight:950!important;
+  margin-bottom:4px!important;
+  gap:7px!important;
+  color:var(--circleAccent,var(--blue))!important;
+}
+.circle-chevron{
+  font-size:18px!important;
+  color:#667085!important;
+}
+.brandblock h1{
+  font-size:16px!important;
+  line-height:1.1!important;
+  margin:0 0 2px!important;
+  font-weight:800!important;
+}
+.brandblock .subtitle{
+  font-size:10px!important;
+  margin-top:0!important;
+}
+.circle-unread-top{
+  min-width:22px;height:22px;padding:0 6px;border-radius:999px;
+  display:inline-grid;place-items:center;background:#E53935;color:white;
+  font-size:11px;font-weight:950;box-shadow:0 2px 8px rgba(229,57,53,.28)
+}
+.circle-unread-top[hidden]{display:none!important}
+
+/* Richer Circle switcher unread state */
+.circle-option{
+  grid-template-columns:46px minmax(0,1fr) auto!important;
+}
+.circle-option-titleline{
+  display:flex;align-items:center;gap:7px;min-width:0
+}
+.circle-current-pill{
+  display:inline-flex!important;align-items:center!important;
+  width:auto!important;padding:2px 7px;border-radius:999px;
+  background:#EEF2FF;color:var(--blue)!important;font-size:9px!important;font-weight:900
+}
+.circle-option-side{
+  display:flex;align-items:center;gap:7px;min-width:48px;justify-content:flex-end
+}
+.circle-unread-badge{
+  min-width:25px;height:25px;padding:0 7px;border-radius:999px;
+  display:grid;place-items:center;background:var(--circleAccent,var(--blue));
+  color:white;font-size:11px;font-weight:950
+}
+.circle-no-unread{
+  width:22px;height:22px;border-radius:999px;background:#ECFDF3;color:#15803D;
+  display:grid;place-items:center;font-size:11px;font-weight:900
+}
+.circle-arrow{color:#98A2B3;font-size:18px}
+.circle-option-copy small{
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:block
+}
+
+/* Make hierarchy hold across all Circle themes */
+body[data-circle="friends"] .circle-unread-badge{background:#7F56D9}
+body[data-circle="girls"] .circle-unread-badge{background:#EC4899}
+body[data-circle="work"] .circle-unread-badge{background:#175CD3}
+body[data-circle="sport"] .circle-unread-badge{background:#15803D}
