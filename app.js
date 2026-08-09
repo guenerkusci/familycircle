@@ -1,0 +1,19 @@
+
+const c=document.getElementById('content');const nav=[...document.querySelectorAll('nav button')];let score=Number(localStorage.tapScore||0);
+const card=x=>`<div class="card">${x}</div>`;
+const pages={
+home:()=>card(`<div class="row"><div class="avatar">👩</div><div><b>Mama</b><div class="small">Heute, 14:05</div></div></div><div class="photo">👨‍👩‍👧‍👦</div><p>Sonntag zusammen ❤️</p>`)
++card(`<div class="row"><div class="avatar">👨</div><div><b>Papa</b><div class="small">Heute, 12:22</div></div></div><p>Wer ist heute Abend bei Pizza dabei? 🍕</p>`),
+chat:()=>card(`<h2>Familienchat</h2><div class="bubble them"><b>Mama</b><br>Was wollen wir heute essen?</div><div class="bubble them"><b>Papa</b><br>Pizza? 🍕</div><div id="chat"><div class="bubble me"><b>Du</b><br>Bin dabei 😄</div></div><div class="inputrow"><input id="msg" placeholder="Nachricht schreiben…"><button id="send">Senden</button></div>`),
+games:()=>card(`<h2>🎮 Game Room</h2><div class="score"><span>🥇 Lisa</span><b>18.450</b></div><div class="score"><span>🥈 Papa</span><b>17.980</b></div><div class="score"><span>🥉 Noah</span><b>14.320</b></div>`)
++card(`<h2>Tap Challenge</h2><p>Demo-Highscore: <b id="score">${score}</b></p><button class="gamebtn" id="tap">TIPP!</button>`),
+calendar:()=>card(`<h2>📅 Familienkalender</h2><div class="event"><span>🎂 Oma Geburtstag</span><span>Morgen</span></div><div class="event"><span>⚽ Fußball Noah</span><span>Mo 17:00</span></div><div class="event"><span>🦷 Zahnarzt Lisa</span><span>Di 15:30</span></div><div class="event"><span>🍽 Familienessen</span><span>Fr 18:00</span></div>`),
+map:()=>card(`<h2>📍 Familienkarte</h2><p class="small">Demo – keine echten Standortdaten</p><div class="map"><span class="marker a">👩</span><span class="marker b">👨</span><span class="marker c">👧</span></div><div class="event"><span>Mama</span><span>Zuhause</span></div><div class="event"><span>Papa</span><span>2 km entfernt</span></div><div class="event"><span>Lisa</span><span>Schule</span></div>`)
++card(`<h3>Standortverlauf · Demo</h3><div class="event"><span>Jetzt</span><span>Hauptstraße 18</span></div><div class="event"><span>vor 5 Min</span><span>Hauptstraße 4</span></div><div class="event"><span>vor 10 Min</span><span>Bahnhofstraße</span></div><div class="event"><span>vor 20 Min</span><span>Bahnhof</span></div><div class="event"><span>vor 1 Std</span><span>Sporthalle</span></div>`),
+settings:()=>card(`<h2>⚙️ Einstellungen</h2><div class="setting"><span>Live-Standort</span><span>Aus</span></div><div class="setting"><span>Notfallkontakte</span><span>Mama, Papa ›</span></div><div class="setting"><span>Geburtstagserinnerungen</span><span>An</span></div>`)
++card(`<div class="notice">Nur Prototyp: Chat, Standort und SOS werden noch nicht an andere Personen übertragen.</div>`),
+sos:()=>card(`<div style="text-align:center"><div style="font-size:54px">🚨</div><h2>NOTFALL · TESTMODUS</h2><p>Es wird kein echter Notruf gesendet.</p><button class="sos" id="trigger">SOS TESTEN</button></div>`)
+};
+function bind(tab){if(tab==='chat')document.getElementById('send').onclick=()=>{let i=document.getElementById('msg');if(!i.value.trim())return;document.getElementById('chat').insertAdjacentHTML('beforeend',`<div class="bubble me"><b>Du</b><br>${i.value.replaceAll('<','&lt;')}</div>`);i.value=''};if(tab==='games')document.getElementById('tap').onclick=()=>{score++;localStorage.tapScore=score;document.getElementById('score').textContent=score};if(tab==='sos')document.getElementById('trigger').onclick=()=>alert('SOS-Test ausgelöst. Kein echter Notruf wurde gesendet.')}
+function show(tab){nav.forEach(b=>b.classList.toggle('active',b.dataset.tab===tab));c.innerHTML=pages[tab]();bind(tab)}
+nav.forEach(b=>b.onclick=()=>show(b.dataset.tab));document.getElementById('sosTop').onclick=()=>show('sos');if('serviceWorker'in navigator)navigator.serviceWorker.register('sw.js');show('home');

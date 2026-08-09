@@ -1,0 +1,13 @@
+
+:root{--bg:#f4f6f8;--card:#fff;--text:#111827;--muted:#6b7280;--line:#e5e7eb;--danger:#dc2626}
+*{box-sizing:border-box}body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:var(--bg);color:var(--text)}
+body{padding-bottom:82px}header{position:sticky;top:0;background:#fffffff2;backdrop-filter:blur(12px);border-bottom:1px solid var(--line);padding:calc(env(safe-area-inset-top) + 14px) 16px 12px;display:flex;justify-content:space-between;align-items:center}
+h1{margin:0;font-size:22px}small,.small{color:var(--muted)}main{padding:16px;max-width:760px;margin:auto}.card{background:var(--card);border-radius:18px;padding:16px;margin-bottom:14px;box-shadow:0 4px 18px #0000000d}
+.row{display:flex;gap:12px;align-items:center}.avatar{width:44px;height:44px;border-radius:50%;display:grid;place-items:center;background:#e5e7eb;font-size:22px}.photo{height:180px;border-radius:16px;background:linear-gradient(135deg,#dbeafe,#fce7f3);display:grid;place-items:center;font-size:56px;margin:12px 0}
+nav{position:fixed;left:0;right:0;bottom:0;background:#fffffff5;border-top:1px solid var(--line);display:grid;grid-template-columns:repeat(6,1fr);padding:8px 4px calc(env(safe-area-inset-bottom) + 8px)}
+nav button{border:0;background:transparent;font-size:19px;color:#6b7280}nav span{display:block;font-size:9px}nav button.active{color:#111827;font-weight:700}
+#sosTop,.sos{border:0;background:var(--danger);color:white;font-weight:800;border-radius:999px;padding:10px 14px}.sos{width:100%;padding:18px;font-size:20px}
+.bubble{padding:11px 13px;border-radius:16px;max-width:82%;margin:8px 0}.me{margin-left:auto;background:#dbeafe}.them{background:white;border:1px solid var(--line)}
+.inputrow{display:flex;gap:8px}.inputrow input{flex:1;padding:12px;border:1px solid var(--line);border-radius:14px}.inputrow button{border:0;border-radius:14px;padding:0 16px}
+.score,.event,.setting{display:flex;justify-content:space-between;padding:11px 0;border-bottom:1px solid var(--line)}.gamebtn{width:100%;padding:18px;border:0;border-radius:16px;background:#111827;color:white;font-weight:800;font-size:18px}
+.map{height:220px;border-radius:18px;background:linear-gradient(135deg,#dcfce7,#dbeafe);position:relative}.marker{position:absolute;font-size:30px}.a{left:25%;top:35%}.b{left:58%;top:52%}.c{left:72%;top:22%}.notice{background:#fff7ed;border:1px solid #fed7aa;padding:12px;border-radius:14px;font-size:13px}
