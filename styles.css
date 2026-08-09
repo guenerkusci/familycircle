@@ -339,3 +339,90 @@ body.keyboard-open #content{padding:0!important;margin:0!important}
 body.keyboard-open .chat-message-input{margin:0!important}
 @media (min-width:700px){body.keyboard-open .chat-composer{width:auto!important;transform:none!important}}
 .profile-option-demo{padding:18px;border-radius:16px;background:#F2F4F7;line-height:1.45}
+
+
+/* V13 – requested Circle switcher + compact navigation/composer */
+.circle-switch{
+  border:0;background:transparent;padding:0;margin:0 0 3px;color:var(--blue);
+  font-size:13px;font-weight:850;display:flex;align-items:center;gap:4px;text-align:left
+}
+.circle-switch:active{opacity:.65}
+.circle-chevron{font-size:14px;color:#667085}
+.brandblock h1{margin-bottom:2px}
+.brandblock .subtitle{font-size:11px}
+
+/* Bottom bar is slimmer; all five items stay completely inside it. */
+body{padding-bottom:calc(80px + env(safe-area-inset-bottom))}
+.bottom-nav{
+  grid-template-columns:1fr 1fr 82px 1fr 1fr!important;
+  min-height:76px!important;
+  height:76px!important;
+  padding:4px 7px calc(4px + env(safe-area-inset-bottom))!important;
+  align-items:center!important;
+}
+.nav-item{
+  min-height:60px!important;min-width:50px!important;gap:3px!important;padding:3px 2px!important
+}
+.nav-item span{font-size:25px!important}
+.nav-item b{font-size:10px!important}
+.sos-button{
+  width:68px!important;height:68px!important;border-width:5px!important;font-size:18px!important;
+  transform:translateY(0)!important;align-self:center!important
+}
+
+/* Wider composer with dedicated send-button space; never covered by nav. */
+.chat-composer{
+  bottom:calc(76px + env(safe-area-inset-bottom))!important;
+  padding:6px 7px!important;gap:4px!important;
+}
+.chat-composer textarea.chat-message-input{
+  min-height:40px!important;
+  flex:1 1 auto!important;
+  min-width:0!important;
+  padding-left:12px!important;padding-right:12px!important;
+}
+.chat-composer button{width:36px!important;height:36px!important;flex:0 0 36px!important}
+.chat-composer .send{width:42px!important;height:42px!important;flex:0 0 42px!important}
+
+/* Circle picker */
+.circle-sheet .sheet-card{padding-bottom:calc(20px + env(safe-area-inset-bottom))}
+.circle-sheet-intro{margin:3px 2px 10px}
+.circle-option{
+  width:100%;border:0;border-top:1px solid var(--line);background:white;
+  display:grid;grid-template-columns:46px minmax(0,1fr) 22px;align-items:center;gap:10px;
+  padding:11px 3px;text-align:left;color:var(--text)
+}
+.circle-option.selected{background:#F8FAFF}
+.circle-option-icon{
+  width:42px;height:42px;border-radius:13px;background:#EEF2FF;display:grid;place-items:center;font-size:23px
+}
+.circle-option-copy{display:grid;gap:2px}
+.circle-option-copy b{font-size:15px}
+.circle-option-copy small{color:var(--muted);font-size:11px}
+.circle-create{
+  width:100%;margin-top:10px;border:0;border-radius:14px;background:#101828;color:white;
+  min-height:48px;font-weight:850
+}
+
+/* Different Circles get distinct accents/backgrounds while keeping the same product structure. */
+body[data-circle="family"]{--circleAccent:#1769E0}
+body[data-circle="friends"]{
+  --blue:#7F56D9;--blueSoft:#F4EBFF;--bg:#FAF8FF;--circleAccent:#7F56D9
+}
+body[data-circle="girls"]{
+  --blue:#D946EF;--blueSoft:#FDF2FF;--bg:#FFF8FD;--circleAccent:#EC4899
+}
+body[data-circle="work"]{
+  --blue:#175CD3;--blueSoft:#EFF8FF;--bg:#F5F8FC;--circleAccent:#175CD3
+}
+body[data-circle="sport"]{
+  --blue:#15803D;--blueSoft:#ECFDF3;--bg:#F7FBF7;--circleAccent:#15803D
+}
+body[data-circle] .circle-switch{color:var(--circleAccent,var(--blue))}
+body[data-circle="friends"] .chat-screen{background:#F0EAF8}
+body[data-circle="girls"] .chat-screen{background:#F7EAF3}
+body[data-circle="work"] .chat-screen{background:#EAF0F7}
+body[data-circle="sport"] .chat-screen{background:#EAF4EA}
+
+/* Keep keyboard-mode composer directly above keyboard with V13 sizing. */
+body.keyboard-open .chat-composer{bottom:0!important}

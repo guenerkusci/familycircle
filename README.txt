@@ -45,3 +45,14 @@ V12 – nur die ausdrücklich gewünschten Ergänzungen gegenüber V10:
 - Im Familien-Gruppenchat öffnet ein Tipp auf den Absender einer Nachricht direkt den Einzelchat dieser Person
 - Zurück im Einzelchat führt wieder zum Familien-Gruppenchat
 - Alle übrigen V10-Funktionen und das bestehende Design bleiben unverändert
+
+
+V13 – gewünschte Ergänzungen gegenüber V12:
+- Untere Hauptnavigation kompakter/schmaler; Chats, Kalender, SOS, Standort und Spiele bleiben vollständig innerhalb der Leiste
+- SOS bleibt hervorgehoben, ragt aber nicht mehr aus der Leiste
+- Chat-Schreibbereich breiter; Senden-Button bekommt festen eigenen Platz und wird nicht von der Navigation verdeckt
+- Oben steht der aktive Circle über der Seitenüberschrift und ist antippbar
+- Circle-Switcher mit FamilyCircle, FriendsCircle, GirlsCircle, WorkCircle und SportCircle
+- Beim Circle-Wechsel ändern sich Demo-Mitglieder, Chatdaten und Farbstimmung; die Grundfunktionen bleiben gleich
+- Demo-Schaltfläche „Neuen Circle erstellen“ ist vorbereitet
+- Alle übrigen Funktionen der bisherigen Version bleiben erhalten

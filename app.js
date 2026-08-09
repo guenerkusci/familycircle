@@ -4,13 +4,13 @@
   try{
     if ('caches' in window){
       const keys = await caches.keys();
-      await Promise.all(keys.filter(k => k !== 'familycircle-v11').map(k => caches.delete(k)));
+      await Promise.all(keys.filter(k => k !== 'familycircle-v13').map(k => caches.delete(k)));
     }
     if ('serviceWorker' in navigator){
       const regs = await navigator.serviceWorker.getRegistrations();
       for (const reg of regs){
         const url = reg.active?.scriptURL || reg.installing?.scriptURL || reg.waiting?.scriptURL || '';
-        if (url && !url.includes('sw.js?v=11')) {
+        if (url && !url.includes('sw.js?v=13')) {
           await reg.unregister();
         }
       }
@@ -30,20 +30,132 @@ const cameraInput=document.getElementById('cameraInput');
 const scoreInput=document.getElementById('scoreInput');
 const navItems=[...document.querySelectorAll('.nav-item')];
 const sosBtn=document.getElementById('sosBtn');
+const circleSwitchBtn=document.getElementById('circleSwitchBtn');
+const circleNameTop=document.getElementById('circleNameTop');
 
-const members=[
+let members=[
  {name:'Mama',avatar:'👩',online:true},{name:'Papa',avatar:'👨',online:true},
  {name:'Lisa',avatar:'👧',online:false},{name:'Noah',avatar:'👦',online:false},
  {name:'Familie',avatar:'👨‍👩‍👧‍👦',online:true}
 ];
 
-const chatData=[
+let chatData=[
  {name:'Mama',avatar:'👩',preview:'Kannst du nachher noch Brot mitbringen?',time:'12:41',badge:2},
  {name:'Papa',avatar:'👨',preview:'👍 Alles klar, bis später',time:'11:58',badge:0},
  {name:'Lisa',avatar:'👧',preview:'Foto',time:'10:22',badge:1},
  {name:'Noah',avatar:'👦',preview:'Ich bin gleich zuhause',time:'Gestern',badge:0},
  {name:'Familie',avatar:'👨‍👩‍👧‍👦',preview:'Mama: Sonntag um 14 Uhr?',time:'Gestern',badge:4}
 ];
+
+const circlePresets={
+ family:{
+   id:'family',name:'FamilyCircle',label:'Familie',icon:'👨‍👩‍👧‍👦',theme:'family',
+   members:[
+    {name:'Mama',avatar:'👩',online:true},{name:'Papa',avatar:'👨',online:true},
+    {name:'Lisa',avatar:'👧',online:false},{name:'Noah',avatar:'👦',online:false},
+    {name:'Familie',avatar:'👨‍👩‍👧‍👦',online:true}
+   ],
+   chats:[
+    {name:'Mama',avatar:'👩',preview:'Kannst du nachher noch Brot mitbringen?',time:'12:41',badge:2},
+    {name:'Papa',avatar:'👨',preview:'👍 Alles klar, bis später',time:'11:58',badge:0},
+    {name:'Lisa',avatar:'👧',preview:'Foto',time:'10:22',badge:1},
+    {name:'Noah',avatar:'👦',preview:'Ich bin gleich zuhause',time:'Gestern',badge:0},
+    {name:'Familie',avatar:'👨‍👩‍👧‍👦',preview:'Mama: Sonntag um 14 Uhr?',time:'Gestern',badge:4}
+   ]
+ },
+ friends:{
+   id:'friends',name:'FriendsCircle',label:'Freunde',icon:'🫶',theme:'friends',
+   members:[
+    {name:'Mert',avatar:'🧑',online:true},{name:'Can',avatar:'🧔',online:true},
+    {name:'Seda',avatar:'👩‍🦱',online:false},{name:'Elif',avatar:'👩‍🦰',online:true},
+    {name:'Freunde',avatar:'🫶',online:true}
+   ],
+   chats:[
+    {name:'Mert',avatar:'🧑',preview:'Heute Abend noch spontan?',time:'18:22',badge:3},
+    {name:'Can',avatar:'🧔',preview:'Ich bin dabei 😄',time:'17:58',badge:0},
+    {name:'Seda',avatar:'👩‍🦱',preview:'Foto vom Wochenende',time:'16:40',badge:1},
+    {name:'Elif',avatar:'👩‍🦰',preview:'Bis später!',time:'15:12',badge:0},
+    {name:'Freunde',avatar:'🫶',preview:'Mert: Treffpunkt um 20 Uhr?',time:'Heute',badge:6}
+   ]
+ },
+ girls:{
+   id:'girls',name:'GirlsCircle',label:'Girls',icon:'💗',theme:'girls',
+   members:[
+    {name:'Lisa',avatar:'👧',online:true},{name:'Sophie',avatar:'👩',online:true},
+    {name:'Mia',avatar:'👩‍🦰',online:false},{name:'Nora',avatar:'👩‍🦱',online:false},
+    {name:'Girls',avatar:'💗',online:true}
+   ],
+   chats:[
+    {name:'Lisa',avatar:'👧',preview:'Welches Outfit? 👗',time:'19:02',badge:2},
+    {name:'Sophie',avatar:'👩',preview:'Sprachnachricht',time:'18:45',badge:1},
+    {name:'Mia',avatar:'👩‍🦰',preview:'Freitag passt!',time:'17:20',badge:0},
+    {name:'Nora',avatar:'👩‍🦱',preview:'💗',time:'Gestern',badge:0},
+    {name:'Girls',avatar:'💗',preview:'Sophie: Mädelsabend?',time:'Heute',badge:5}
+   ]
+ },
+ work:{
+   id:'work',name:'WorkCircle',label:'Team',icon:'💼',theme:'work',
+   members:[
+    {name:'Anna',avatar:'👩‍💼',online:true},{name:'David',avatar:'🧑‍💼',online:true},
+    {name:'Melis',avatar:'👩‍💻',online:false},{name:'Jan',avatar:'👨‍💻',online:true},
+    {name:'Team',avatar:'💼',online:true}
+   ],
+   chats:[
+    {name:'Anna',avatar:'👩‍💼',preview:'Meeting auf 10:30 verschoben',time:'09:12',badge:1},
+    {name:'David',avatar:'🧑‍💼',preview:'Dokument ist fertig',time:'08:54',badge:0},
+    {name:'Melis',avatar:'👩‍💻',preview:'Kannst du kurz prüfen?',time:'08:20',badge:2},
+    {name:'Jan',avatar:'👨‍💻',preview:'Danke!',time:'Gestern',badge:0},
+    {name:'Team',avatar:'💼',preview:'Anna: Tagesplanung aktualisiert',time:'Heute',badge:4}
+   ]
+ },
+ sport:{
+   id:'sport',name:'SportCircle',label:'Team',icon:'⚽',theme:'sport',
+   members:[
+    {name:'Coach',avatar:'🧑‍🏫',online:true},{name:'Emre',avatar:'🏃',online:true},
+    {name:'Leon',avatar:'⚽',online:false},{name:'Sam',avatar:'🥅',online:true},
+    {name:'Team',avatar:'🏆',online:true}
+   ],
+   chats:[
+    {name:'Coach',avatar:'🧑‍🏫',preview:'Training heute 18:30',time:'13:02',badge:1},
+    {name:'Emre',avatar:'🏃',preview:'Bin pünktlich da',time:'12:18',badge:0},
+    {name:'Leon',avatar:'⚽',preview:'Trikot nicht vergessen',time:'11:31',badge:0},
+    {name:'Sam',avatar:'🥅',preview:'👍',time:'Gestern',badge:0},
+    {name:'Team',avatar:'🏆',preview:'Coach: Aufstellung ist online',time:'Heute',badge:3}
+   ]
+ }
+};
+
+let currentCircleId='family';
+function activeCircle(){return circlePresets[currentCircleId]||circlePresets.family;}
+function applyCircle(id){
+ const c=circlePresets[id]; if(!c)return;
+ currentCircleId=id;
+ members=c.members.map(x=>({...x}));
+ chatData=c.chats.map(x=>({...x}));
+ circleNameTop.textContent=c.name;
+ document.body.dataset.circle=c.theme;
+ modalRoot.innerHTML='';
+ show('chat');
+ toast(c.name+' geöffnet');
+}
+function openCircleSwitcher(){
+ const current=activeCircle();
+ modalRoot.innerHTML=`<div class="sheet circle-sheet">
+   <div class="sheet-card">
+    <div class="sheet-head"><h3>Deine Circles</h3><button id="closeCircleSheet" class="icon-button">✕</button></div>
+    <p class="small muted circle-sheet-intro">Wechsle zwischen deinen privaten Bereichen. Jeder Circle hat eigene Mitglieder, Inhalte und Gestaltung.</p>
+    ${Object.values(circlePresets).map(c=>`<button class="circle-option ${c.id===currentCircleId?'selected':''}" data-circle-id="${c.id}">
+      <span class="circle-option-icon">${c.icon}</span>
+      <span class="circle-option-copy"><b>${c.name}</b><small>${c.label} · ${c.members.length-1} Mitglieder</small></span>
+      <span>${c.id===currentCircleId?'✓':'›'}</span>
+    </button>`).join('')}
+    <button id="createCircleDemo" class="circle-create">＋ Neuen Circle erstellen</button>
+   </div>
+  </div>`;
+ document.getElementById('closeCircleSheet').onclick=()=>modalRoot.innerHTML='';
+ document.querySelectorAll('[data-circle-id]').forEach(b=>b.onclick=()=>applyCircle(b.dataset.circleId));
+ document.getElementById('createCircleDemo').onclick=()=>toast('Demo: Circle erstellen – Name, Farbe, Bild und Mitglieder wählen.');
+}
 
 let current='chat';
 let currentChat=null;
@@ -130,8 +242,8 @@ function openFamilyChat(){
  content.innerHTML=`<section class="chat-screen">
   <div class="chat-header group-header">
    <button id="openContacts" class="contacts-button">Kontakte</button>
-   <div class="avatar small">👨‍👩‍👧‍👦</div>
-   <div class="chat-person"><b>Familie</b><span class="small muted">Alle Mitglieder · Gruppenchat</span></div>
+   <div class="avatar small">${activeCircle().icon}</div>
+   <div class="chat-person"><b>${activeCircle().label}</b><span class="small muted">Alle Mitglieder · Gruppenchat</span></div>
    <div class="chat-header-actions">
     <button id="groupMedia" class="icon-button" aria-label="Gruppenmedien">▦</button>
     <button id="groupVoice" class="icon-button" aria-label="Gruppenanruf">📞</button>
@@ -139,13 +251,13 @@ function openFamilyChat(){
    </div>
   </div>
   <div class="messages" id="messages">
-   <div class="bubble theirs group-person-message" data-person-chat="0"><button class="message-sender" data-person-chat="0">Mama</button><br>Sonntag um 14 Uhr zusammen? ❤️<span class="msg-time">12:35</span></div>
-   <div class="bubble theirs group-person-message" data-person-chat="1"><button class="message-sender" data-person-chat="1">Papa</button><br>Passt bei mir 👍<span class="msg-time">12:37</span></div>
-   <div class="bubble mine">Bei mir auch 😊<span class="msg-time">12:38 ✓✓</span></div>
-   <div class="bubble theirs group-person-message" data-person-chat="2"><button class="message-sender" data-person-chat="2">Lisa</button><br>Ich bin dabei!<span class="msg-time">12:39</span></div>
+   <div class="bubble theirs group-person-message" data-person-chat="0"><button class="message-sender" data-person-chat="0">${chatData[0].name}</button><br>${safe(chatData[0].preview)}<span class="msg-time">12:35</span></div>
+   <div class="bubble theirs group-person-message" data-person-chat="1"><button class="message-sender" data-person-chat="1">${chatData[1].name}</button><br>${safe(chatData[1].preview)}<span class="msg-time">12:37</span></div>
+   <div class="bubble mine">Alles klar 😊<span class="msg-time">12:38 ✓✓</span></div>
+   <div class="bubble theirs group-person-message" data-person-chat="2"><button class="message-sender" data-person-chat="2">${chatData[2].name}</button><br>${safe(chatData[2].preview)}<span class="msg-time">12:39</span></div>
   </div>
   <div class="chat-composer">
-   <button id="attach">＋</button><textarea id="msg" class="chat-message-input" rows="1" maxlength="4000" placeholder="Nachricht an Familie"></textarea>
+   <button id="attach">＋</button><textarea id="msg" class="chat-message-input" rows="1" maxlength="4000" placeholder="Nachricht an ${activeCircle().label}"></textarea>
    <button id="chatCamera">📷</button><button id="mic">🎙️</button><button id="send" class="send">➤</button>
   </div>
  </section>`;
@@ -633,5 +745,7 @@ galleryInput.onchange=e=>{if(e.target.files?.[0]){toast('Demo: '+e.target.files[
 cameraInput.onchange=e=>{if(e.target.files?.[0]){toast('Demo: Kamera-Medium ausgewählt.');e.target.value=''}};
 scoreInput.onchange=e=>{if(e.target.files?.[0]){toast('Demo: Highscore-Screenshot ausgewählt.');e.target.value=''}};
 
-if('serviceWorker' in navigator){navigator.serviceWorker.register('sw.js?v=11');}
+if('serviceWorker' in navigator){navigator.serviceWorker.register('sw.js?v=13');}
 show('chat');
+
+if(circleSwitchBtn){circleSwitchBtn.onclick=openCircleSwitcher; circleNameTop.textContent=activeCircle().name; document.body.dataset.circle=activeCircle().theme;}
