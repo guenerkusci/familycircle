@@ -1,6 +1,6 @@
 
-const CACHE='familycircle-v14';
-const ASSETS=['./','index.html','styles.css?v=14','app.js?v=14','manifest.json','icon-192.png','icon-512.png'];
+const CACHE='familycircle-v15';
+const ASSETS=['./','index.html','styles.css?v=15','app.js?v=15','manifest.json','icon-192.png','icon-512.png'];
 
 self.addEventListener('install', event => {
   event.waitUntil(caches.open(CACHE).then(c => c.addAll(ASSETS)).then(() => self.skipWaiting()));

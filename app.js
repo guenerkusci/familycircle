@@ -1,23 +1,17 @@
 
-// FamilyCircle V7: aggressively remove stale demo caches/service workers from older test builds.
+// FamilyCircle V15: aggressively remove stale demo caches/service workers from older test builds.
 (async function resetOldDemoCache(){
   try{
     if ('caches' in window){
       const keys = await caches.keys();
-      await Promise.all(keys.filter(k => k !== 'familycircle-v14').map(k => caches.delete(k)));
+      await Promise.all(keys.map(k => caches.delete(k)));
     }
     if ('serviceWorker' in navigator){
       const regs = await navigator.serviceWorker.getRegistrations();
-      for (const reg of regs){
-        const url = reg.active?.scriptURL || reg.installing?.scriptURL || reg.waiting?.scriptURL || '';
-        if (url && !url.includes('sw.js?v=14')) {
-          await reg.unregister();
-        }
-      }
+      await Promise.all(regs.map(r => r.unregister()));
     }
   }catch(e){ console.warn('Cache cleanup skipped', e); }
 })();
-
 
 const content=document.getElementById('content');
 const title=document.getElementById('pageTitle');
@@ -128,6 +122,16 @@ const circlePresets={
 
 let currentCircleId='family';
 function activeCircle(){return circlePresets[currentCircleId]||circlePresets.family;}
+
+function getFeedScope(){
+ return localStorage.getItem('fc-feed-scope') || 'circle';
+}
+function setFeedScope(value){
+ const v=value==='all'?'all':'circle';
+ localStorage.setItem('fc-feed-scope',v);
+ return v;
+}
+
 function unreadOutsideCurrent(){
  return Object.values(circlePresets).reduce((sum,c)=>sum+(c.id===currentCircleId?0:(c.unread||0)),0);
 }
@@ -155,6 +159,7 @@ function applyCircle(id){
  updateCircleHeader();
  modalRoot.innerHTML='';
  show('chat');
+console.info('FamilyCircle build V15 loaded');
  toast(c.name+' geöffnet');
 }
 function openCircleSwitcher(){
@@ -361,7 +366,9 @@ function openContactProfile(i){
    </div>
 
    <div class="contact-hero">
-     <div class="contact-avatar-large">${p.avatar}</div>
+     <button id="profilePhotoOpen" class="profile-photo-button" aria-label="Profilbild von ${p.name} öffnen">
+       <div class="contact-avatar-large">${p.avatar}</div>
+     </button>
      <h2>${p.name}</h2>
      <div class="contact-phone">${contactPhone(i)}</div>
      <div class="contact-status">${i<2?'online':'zuletzt heute online'}</div>
@@ -409,6 +416,7 @@ function openContactProfile(i){
    </section>
  </section>`;
  document.getElementById('profileBack').onclick=()=>openChat(i);
+ document.getElementById('profilePhotoOpen').onclick=()=>openProfilePhoto(p);
  document.getElementById('profileEdit').onclick=()=>toast('Demo: Kontakt bearbeiten');
  document.getElementById('profileAudio').onclick=()=>startCall(i,false);
  document.getElementById('profileVideo').onclick=()=>startCall(i,true);
@@ -434,6 +442,14 @@ function openContactProfile(i){
  window.scrollTo({top:0,behavior:'instant'});
 }
 
+function openProfilePhoto(p){
+ const v=document.createElement('div');v.className='profile-photo-viewer';
+ v.innerHTML=`<div class="profile-photo-viewer-bar"><button class="profile-photo-close">‹</button><b>${p.name}</b><span></span></div>
+ <div class="profile-photo-stage"><div class="profile-photo-large-demo">${p.avatar}</div></div>`;
+ document.body.appendChild(v);
+ v.querySelector('.profile-photo-close').onclick=()=>v.remove();
+ v.querySelector('.profile-photo-stage').onclick=()=>v.remove();
+}
 function openProfileOption(label,p){
  const s=document.createElement('div'); s.className='sheet';
  const options={
@@ -545,10 +561,25 @@ function storyStrip(){
  </div>`;
 }
 function feedView(){
- return storyStrip()+`<div class="card composer-card"><div class="avatar small">🙂</div><button id="newPost" class="composer-launch">Was möchtest du mit deiner Familie teilen?</button></div>
+ const scope=getFeedScope();
+ const c=activeCircle();
+ const scopeBanner=`<div class="section-pad"><div class="feed-scope-banner">
+   <span>${scope==='all'?'🌐':'🔒'}</span>
+   <div><b>${scope==='all'?'Feed aus allen Circles':'Feed nur in '+c.name}</b>
+   <small>${scope==='all'?'Beiträge aus deinen Circles werden gemeinsam angezeigt.':'Beiträge bleiben innerhalb des aktuell geöffneten Circles.'}</small></div>
+   <button id="feedScopeQuick" class="ghost">Ändern</button>
+ </div></div>`;
+ const ownPosts=
+   postHtml(0,c.icon,c.members[0]?.name||'Mitglied','Heute, 14:05',c.icon,`${c.name}: Schöner gemeinsamer Moment ❤️`,12,5)+
+   postHtml(1,c.members[1]?.avatar||'🙂',c.members[1]?.name||'Mitglied','Heute, 12:22','',`Neuigkeiten aus ${c.name} 😊`,8,4);
+ const allPosts=
+   postHtml(0,'👨‍👩‍👧‍👦','Mama · FamilyCircle','Heute, 14:05','👨‍👩‍👧‍👦','Sonntag zusammen ❤️',12,5)+
+   postHtml(1,'🫶','Mert · FriendsCircle','Heute, 13:40','', 'Wer ist heute Abend dabei? 😄',9,3)+
+   postHtml(2,'💼','Anna · WorkCircle','Heute, 11:15','', 'Projekt-Meilenstein geschafft ✅',7,2)+
+   postHtml(3,'⚽','Coach · SportCircle','Heute, 09:30','', 'Training heute 18:30 ⚽',11,4);
+ return storyStrip()+scopeBanner+`<div class="card composer-card"><div class="avatar small">🙂</div><button id="newPost" class="composer-launch">Was möchtest du teilen?</button></div>
  <div class="section-pad"><div class="mini-actions"><button id="postPhoto">📷 Foto/Video</button><button id="postText">✍️ Text</button><button id="postAlbum">🖼️ Album</button></div></div>
- ${postHtml(0,'👩','Mama','Heute, 14:05','👨‍👩‍👧‍👦','Sonntag zusammen ❤️',12,5)}
- ${postHtml(1,'👨','Papa','Heute, 12:22','', 'Wer ist heute Abend bei Pizza dabei? 🍕',8,4)}`;
+ ${scope==='all'?allPosts:ownPosts}`;
 }
 function postHtml(id,av,name,time,img,text,likes,thumbs){
  return `<article class="post">
@@ -663,6 +694,7 @@ function settingsView(){
  ['🛡️','Datenschutz-Center','Was wird gespeichert und warum?','privacy'],
  ['🎛️','Berechtigungen','Standort, Kamera, Mikrofon, Fotos','permissions'],
  ['👁️','Sichtbarkeit','Stories, Feed, Kalender','visibility'],
+ ['📰','Feed-Anzeige','Alle Circles zusammen oder nur aktueller Circle','feedScope'],
  ['🚫','Blockierte Mitglieder','Kontakte verwalten','blocked']
  ])}
  ${settingGroup('Mitteilungen & Darstellung',[
@@ -696,6 +728,10 @@ function openSetting(key){
  <p class="small muted">Vor einer App-Store-Version werden hier die vollständige Datenschutzerklärung, Aufbewahrungsfristen, Widerrufsmöglichkeiten und Kontaktinformationen ergänzt.</p>`],
  permissions:['Berechtigungen',`<div class="member-check"><span>📍 Standort</span><span class="small muted">Nicht geprüft · Demo</span></div><div class="member-check"><span>📷 Kamera</span><span class="small muted">Bei Nutzung fragen</span></div><div class="member-check"><span>🎙️ Mikrofon</span><span class="small muted">Bei Nutzung fragen</span></div><div class="member-check"><span>🖼️ Fotos</span><span class="small muted">Bei Nutzung fragen</span></div><div class="member-check"><span>🔔 Mitteilungen</span><span class="small muted">Bei Nutzung fragen</span></div>`],
  visibility:['Sichtbarkeit',`<div class="form-row"><label>Standard für Stories</label><select><option>Alle Familienmitglieder</option><option>Ausgewählte Mitglieder</option></select></div><div class="form-row"><label>Standard für Feed-Beiträge</label><select><option>Alle Familienmitglieder</option><option>Ausgewählte Mitglieder</option></select></div><div class="form-row"><label>Standard für Kalender</label><select><option>Beim Erstellen fragen</option><option>Alle</option></select></div>`],
+ feedScope:['Feed-Anzeige',`<div class="privacy-banner"><b>📰 Welche Beiträge möchtest du sehen?</b><br><span class="small">Diese Einstellung gilt für deine persönliche Feed-Ansicht.</span></div>
+ <label class="feed-choice"><input type="radio" name="feedScopeChoice" value="circle" ${getFeedScope()==='circle'?'checked':''}><span><b>Nur aktueller Circle</b><small>FamilyCircle, FriendsCircle usw. bleiben im Feed getrennt.</small></span></label>
+ <label class="feed-choice"><input type="radio" name="feedScopeChoice" value="all" ${getFeedScope()==='all'?'checked':''}><span><b>Alle Circles zusammen</b><small>Beiträge aus allen deinen Circles erscheinen in einem gemeinsamen Feed.</small></span></label>
+ <div id="feedScopeSaved" class="info-banner" style="margin-top:12px">Aktuell: ${getFeedScope()==='all'?'Alle Circles zusammen':'Nur aktueller Circle'}</div>`],
  blocked:['Blockierte Mitglieder',`<p class="muted">Keine blockierten Mitglieder.</p><button class="ghost wide">Mitglied auswählen · Demo</button>`],
  notifications:['Benachrichtigungen',`<div class="member-check"><span>💬 Chat-Nachrichten</span><input type="checkbox" checked></div><div class="member-check"><span>📅 Kalender-Erinnerungen</span><input type="checkbox" checked></div><div class="member-check"><span>🚨 SOS-Mitteilungen</span><input type="checkbox" checked></div><div class="member-check"><span>🎮 Spiel-Ranglisten</span><input type="checkbox"></div>`],
  appearance:['Darstellung',`<div class="form-row"><label>Design</label><select><option>System</option><option>Hell</option><option>Dunkel</option></select></div><div class="form-row"><label>Textgröße</label><select><option>Standard</option><option>Groß</option><option>Sehr groß</option></select></div>`],
@@ -706,7 +742,15 @@ function openSetting(key){
  };
  const [heading,body]=data[key]||['Einstellung','Demo'];
  const s=document.createElement('div');s.className='sheet';s.innerHTML=`<div class="sheet-card"><div class="sheet-head"><button class="icon-button close-sheet">✕</button><h3>${heading}</h3><span></span></div>${body}</div>`;
- document.body.appendChild(s);s.querySelector('.close-sheet').onclick=()=>s.remove();s.querySelectorAll('button.danger,button.secondary,button.ghost').forEach(b=>{if(!b.classList.contains('close-sheet'))b.addEventListener('click',()=>toast('Demo-Aktion ausgeführt.'))});
+ document.body.appendChild(s);s.querySelector('.close-sheet').onclick=()=>s.remove();
+ if(key==='feedScope'){
+   s.querySelectorAll('input[name="feedScopeChoice"]').forEach(r=>r.addEventListener('change',()=>{
+     setFeedScope(r.value);
+     const saved=s.querySelector('#feedScopeSaved');
+     if(saved)saved.textContent='Gespeichert: '+(r.value==='all'?'Alle Circles zusammen':'Nur aktueller Circle');
+   }));
+ }
+ s.querySelectorAll('button.danger,button.secondary,button.ghost').forEach(b=>{if(!b.classList.contains('close-sheet'))b.addEventListener('click',()=>toast('Demo-Aktion ausgeführt.'))});
 }
 
 function bind(){
@@ -720,6 +764,7 @@ function bind(){
  document.getElementById('postPhoto')?.addEventListener('click',()=>galleryInput.click());
  document.getElementById('postText')?.addEventListener('click',openPostSheet);
  document.getElementById('postAlbum')?.addEventListener('click',()=>galleryInput.click());
+ document.getElementById('feedScopeQuick')?.addEventListener('click',()=>openSetting('feedScope'));
  document.getElementById('addEvent')?.addEventListener('click',openEventSheet);
  document.getElementById('calendarFilter')?.addEventListener('click',()=>toast('Demo: Kalender nach sichtbaren Mitgliedern filtern.'));
  document.getElementById('startLocation')?.addEventListener('click',()=>toast('Demo: Standortfreigabe gestartet.'));
@@ -770,7 +815,6 @@ galleryInput.onchange=e=>{if(e.target.files?.[0]){toast('Demo: '+e.target.files[
 cameraInput.onchange=e=>{if(e.target.files?.[0]){toast('Demo: Kamera-Medium ausgewählt.');e.target.value=''}};
 scoreInput.onchange=e=>{if(e.target.files?.[0]){toast('Demo: Highscore-Screenshot ausgewählt.');e.target.value=''}};
 
-if('serviceWorker' in navigator){navigator.serviceWorker.register('sw.js?v=14');}
 show('chat');
 
 if(circleSwitchBtn){circleSwitchBtn.onclick=openCircleSwitcher; document.body.dataset.circle=activeCircle().theme; updateCircleHeader();}

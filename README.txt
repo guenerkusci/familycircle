@@ -67,3 +67,12 @@ V14 – Änderungen gegenüber V13:
 - Ungelesene Hinweise verschwinden nicht nur durch Öffnen des Circle-Switchers; erst beim Öffnen eines Chats werden sie reduziert
 - 99+ Darstellung für sehr viele ungelesene Nachrichten vorbereitet
 - Alle übrigen V13-Funktionen bleiben erhalten
+
+
+V15:
+- V14-Funktionen bleiben enthalten
+- Cache-/Service-Worker-Problem korrigiert: alte Test-Caches und alte Service Worker werden entfernt; V15 registriert absichtlich keinen neuen Service Worker
+- Einstellungen > Feed-Anzeige: „Nur aktueller Circle“ oder „Alle Circles zusammen“
+- Feed zeigt passend zur Auswahl entweder circle-intern oder Beiträge aus mehreren Circles
+- Profilbild in der Kontaktinfo ist anklickbar und öffnet eine große Bildansicht
+- Profilbild und Name im Einzelchat führen weiterhin zur Kontaktinfo

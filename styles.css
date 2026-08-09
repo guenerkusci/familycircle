@@ -492,3 +492,41 @@ body[data-circle="friends"] .circle-unread-badge{background:#7F56D9}
 body[data-circle="girls"] .circle-unread-badge{background:#EC4899}
 body[data-circle="work"] .circle-unread-badge{background:#175CD3}
 body[data-circle="sport"] .circle-unread-badge{background:#15803D}
+
+
+/* V15 – Feed-Anzeige + Profilbild-Vollansicht */
+.feed-scope-banner{
+  display:grid;grid-template-columns:34px minmax(0,1fr) auto;gap:10px;align-items:center;
+  background:white;border:1px solid var(--line);border-radius:18px;padding:10px 12px;
+}
+.feed-scope-banner>span:first-child{font-size:22px}
+.feed-scope-banner>div{display:grid;gap:2px}
+.feed-scope-banner small{color:var(--muted);font-size:10px}
+.feed-scope-banner button{min-height:36px;padding:0 11px}
+.feed-choice{
+  display:grid;grid-template-columns:30px minmax(0,1fr);gap:10px;align-items:start;
+  padding:15px 4px;border-bottom:1px solid var(--line)
+}
+.feed-choice input{width:21px;height:21px;margin-top:1px}
+.feed-choice span{display:grid;gap:3px}
+.feed-choice b{font-size:15px}
+.feed-choice small{font-size:11px;color:var(--muted);line-height:1.35}
+.profile-photo-button{
+  display:block;border:0;background:transparent;padding:0;margin:0 auto 14px;border-radius:50%
+}
+.profile-photo-button .contact-avatar-large{margin:0!important}
+.profile-photo-viewer{
+  position:fixed;inset:0;z-index:400;background:#0B0F17;color:white;display:flex;flex-direction:column
+}
+.profile-photo-viewer-bar{
+  min-height:72px;padding:calc(10px + env(safe-area-inset-top)) 16px 10px;
+  display:grid;grid-template-columns:50px 1fr 50px;align-items:center;background:rgba(0,0,0,.28)
+}
+.profile-photo-viewer-bar b{text-align:center;font-size:17px}
+.profile-photo-close{border:0;background:transparent;color:white;font-size:38px;line-height:1;text-align:left}
+.profile-photo-stage{flex:1;display:grid;place-items:center;padding:22px}
+.profile-photo-large-demo{
+  width:min(82vw,430px);aspect-ratio:1;border-radius:18px;background:#171E2D;
+  display:grid;place-items:center;font-size:min(36vw,180px);box-shadow:0 18px 50px rgba(0,0,0,.35)
+}
+.build-badge{font-weight:950!important}

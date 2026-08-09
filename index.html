@@ -9,8 +9,29 @@
   <meta name="apple-mobile-web-app-title" content="FamilyCircle">
   <link rel="manifest" href="manifest.json">
   <link rel="apple-touch-icon" href="icon-192.png">
-  <link rel="stylesheet" href="styles.css?v=14">
+  <link rel="stylesheet" href="styles.css?v=15">
   <title>FamilyCircle</title>
+
+  <script>
+  (function(){
+    const build='V15';
+    window.__FAMILYCIRCLE_BUILD__=build;
+    try{
+      if('serviceWorker' in navigator){
+        navigator.serviceWorker.getRegistrations().then(rs=>Promise.all(rs.map(r=>r.unregister()))).then(()=>{
+          if(navigator.serviceWorker.controller && sessionStorage.getItem('fc-build-reload')!==build){
+            sessionStorage.setItem('fc-build-reload',build);
+            location.reload();
+          }
+        });
+      }
+      if('caches' in window){
+        caches.keys().then(keys=>Promise.all(keys.map(k=>caches.delete(k))));
+      }
+    }catch(e){}
+  })();
+  </script>
+
 </head>
 <body>
   <div id="app">
@@ -22,7 +43,7 @@
           <span class="circle-chevron">⌄</span>
         </button>
         <h1 id="pageTitle">Chats</h1>
-        <div class="subtitle">private Demo <span class="build-badge">V14</span></div>
+        <div class="subtitle">private Demo <span class="build-badge">V15</span></div>
       </div>
       <div class="top-actions">
         <button id="statusTop" class="top-action" aria-label="Status">
@@ -67,6 +88,6 @@
     <input id="cameraInput" type="file" accept="image/*,video/*" capture="environment" hidden>
     <input id="scoreInput" type="file" accept="image/*" hidden>
   </div>
-  <script src="app.js?v=14"></script>
+  <script src="app.js?v=15"></script>
 </body>
 </html>
