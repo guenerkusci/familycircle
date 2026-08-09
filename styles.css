@@ -171,3 +171,50 @@ main{max-width:720px;margin:0 auto}
  .chat-header-actions .icon-button{width:38px;height:38px;font-size:18px}
  .contacts-button{padding:9px 8px;font-size:12px}
 }
+
+
+/* V10 – only requested corrections */
+.top-actions{gap:2px}
+.top-action{min-width:55px;padding-left:4px;padding-right:4px}
+.status-icon svg{width:32px!important;height:32px!important}
+
+/* Checkbox rows: name/avatar remain readable, checkbox is always on the far right. */
+.member-check{display:grid!important;grid-template-columns:minmax(0,1fr) auto!important;gap:14px!important;align-items:center!important}
+.member-check>span:first-child{min-width:0;display:flex;align-items:center;gap:7px;white-space:normal;overflow:visible}
+.member-check input[type="checkbox"]{position:static!important;justify-self:end!important;margin:0 3px 0 8px!important;flex:0 0 auto}
+
+/* SOS slightly lower, while preserving size and prominence. */
+.sos-button{transform:translateY(-3px)!important}
+
+/* Long chat messages must never stretch the page. */
+.bubble{max-width:min(82%,330px)!important;min-width:0;overflow-wrap:anywhere;word-break:break-word;white-space:normal}
+.bubble .message-text{display:block;max-width:26ch;overflow-wrap:anywhere;word-break:break-word;white-space:normal}
+
+/* Composer becomes multi-line instead of growing horizontally. */
+.chat-composer textarea.chat-message-input{
+  flex:1;min-width:0;max-height:112px;min-height:39px;resize:none;overflow-y:auto;border:0;background:white;
+  border-radius:20px;padding:10px 13px;font-size:15px;line-height:20px;outline:0
+}
+
+/* Keyboard/focus mode: nav stays below the keyboard viewport and becomes compact.
+   visualViewport JS keeps it attached to the visible bottom edge on iPhone Safari. */
+body.keyboard-open{padding-bottom:calc(62px + env(safe-area-inset-bottom))}
+body.keyboard-open .bottom-nav{
+  min-height:56px!important;height:56px!important;padding:2px 6px calc(2px + env(safe-area-inset-bottom))!important;
+  grid-template-columns:1fr 1fr 70px 1fr 1fr!important;align-items:center!important;
+  transform:translateY(var(--keyboard-nav-shift,0px));
+}
+body.keyboard-open .nav-item{min-height:46px!important;min-width:46px!important;gap:2px!important;padding:2px!important}
+body.keyboard-open .nav-item span{font-size:20px!important}
+body.keyboard-open .nav-item b{font-size:9px!important}
+body.keyboard-open .sos-button{
+  width:54px!important;height:54px!important;border-width:4px!important;font-size:15px!important;
+  transform:translateY(0)!important;align-self:center!important
+}
+body.keyboard-open .chat-composer{
+  bottom:calc(56px + env(safe-area-inset-bottom))!important;
+  transform:translateY(var(--keyboard-nav-shift,0px));
+}
+@media (min-width:700px){
+ body.keyboard-open .chat-composer{transform:translate(-50%, var(--keyboard-nav-shift,0px))!important}
+}

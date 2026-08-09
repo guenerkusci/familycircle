@@ -4,13 +4,13 @@
   try{
     if ('caches' in window){
       const keys = await caches.keys();
-      await Promise.all(keys.filter(k => k !== 'familycircle-v8').map(k => caches.delete(k)));
+      await Promise.all(keys.filter(k => k !== 'familycircle-v10').map(k => caches.delete(k)));
     }
     if ('serviceWorker' in navigator){
       const regs = await navigator.serviceWorker.getRegistrations();
       for (const reg of regs){
         const url = reg.active?.scriptURL || reg.installing?.scriptURL || reg.waiting?.scriptURL || '';
-        if (url && !url.includes('sw.js?v=8')) {
+        if (url && !url.includes('sw.js?v=10')) {
           await reg.unregister();
         }
       }
@@ -24,6 +24,7 @@ const title=document.getElementById('pageTitle');
 const modalRoot=document.getElementById('modalRoot');
 const feedTop=document.getElementById('feedTop');
 const settingsTop=document.getElementById('settingsTop');
+const statusTop=document.getElementById('statusTop');
 const galleryInput=document.getElementById('galleryInput');
 const cameraInput=document.getElementById('cameraInput');
 const scoreInput=document.getElementById('scoreInput');
@@ -70,7 +71,26 @@ function setActive(tab){
  navItems.forEach(b=>b.classList.toggle('active',b.dataset.tab===tab));
  feedTop.classList.toggle('active',tab==='feed');
  settingsTop.classList.toggle('active',tab==='settings');
+ statusTop.classList.remove('active');
 }
+
+function statusView(){
+ return `<div class="section-pad">
+  <h2 style="margin:2px 0 10px">Status</h2>
+  <p class="muted" style="margin-top:0">Aktuelle Statusmeldungen der Mitglieder · Demo</p>
+ </div>
+ ${card(`<div class="setting-row"><span class="setting-icon">👩</span><span class="setting-copy"><b>Mama</b><small>vor 12 Min</small></span><span>●</span></div>
+ <div class="setting-row"><span class="setting-icon">👨</span><span class="setting-copy"><b>Papa</b><small>vor 35 Min</small></span><span>●</span></div>
+ <div class="setting-row"><span class="setting-icon">👧</span><span class="setting-copy"><b>Lisa</b><small>Heute, 17:40</small></span><span>●</span></div>
+ <div class="setting-row"><span class="setting-icon">👦</span><span class="setting-copy"><b>Noah</b><small>Heute, 16:15</small></span><span>●</span></div>`)}
+ `;
+}
+function showStatus(){
+ current='status'; currentChat=null; navItems.forEach(b=>b.classList.remove('active'));
+ feedTop.classList.remove('active'); settingsTop.classList.remove('active'); statusTop.classList.add('active');
+ title.textContent='Status'; content.innerHTML=statusView(); window.scrollTo({top:0,behavior:'instant'});
+}
+
 function show(tab){
  current=tab;currentChat=null;setActive(tab);title.textContent=names[tab];
  if(tab==='chat') { openFamilyChat(); return; }
@@ -125,7 +145,7 @@ function openFamilyChat(){
    <div class="bubble theirs"><b>Lisa</b><br>Ich bin dabei!<span class="msg-time">12:39</span></div>
   </div>
   <div class="chat-composer">
-   <button id="attach">＋</button><input id="msg" placeholder="Nachricht an Familie">
+   <button id="attach">＋</button><textarea id="msg" class="chat-message-input" rows="1" maxlength="4000" placeholder="Nachricht an Familie"></textarea>
    <button id="chatCamera">📷</button><button id="mic">🎙️</button><button id="send" class="send">➤</button>
   </div>
  </section>`;
@@ -137,6 +157,7 @@ function openFamilyChat(){
  document.getElementById('chatCamera').onclick=()=>cameraInput.click();
  document.getElementById('mic').onclick=()=>toast('Demo: Sprachnachricht wird aufgenommen.');
  document.getElementById('send').onclick=sendMessage;
+ setupChatInput();
  window.scrollTo({top:0,behavior:'instant'});
 }
 
@@ -165,7 +186,7 @@ function openChat(i){
    <div class="bubble mine">Danke! ❤️<span class="msg-time">12:42 ✓✓</span></div>
   </div>
   <div class="chat-composer">
-   <button id="attach">＋</button><input id="msg" placeholder="Nachricht">
+   <button id="attach">＋</button><textarea id="msg" class="chat-message-input" rows="1" maxlength="4000" placeholder="Nachricht"></textarea>
    <button id="chatCamera">📷</button><button id="mic">🎙️</button><button id="send" class="send">➤</button>
   </div>
  </section>`;
@@ -177,6 +198,7 @@ function openChat(i){
  document.getElementById('chatCamera').onclick=()=>cameraInput.click();
  document.getElementById('mic').onclick=()=>toast('Demo: Sprachnachricht wird aufgenommen.');
  document.getElementById('send').onclick=sendMessage;
+ setupChatInput();
 }
 
 function openMedia(label){
@@ -210,9 +232,38 @@ function startGroupCallScreen(chosen,video){
  document.body.appendChild(v);v.querySelector('.hang').onclick=()=>v.remove();
 }
 
+
+function setupChatInput(){
+ const inp=document.getElementById('msg');
+ if(!inp)return;
+ const resize=()=>{inp.style.height='auto';inp.style.height=Math.min(inp.scrollHeight,112)+'px'};
+ inp.addEventListener('input',resize);
+ inp.addEventListener('focus',()=>{document.body.classList.add('keyboard-open');updateKeyboardLayout();});
+ inp.addEventListener('blur',()=>setTimeout(()=>{document.body.classList.remove('keyboard-open');document.documentElement.style.setProperty('--keyboard-nav-shift','0px')},80));
+ const messages=document.getElementById('messages');
+ if(messages){
+   messages.addEventListener('pointerdown',e=>{
+     if(document.activeElement===inp && !e.target.closest('.bubble')) inp.blur();
+     else if(document.activeElement===inp) inp.blur();
+   });
+ }
+ resize();
+}
+function updateKeyboardLayout(){
+ if(!document.body.classList.contains('keyboard-open'))return;
+ const vv=window.visualViewport;
+ if(!vv)return;
+ const hidden=Math.max(0,window.innerHeight-(vv.height+vv.offsetTop));
+ document.documentElement.style.setProperty('--keyboard-nav-shift',(-hidden)+'px');
+}
+if(window.visualViewport){
+ visualViewport.addEventListener('resize',updateKeyboardLayout);
+ visualViewport.addEventListener('scroll',updateKeyboardLayout);
+}
+
 function sendMessage(){
  const inp=document.getElementById('msg');if(!inp||!inp.value.trim())return;
- document.getElementById('messages').insertAdjacentHTML('beforeend',`<div class="bubble mine">${safe(inp.value.trim())}<span class="msg-time">jetzt ✓</span></div>`);
+ document.getElementById('messages').insertAdjacentHTML('beforeend',`<div class="bubble mine"><span class="message-text">${safe(inp.value.trim())}</span><span class="msg-time">jetzt ✓</span></div>`);
  inp.value='';window.scrollTo(0,document.body.scrollHeight);
 }
 function startCall(i,video){
@@ -448,11 +499,11 @@ sosBtn.addEventListener('click',e=>{
 });
 
 navItems.forEach(b=>b.onclick=()=>show(b.dataset.tab));
-feedTop.onclick=()=>show('feed');settingsTop.onclick=()=>show('settings');
+statusTop.onclick=showStatus;feedTop.onclick=()=>show('feed');settingsTop.onclick=()=>show('settings');
 
 galleryInput.onchange=e=>{if(e.target.files?.[0]){toast('Demo: '+e.target.files[0].name+' ausgewählt. Story-/Beitragseditor wäre der nächste Schritt.');e.target.value=''}};
 cameraInput.onchange=e=>{if(e.target.files?.[0]){toast('Demo: Kamera-Medium ausgewählt.');e.target.value=''}};
 scoreInput.onchange=e=>{if(e.target.files?.[0]){toast('Demo: Highscore-Screenshot ausgewählt.');e.target.value=''}};
 
-if('serviceWorker' in navigator){navigator.serviceWorker.register('sw.js?v=8');}
+if('serviceWorker' in navigator){navigator.serviceWorker.register('sw.js?v=10');}
 show('chat');

@@ -23,3 +23,15 @@ V8 – Ergänzungen auf Basis der unveränderten V7:
 - Gruppen-Sprach-/Videoanruf mit auswählbaren Teilnehmern (Demo)
 - Sprachnachrichten-Schaltfläche im Gruppen- und Einzelchat
 - Gruppenmedien sowie Medien/Links/Dateien in Einzelchats
+
+
+V10 – nur die ausdrücklich gewünschten Änderungen:
+- Mitgliederauswahl: Namen/Avatare links, Checkbox eindeutig rechts
+- SOS-Knopf noch etwas weiter nach unten
+- Chat: lange Texte umbrechen, Nachrichtenbreite begrenzen
+- Schreibfeld ist mehrzeilig; ab ca. 26 Zeichen wird die nächste Zeile genutzt
+- Bei geöffneter iPhone-Tastatur bleibt die untere Navigation unterhalb der Tastatur sichtbar und wird kompakter
+- Nach Schließen der Tastatur kehrt die Navigation zur normalen Größe zurück
+- Tippen in den Chatbereich schließt die Tastatur
+- Neuer Status-Button oben neben Feed mit Statusübersicht der Mitglieder
+- Alles andere basiert unverändert auf V9
