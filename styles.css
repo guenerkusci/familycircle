@@ -218,3 +218,81 @@ body.keyboard-open .chat-composer{
 @media (min-width:700px){
  body.keyboard-open .chat-composer{transform:translate(-50%, var(--keyboard-nav-shift,0px))!important}
 }
+
+
+/* V11 – only the requested chat/profile corrections */
+
+/* While typing, remove both navigation areas completely. */
+body.keyboard-open .topbar{display:none!important}
+body.keyboard-open .bottom-nav{display:none!important}
+body.keyboard-open{padding-bottom:0!important}
+body.keyboard-open .chat-screen{padding-top:0}
+body.keyboard-open .chat-composer{
+  bottom:0!important;
+  transform:translateY(var(--keyboard-nav-shift,0px))!important;
+  z-index:70;
+}
+@media (min-width:700px){
+  body.keyboard-open .chat-composer{
+    transform:translate(-50%, var(--keyboard-nav-shift,0px))!important;
+  }
+}
+
+/* Individual-chat header can open contact info. */
+.contact-header-person{
+  flex:1;min-width:0;border:0;background:transparent;padding:0;
+  display:flex;align-items:center;gap:7px;text-align:left;color:inherit
+}
+.contact-header-person .chat-person{min-width:0}
+
+/* Group sender names/messages are tappable, without changing bubble appearance. */
+.message-sender{
+  border:0;background:transparent;padding:0;margin:0;color:inherit;
+  font:inherit;font-weight:850;text-align:left
+}
+.group-person-message{cursor:pointer}
+
+/* Contact info screen, inspired by familiar messenger structure but styled for FamilyCircle. */
+.contact-profile{padding:0 0 120px;background:#F6F7F9;min-height:100vh}
+.contact-profile-top{
+  position:sticky;top:0;z-index:20;display:grid;grid-template-columns:70px 1fr 105px;
+  align-items:center;padding:10px 12px;background:rgba(246,247,249,.96);backdrop-filter:blur(16px);
+  border-bottom:1px solid var(--line)
+}
+.contact-profile-title{text-align:center;font-size:18px;font-weight:850}
+.profile-edit{border:0;background:white;border-radius:999px;padding:10px 12px;font-weight:750;box-shadow:var(--shadow)}
+.contact-hero{text-align:center;padding:26px 18px 18px}
+.contact-avatar-large{
+  width:126px;height:126px;border-radius:50%;margin:0 auto 14px;background:#EEF2FF;
+  display:grid;place-items:center;font-size:62px;border:1px solid #D9DEE7
+}
+.contact-hero h2{margin:0;font-size:30px}
+.contact-phone{margin-top:6px;color:var(--muted);font-size:18px}
+.contact-status{margin-top:7px;color:#667085;font-size:13px}
+.contact-quick-actions{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;padding:0 16px 16px}
+.contact-quick-actions button{
+  border:0;background:white;border-radius:20px;padding:15px 8px;display:grid;gap:6px;place-items:center;
+  box-shadow:var(--shadow);color:var(--text)
+}
+.contact-quick-actions button span{font-size:25px}
+.contact-quick-actions button b{font-size:13px}
+.contact-card{
+  margin:0 16px 14px;background:white;border-radius:22px;overflow:hidden;box-shadow:0 2px 12px rgba(16,24,40,.04)
+}
+.contact-row{
+  width:100%;border:0;background:white;display:grid;grid-template-columns:36px minmax(0,1fr) auto;
+  align-items:center;gap:9px;padding:14px 16px;text-align:left;color:var(--text)
+}
+.contact-row + .contact-row{border-top:1px solid var(--line)}
+.contact-row>span:first-child{font-size:21px}
+.contact-row-main{display:grid;gap:2px;min-width:0}
+.contact-row-main b{font-size:15px}
+.contact-row-main small{font-size:11px;color:var(--muted);white-space:normal}
+.contact-row>span:last-child{color:#98A2B3}
+.contact-actions-card{padding:0}
+.contact-text-action{
+  display:block;width:100%;border:0;background:white;padding:15px 16px;text-align:left;
+  color:#218C55;font-size:15px
+}
+.contact-text-action + .contact-text-action{border-top:1px solid var(--line)}
+.contact-text-action.danger{color:#D92D20}

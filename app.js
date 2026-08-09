@@ -4,13 +4,13 @@
   try{
     if ('caches' in window){
       const keys = await caches.keys();
-      await Promise.all(keys.filter(k => k !== 'familycircle-v10').map(k => caches.delete(k)));
+      await Promise.all(keys.filter(k => k !== 'familycircle-v11').map(k => caches.delete(k)));
     }
     if ('serviceWorker' in navigator){
       const regs = await navigator.serviceWorker.getRegistrations();
       for (const reg of regs){
         const url = reg.active?.scriptURL || reg.installing?.scriptURL || reg.waiting?.scriptURL || '';
-        if (url && !url.includes('sw.js?v=10')) {
+        if (url && !url.includes('sw.js?v=11')) {
           await reg.unregister();
         }
       }
@@ -139,10 +139,10 @@ function openFamilyChat(){
    </div>
   </div>
   <div class="messages" id="messages">
-   <div class="bubble theirs"><b>Mama</b><br>Sonntag um 14 Uhr zusammen? ❤️<span class="msg-time">12:35</span></div>
-   <div class="bubble theirs"><b>Papa</b><br>Passt bei mir 👍<span class="msg-time">12:37</span></div>
+   <div class="bubble theirs group-person-message" data-person-chat="0"><button class="message-sender" data-person-chat="0">Mama</button><br>Sonntag um 14 Uhr zusammen? ❤️<span class="msg-time">12:35</span></div>
+   <div class="bubble theirs group-person-message" data-person-chat="1"><button class="message-sender" data-person-chat="1">Papa</button><br>Passt bei mir 👍<span class="msg-time">12:37</span></div>
    <div class="bubble mine">Bei mir auch 😊<span class="msg-time">12:38 ✓✓</span></div>
-   <div class="bubble theirs"><b>Lisa</b><br>Ich bin dabei!<span class="msg-time">12:39</span></div>
+   <div class="bubble theirs group-person-message" data-person-chat="2"><button class="message-sender" data-person-chat="2">Lisa</button><br>Ich bin dabei!<span class="msg-time">12:39</span></div>
   </div>
   <div class="chat-composer">
    <button id="attach">＋</button><textarea id="msg" class="chat-message-input" rows="1" maxlength="4000" placeholder="Nachricht an Familie"></textarea>
@@ -157,6 +157,9 @@ function openFamilyChat(){
  document.getElementById('chatCamera').onclick=()=>cameraInput.click();
  document.getElementById('mic').onclick=()=>toast('Demo: Sprachnachricht wird aufgenommen.');
  document.getElementById('send').onclick=sendMessage;
+ document.querySelectorAll('[data-person-chat]').forEach(el=>{
+   el.onclick=(e)=>{ e.stopPropagation(); openChat(Number(el.dataset.personChat)); };
+ });
  setupChatInput();
  window.scrollTo({top:0,behavior:'instant'});
 }
@@ -173,8 +176,11 @@ function openChat(i){
  currentChat=i; const p=chatData[i]; title.textContent=p.name;
  content.innerHTML=`<section class="chat-screen">
   <div class="chat-header">
-   <button id="chatBack" class="back">‹</button><div class="avatar small">${p.avatar}</div>
-   <div class="chat-person"><b>${p.name}</b><span class="small muted">${i<2?'online':'zuletzt heute online'}</span></div>
+   <button id="chatBack" class="back">‹</button>
+   <button id="contactProfileOpen" class="contact-header-person" aria-label="Kontaktinfo für ${p.name}">
+     <div class="avatar small">${p.avatar}</div>
+     <div class="chat-person"><b>${p.name}</b><span class="small muted">${i<2?'online':'zuletzt heute online'}</span></div>
+   </button>
    <div class="chat-header-actions">
     <button id="chatMedia" class="icon-button" aria-label="Medien, Links und Dateien">▦</button>
     <button id="voiceCall" class="icon-button">📞</button><button id="videoCall" class="icon-button">🎥</button>
@@ -191,6 +197,7 @@ function openChat(i){
   </div>
  </section>`;
  document.getElementById('chatBack').onclick=openFamilyChat;
+ document.getElementById('contactProfileOpen').onclick=()=>openContactProfile(i);
  document.getElementById('chatMedia').onclick=()=>openMedia('Medien, Links & Dateien · '+p.name);
  document.getElementById('voiceCall').onclick=()=>startCall(i,false);
  document.getElementById('videoCall').onclick=()=>startCall(i,true);
@@ -199,6 +206,76 @@ function openChat(i){
  document.getElementById('mic').onclick=()=>toast('Demo: Sprachnachricht wird aufgenommen.');
  document.getElementById('send').onclick=sendMessage;
  setupChatInput();
+}
+
+
+function contactPhone(i){
+ return ['+49 170 555 0101','+49 170 555 0102','+49 170 555 0103','+49 170 555 0104'][i] || '+49 170 555 0100';
+}
+function openContactProfile(i){
+ currentChat=i; const p=chatData[i]; title.textContent='Kontaktinfo';
+ content.innerHTML=`<section class="contact-profile">
+   <div class="contact-profile-top">
+     <button id="profileBack" class="back profile-back">‹</button>
+     <div class="contact-profile-title">Kontaktinfo</div>
+     <button id="profileEdit" class="profile-edit">Bearbeiten</button>
+   </div>
+
+   <div class="contact-hero">
+     <div class="contact-avatar-large">${p.avatar}</div>
+     <h2>${p.name}</h2>
+     <div class="contact-phone">${contactPhone(i)}</div>
+     <div class="contact-status">${i<2?'online':'zuletzt heute online'}</div>
+   </div>
+
+   <div class="contact-quick-actions">
+     <button id="profileAudio"><span>📞</span><b>Audio</b></button>
+     <button id="profileVideo"><span>🎥</span><b>Video</b></button>
+     <button id="profileSearch"><span>🔎</span><b>Suchen</b></button>
+   </div>
+
+   <section class="contact-card">
+     <button class="contact-row" id="profileMedia"><span>🖼️</span><span class="contact-row-main"><b>Medien, Links & Dateien</b><small>Geteilte Inhalte</small></span><span>›</span></button>
+     <button class="contact-row"><span>💾</span><span class="contact-row-main"><b>Speicher verwalten</b><small>Demo</small></span><span>›</span></button>
+     <button class="contact-row"><span>☆</span><span class="contact-row-main"><b>Mit Stern markiert</b><small>Keine</small></span><span>›</span></button>
+   </section>
+
+   <section class="contact-card">
+     <button class="contact-row"><span>🔔</span><span class="contact-row-main"><b>Benachrichtigungen</b></span><span>›</span></button>
+     <button class="contact-row"><span>🎨</span><span class="contact-row-main"><b>Chatdesign</b></span><span>›</span></button>
+     <button class="contact-row"><span>📥</span><span class="contact-row-main"><b>In Fotos speichern</b><small>Standard</small></span><span>›</span></button>
+   </section>
+
+   <section class="contact-card">
+     <button class="contact-row"><span>⏱️</span><span class="contact-row-main"><b>Selbstlöschende Nachrichten</b><small>Aus</small></span><span>›</span></button>
+     <button class="contact-row"><span>🔐</span><span class="contact-row-main"><b>Chat sperren</b><small>Diesen Chat auf diesem Gerät schützen</small></span><span>Aus</span></button>
+     <button class="contact-row"><span>🛡️</span><span class="contact-row-main"><b>Erweiterter Chat-Datenschutz</b><small>Aus</small></span><span>›</span></button>
+     <button class="contact-row"><span>🔒</span><span class="contact-row-main"><b>Verschlüsselung</b><small>Nachrichten und Anrufe · Demo</small></span><span>›</span></button>
+   </section>
+
+   <section class="contact-card">
+     <button class="contact-row"><span>👤</span><span class="contact-row-main"><b>Kontaktdetails</b></span><span>›</span></button>
+   </section>
+
+   <section class="contact-card contact-actions-card">
+     <button class="contact-text-action">Kontakt teilen</button>
+     <button class="contact-text-action">Zu Favoriten hinzufügen</button>
+     <button class="contact-text-action">Chat exportieren</button>
+     <button class="contact-text-action danger">Chat leeren</button>
+   </section>
+
+   <section class="contact-card contact-actions-card">
+     <button class="contact-text-action danger">${p.name} blockieren</button>
+     <button class="contact-text-action danger">${p.name} melden</button>
+   </section>
+ </section>`;
+ document.getElementById('profileBack').onclick=()=>openChat(i);
+ document.getElementById('profileEdit').onclick=()=>toast('Demo: Kontakt bearbeiten');
+ document.getElementById('profileAudio').onclick=()=>startCall(i,false);
+ document.getElementById('profileVideo').onclick=()=>startCall(i,true);
+ document.getElementById('profileSearch').onclick=()=>toast('Demo: Chat durchsuchen');
+ document.getElementById('profileMedia').onclick=()=>openMedia('Medien, Links & Dateien · '+p.name);
+ window.scrollTo({top:0,behavior:'instant'});
 }
 
 function openMedia(label){
@@ -236,15 +313,17 @@ function startGroupCallScreen(chosen,video){
 function setupChatInput(){
  const inp=document.getElementById('msg');
  if(!inp)return;
- const resize=()=>{inp.style.height='auto';inp.style.height=Math.min(inp.scrollHeight,112)+'px'};
+ const resize=()=>{inp.style.height='auto';inp.style.height=Math.min(Math.max(inp.scrollHeight,39),112)+'px'};
  inp.addEventListener('input',resize);
  inp.addEventListener('focus',()=>{document.body.classList.add('keyboard-open');updateKeyboardLayout();});
- inp.addEventListener('blur',()=>setTimeout(()=>{document.body.classList.remove('keyboard-open');document.documentElement.style.setProperty('--keyboard-nav-shift','0px')},80));
+ inp.addEventListener('blur',()=>setTimeout(()=>{
+   document.body.classList.remove('keyboard-open');
+   document.documentElement.style.setProperty('--keyboard-nav-shift','0px');
+ },80));
  const messages=document.getElementById('messages');
  if(messages){
    messages.addEventListener('pointerdown',e=>{
-     if(document.activeElement===inp && !e.target.closest('.bubble')) inp.blur();
-     else if(document.activeElement===inp) inp.blur();
+     if(document.activeElement===inp && !e.target.closest('[data-person-chat]')) inp.blur();
    });
  }
  resize();
@@ -264,7 +343,7 @@ if(window.visualViewport){
 function sendMessage(){
  const inp=document.getElementById('msg');if(!inp||!inp.value.trim())return;
  document.getElementById('messages').insertAdjacentHTML('beforeend',`<div class="bubble mine"><span class="message-text">${safe(inp.value.trim())}</span><span class="msg-time">jetzt ✓</span></div>`);
- inp.value='';window.scrollTo(0,document.body.scrollHeight);
+ inp.value='';inp.style.height='39px';inp.scrollTop=0;window.scrollTo(0,document.body.scrollHeight);
 }
 function startCall(i,video){
  const p=chatData[i];const v=document.createElement('div');v.className='call-screen';
@@ -505,5 +584,5 @@ galleryInput.onchange=e=>{if(e.target.files?.[0]){toast('Demo: '+e.target.files[
 cameraInput.onchange=e=>{if(e.target.files?.[0]){toast('Demo: Kamera-Medium ausgewählt.');e.target.value=''}};
 scoreInput.onchange=e=>{if(e.target.files?.[0]){toast('Demo: Highscore-Screenshot ausgewählt.');e.target.value=''}};
 
-if('serviceWorker' in navigator){navigator.serviceWorker.register('sw.js?v=10');}
+if('serviceWorker' in navigator){navigator.serviceWorker.register('sw.js?v=11');}
 show('chat');

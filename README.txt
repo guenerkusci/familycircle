@@ -35,3 +35,13 @@ V10 – nur die ausdrücklich gewünschten Änderungen:
 - Tippen in den Chatbereich schließt die Tastatur
 - Neuer Status-Button oben neben Feed mit Statusübersicht der Mitglieder
 - Alles andere basiert unverändert auf V9
+
+
+V11 – nur die ausdrücklich gewünschten Ergänzungen gegenüber V10:
+- Mehrzeiliges Chat-Schreibfeld springt nach Senden sofort in die ursprüngliche Höhe zurück
+- Bei geöffneter Tastatur werden obere Leiste (Status/Feed/Einstellungen) und untere Navigation vollständig ausgeblendet
+- Tippen in den Chatbereich schließt die Tastatur; danach erscheinen beide Leisten wieder
+- Im Einzelchat öffnet ein Tipp auf Name/Avatar eine Kontaktinfo-Seite mit Profil, Audio/Video, Medien, Datenschutz- und Chatoptionen (Demo)
+- Im Familien-Gruppenchat öffnet ein Tipp auf den Absender einer Nachricht direkt den Einzelchat dieser Person
+- Zurück im Einzelchat führt wieder zum Familien-Gruppenchat
+- Alle übrigen V10-Funktionen und das bestehende Design bleiben unverändert
