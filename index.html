@@ -9,7 +9,7 @@
   <meta name="apple-mobile-web-app-title" content="FamilyCircle">
   <link rel="manifest" href="manifest.json">
   <link rel="apple-touch-icon" href="icon-192.png">
-  <link rel="stylesheet" href="styles.css?v=8">
+  <link rel="stylesheet" href="styles.css?v=8.1">
   <title>FamilyCircle</title>
 </head>
 <body>
@@ -21,10 +21,20 @@
       </div>
       <div class="top-actions">
         <button id="feedTop" class="top-action" aria-label="Feed">
-          <span class="top-icon">◉</span><span>Feed</span>
+          <span class="top-icon feed-house" aria-hidden="true">
+<svg viewBox="0 0 64 64" role="img">
+  <path d="M14 29v25h14V39h8v15h14V29L32 14z" fill="#2F80ED"/>
+  <path d="M9 30L32 8l23 22" fill="none" stroke="#E52420" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>
+</span><span>Feed</span>
         </button>
         <button id="settingsTop" class="top-action" aria-label="Einstellungen">
-          <span class="top-icon">⚙︎</span><span>Einstellungen</span>
+          <span class="top-icon settings-gear" aria-hidden="true">
+<svg viewBox="0 0 64 64" role="img">
+  <path d="M27 5h10l2 8a21 21 0 0 1 5 3l8-2 5 9-6 6a21 21 0 0 1 0 6l6 6-5 9-8-2a21 21 0 0 1-5 3l-2 8H27l-2-8a21 21 0 0 1-5-3l-8 2-5-9 6-6a21 21 0 0 1 0-6l-6-6 5-9 8 2a21 21 0 0 1 5-3z" fill="#8A8F98"/>
+  <circle cx="32" cy="32" r="10" fill="white" stroke="#666B73" stroke-width="3"/>
+</svg>
+</span><span>Einstellungen</span>
         </button>
       </div>
     </header>
@@ -44,6 +54,6 @@
     <input id="cameraInput" type="file" accept="image/*,video/*" capture="environment" hidden>
     <input id="scoreInput" type="file" accept="image/*" hidden>
   </div>
-  <script src="app.js?v=8"></script>
+  <script src="app.js?v=8.1"></script>
 </body>
 </html>

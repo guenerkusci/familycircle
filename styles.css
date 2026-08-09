@@ -23,7 +23,7 @@ button:focus-visible,input:focus-visible,textarea:focus-visible,select:focus-vis
   min-width:64px;min-height:56px;border:0;background:transparent;border-radius:14px;color:#344054;
   display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;padding:6px 7px
 }
-.top-action .top-icon{font-size:25px;line-height:1}.top-action>span:last-child{font-size:10px;font-weight:700}
+.top-action .top-icon{font-size:30px;line-height:1;width:34px;height:34px;display:grid;place-items:center}.top-action .top-icon svg{width:34px;height:34px;display:block}.top-action>span:last-child{font-size:10px;font-weight:700}
 .top-action.active{background:var(--blueSoft);color:var(--blue)}
 
 main{max-width:720px;margin:0 auto}
@@ -118,7 +118,7 @@ main{max-width:720px;margin:0 auto}
 .nav-item{border:0;background:transparent;color:#667085;min-width:58px;min-height:66px;border-radius:13px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;padding:5px 2px}
 .nav-item span{font-size:29px;line-height:1}.nav-item b{font-size:11px}.nav-item.active{color:var(--blue);background:#F8FAFF}
 .sos-button{
-  justify-self:center;align-self:start;transform:translateY(-27px);width:86px;height:86px;border-radius:50%;border:7px solid white;background:var(--red);color:white;
+  justify-self:center;align-self:start;transform:translateY(-12px);width:86px;height:86px;border-radius:50%;border:7px solid white;background:var(--red);color:white;
   box-shadow:0 7px 18px rgba(217,45,32,.28);font-size:22px;font-weight:900
 }
 
