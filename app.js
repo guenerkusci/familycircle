@@ -4,13 +4,13 @@
   try{
     if ('caches' in window){
       const keys = await caches.keys();
-      await Promise.all(keys.filter(k => k !== 'familycircle-v7').map(k => caches.delete(k)));
+      await Promise.all(keys.filter(k => k !== 'familycircle-v8').map(k => caches.delete(k)));
     }
     if ('serviceWorker' in navigator){
       const regs = await navigator.serviceWorker.getRegistrations();
       for (const reg of regs){
         const url = reg.active?.scriptURL || reg.installing?.scriptURL || reg.waiting?.scriptURL || '';
-        if (url && !url.includes('sw.js?v=7')) {
+        if (url && !url.includes('sw.js?v=8')) {
           await reg.unregister();
         }
       }
@@ -73,7 +73,7 @@ function setActive(tab){
 }
 function show(tab){
  current=tab;currentChat=null;setActive(tab);title.textContent=names[tab];
- if(tab==='chat') content.innerHTML=chatList();
+ if(tab==='chat') { openFamilyChat(); return; }
  if(tab==='calendar') content.innerHTML=calendarView();
  if(tab==='location') content.innerHTML=locationView();
  if(tab==='games') content.innerHTML=gamesView();
@@ -84,18 +84,68 @@ function show(tab){
 }
 
 function chatList(){
- return `<div class="search">🔎 <span>Chats durchsuchen</span></div>
- ${chatData.map((c,i)=>`<div class="chat-row" data-chat="${i}">
+ return `<div class="contacts-head"><button id="contactsBack" class="back">‹</button><div><b>Kontakte</b><div class="small muted">Einzelchats</div></div></div>
+ <div class="search">🔎 <span>Kontakte durchsuchen</span></div>
+ ${chatData.slice(0,4).map((c,i)=>`<div class="chat-row" data-chat="${i}">
    <div class="avatar">${c.avatar}</div>
    <div class="chat-main">
     <div class="chat-line"><span class="chat-name">${c.name}</span><span class="chat-time">${c.time}</span></div>
     <div class="chat-line"><span class="preview">${c.preview}</span>${c.badge?`<span class="badge">${c.badge}</span>`:''}</div>
    </div>
-   <div class="row-actions">
-    <button class="icon-button row-call" data-person="${i}" aria-label="${c.name} anrufen">📞</button>
-    <button class="icon-button row-video" data-person="${i}" aria-label="${c.name} Videoanruf">🎥</button>
+  </div>`).join('')}`;
+}
+
+function mediaPanel(label){
+ return `<div class="chat-media-panel">
+   <button class="media-close icon-button" aria-label="Medien schließen">✕</button>
+   <h3>${label}</h3>
+   <div class="media-tabs"><button>Fotos</button><button>Videos</button><button>Links</button><button>Dateien</button></div>
+   <div class="media-grid"><div>🖼️</div><div>📷</div><div>🎬</div><div>📄</div><div>🔗</div><div>🖼️</div></div>
+   <p class="small muted">Demo: Hier werden die im Chat geteilten Medien, Links und Dateien gesammelt.</p>
+  </div>`;
+}
+
+function openFamilyChat(){
+ current='chat'; currentChat=4; setActive('chat'); title.textContent='Chats';
+ content.innerHTML=`<section class="chat-screen">
+  <div class="chat-header group-header">
+   <button id="openContacts" class="contacts-button">Kontakte</button>
+   <div class="avatar small">👨‍👩‍👧‍👦</div>
+   <div class="chat-person"><b>Familie</b><span class="small muted">Alle Mitglieder · Gruppenchat</span></div>
+   <div class="chat-header-actions">
+    <button id="groupMedia" class="icon-button" aria-label="Gruppenmedien">▦</button>
+    <button id="groupVoice" class="icon-button" aria-label="Gruppenanruf">📞</button>
+    <button id="groupVideo" class="icon-button" aria-label="Gruppenvideo">🎥</button>
    </div>
- </div>`).join('')}`;
+  </div>
+  <div class="messages" id="messages">
+   <div class="bubble theirs"><b>Mama</b><br>Sonntag um 14 Uhr zusammen? ❤️<span class="msg-time">12:35</span></div>
+   <div class="bubble theirs"><b>Papa</b><br>Passt bei mir 👍<span class="msg-time">12:37</span></div>
+   <div class="bubble mine">Bei mir auch 😊<span class="msg-time">12:38 ✓✓</span></div>
+   <div class="bubble theirs"><b>Lisa</b><br>Ich bin dabei!<span class="msg-time">12:39</span></div>
+  </div>
+  <div class="chat-composer">
+   <button id="attach">＋</button><input id="msg" placeholder="Nachricht an Familie">
+   <button id="chatCamera">📷</button><button id="mic">🎙️</button><button id="send" class="send">➤</button>
+  </div>
+ </section>`;
+ document.getElementById('openContacts').onclick=openContacts;
+ document.getElementById('groupMedia').onclick=()=>openMedia('Gruppenmedien');
+ document.getElementById('groupVoice').onclick=()=>openGroupCall(false);
+ document.getElementById('groupVideo').onclick=()=>openGroupCall(true);
+ document.getElementById('attach').onclick=()=>galleryInput.click();
+ document.getElementById('chatCamera').onclick=()=>cameraInput.click();
+ document.getElementById('mic').onclick=()=>toast('Demo: Sprachnachricht wird aufgenommen.');
+ document.getElementById('send').onclick=sendMessage;
+ window.scrollTo({top:0,behavior:'instant'});
+}
+
+function openContacts(){
+ title.textContent='Kontakte';
+ content.innerHTML=chatList();
+ document.getElementById('contactsBack').onclick=openFamilyChat;
+ document.querySelectorAll('[data-chat]').forEach(r=>r.onclick=()=>openChat(Number(r.dataset.chat)));
+ window.scrollTo({top:0,behavior:'instant'});
 }
 
 function openChat(i){
@@ -104,27 +154,62 @@ function openChat(i){
   <div class="chat-header">
    <button id="chatBack" class="back">‹</button><div class="avatar small">${p.avatar}</div>
    <div class="chat-person"><b>${p.name}</b><span class="small muted">${i<2?'online':'zuletzt heute online'}</span></div>
-   <div class="chat-header-actions"><button id="voiceCall" class="icon-button">📞</button><button id="videoCall" class="icon-button">🎥</button></div>
+   <div class="chat-header-actions">
+    <button id="chatMedia" class="icon-button" aria-label="Medien, Links und Dateien">▦</button>
+    <button id="voiceCall" class="icon-button">📞</button><button id="videoCall" class="icon-button">🎥</button>
+   </div>
   </div>
   <div class="messages" id="messages">
    <div class="bubble mine">Kannst du nachher noch Brot mitbringen? 😊<span class="msg-time">12:40 ✓✓</span></div>
    <div class="bubble theirs">Klar, mache ich! 🥖<span class="msg-time">12:41</span></div>
    <div class="bubble mine">Danke! ❤️<span class="msg-time">12:42 ✓✓</span></div>
-   <div class="bubble theirs">Gern geschehen 😊<span class="msg-time">12:43</span></div>
   </div>
   <div class="chat-composer">
    <button id="attach">＋</button><input id="msg" placeholder="Nachricht">
    <button id="chatCamera">📷</button><button id="mic">🎙️</button><button id="send" class="send">➤</button>
   </div>
  </section>`;
- document.getElementById('chatBack').onclick=()=>show('chat');
+ document.getElementById('chatBack').onclick=openFamilyChat;
+ document.getElementById('chatMedia').onclick=()=>openMedia('Medien, Links & Dateien · '+p.name);
  document.getElementById('voiceCall').onclick=()=>startCall(i,false);
  document.getElementById('videoCall').onclick=()=>startCall(i,true);
  document.getElementById('attach').onclick=()=>galleryInput.click();
  document.getElementById('chatCamera').onclick=()=>cameraInput.click();
- document.getElementById('mic').onclick=()=>toast('Demo: Sprachnachricht-Aufnahme wird simuliert.');
+ document.getElementById('mic').onclick=()=>toast('Demo: Sprachnachricht wird aufgenommen.');
  document.getElementById('send').onclick=sendMessage;
 }
+
+function openMedia(label){
+ const s=document.createElement('div'); s.className='sheet';
+ s.innerHTML=`<div class="sheet-card">${mediaPanel(label)}</div>`;
+ document.body.appendChild(s);
+ s.querySelector('.media-close').onclick=()=>s.remove();
+ s.onclick=e=>{if(e.target===s)s.remove()};
+}
+
+function openGroupCall(video){
+ const s=document.createElement('div'); s.className='sheet';
+ s.innerHTML=`<div class="sheet-card"><div class="sheet-head"><button class="icon-button close-sheet">✕</button><h3>${video?'Gruppen-Videoanruf':'Gruppen-Sprachanruf'}</h3><span></span></div>
+ <p class="muted">Wähle aus, wen du zum Gruppenanruf einladen möchtest.</p>
+ ${members.slice(0,4).map((m,i)=>`<label class="member-check"><span>${m.avatar} ${m.name}</span><input class="call-member" type="checkbox" value="${m.name}" ${i<2?'checked':''}></label>`).join('')}
+ <button id="startGroupCall" class="primary wide" style="margin-top:12px">${video?'🎥 Videoanruf':'📞 Sprachanruf'} starten · Demo</button></div>`;
+ document.body.appendChild(s);
+ s.querySelector('.close-sheet').onclick=()=>s.remove();
+ s.querySelector('#startGroupCall').onclick=()=>{
+   const chosen=[...s.querySelectorAll('.call-member:checked')].map(x=>x.value);
+   if(!chosen.length){toast('Bitte mindestens ein Familienmitglied auswählen.');return}
+   s.remove(); startGroupCallScreen(chosen,video);
+ };
+}
+
+function startGroupCallScreen(chosen,video){
+ const v=document.createElement('div');v.className='call-screen';
+ v.innerHTML=`<div class="group-call-avatars">${chosen.map(n=>`<div class="avatar">${members.find(m=>m.name===n)?.avatar||'🙂'}</div>`).join('')}</div>
+ <h2>Familien-Gruppenanruf</h2><p>${video?'Videoanruf':'Sprachanruf'} · ${chosen.join(', ')} · Demo</p>
+ <div class="call-controls"><button>🔇</button><button>${video?'📹':'🔊'}</button><button class="hang">☎️</button></div>`;
+ document.body.appendChild(v);v.querySelector('.hang').onclick=()=>v.remove();
+}
+
 function sendMessage(){
  const inp=document.getElementById('msg');if(!inp||!inp.value.trim())return;
  document.getElementById('messages').insertAdjacentHTML('beforeend',`<div class="bubble mine">${safe(inp.value.trim())}<span class="msg-time">jetzt ✓</span></div>`);
@@ -309,7 +394,7 @@ function openSetting(key){
 }
 
 function bind(){
- document.querySelectorAll('[data-chat]').forEach(r=>r.onclick=e=>{if(e.target.closest('.row-call,.row-video'))return;openChat(Number(r.dataset.chat))});
+ document.querySelectorAll('[data-chat]').forEach(r=>r.onclick=()=>openChat(Number(r.dataset.chat)));
  document.querySelectorAll('.row-call').forEach(b=>b.onclick=e=>{e.stopPropagation();startCall(Number(b.dataset.person),false)});
  document.querySelectorAll('.row-video').forEach(b=>b.onclick=e=>{e.stopPropagation();startCall(Number(b.dataset.person),true)});
  document.querySelectorAll('.comment-toggle').forEach(b=>b.onclick=()=>{let id=Number(b.dataset.post),p=document.getElementById('comments'+id);p.classList.toggle('hidden');if(!p.classList.contains('hidden'))renderComments(id)});
@@ -345,13 +430,13 @@ function sosModal(){
 }
 function triggerAlarm(){
  yesCount=0;rapidCount=0;
- modalRoot.innerHTML=`<div class="modal-overlay"><div class="modal-card"><h2 style="color:#B42318">🚨 NOTFALL AUSGELÖST · DEMO</h2>
+ modalRoot.innerHTML=`<div class="modal-overlay"><div class="modal-card sos-result-card"><button id="closeAlarmX" class="modal-x" aria-label="Meldung schließen">✕</button><h2 style="color:#B42318">🚨 NOTFALL AUSGELÖST · DEMO</h2>
  <div class="setting-row"><span class="setting-icon">👤</span><span class="setting-copy"><b>Güner</b><small>Gerade eben</small></span></div>
  <div class="map-card" style="margin-top:10px"><div class="map-road"></div><span class="pin p1">📍</span></div>
  <div class="sos-history"><div class="setting-row"><span>Jetzt</span><b>Aktueller Standort</b></div><div class="setting-row"><span>vor 5 Min</span><span>Letzte Position</span></div><div class="setting-row"><span>vor 10 Min</span><span>Letzte Position</span></div><div class="setting-row"><span>vor 20 Min</span><span>Letzte Position</span></div><div class="setting-row"><span>vor 1 Std</span><span>Letzte Position</span></div></div>
  <div class="warning-banner" style="margin-top:10px">Testmodus: Niemand wurde benachrichtigt und kein Standort übertragen.</div>
  <button id="closeAlarm" class="primary wide" style="margin-top:12px">Demo schließen</button></div></div>`;
- document.getElementById('closeAlarm').onclick=()=>modalRoot.innerHTML='';
+ document.getElementById('closeAlarm').onclick=()=>modalRoot.innerHTML='';document.getElementById('closeAlarmX').onclick=()=>modalRoot.innerHTML='';
 }
 
 sosBtn.addEventListener('pointerdown',e=>e.preventDefault());
@@ -369,5 +454,5 @@ galleryInput.onchange=e=>{if(e.target.files?.[0]){toast('Demo: '+e.target.files[
 cameraInput.onchange=e=>{if(e.target.files?.[0]){toast('Demo: Kamera-Medium ausgewählt.');e.target.value=''}};
 scoreInput.onchange=e=>{if(e.target.files?.[0]){toast('Demo: Highscore-Screenshot ausgewählt.');e.target.value=''}};
 
-if('serviceWorker' in navigator){navigator.serviceWorker.register('sw.js?v=7');}
+if('serviceWorker' in navigator){navigator.serviceWorker.register('sw.js?v=8');}
 show('chat');

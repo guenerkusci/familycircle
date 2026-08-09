@@ -14,3 +14,12 @@ Diese Version enthält die gewünschte Navigation:
 
 Zusätzlich wurde ein technischer Schutz gegen alte Safari/GitHub-Pages-Caches eingebaut.
 Die sichtbare Kennzeichnung "V7" oben dient nur zur Kontrolle, dass wirklich die neue Version geladen wurde.
+
+
+V8 – Ergänzungen auf Basis der unveränderten V7:
+- SOS-Ergebnisfenster zusätzlich mit sichtbarem X oben rechts schließbar
+- Chats öffnen direkt im Familien-Gruppenchat
+- Kontakte oben im Gruppenchat; Einzelchats mit Zurück-Taste zum Gruppenchat
+- Gruppen-Sprach-/Videoanruf mit auswählbaren Teilnehmern (Demo)
+- Sprachnachrichten-Schaltfläche im Gruppen- und Einzelchat
+- Gruppenmedien sowie Medien/Links/Dateien in Einzelchats
