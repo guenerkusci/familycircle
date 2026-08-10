@@ -76,3 +76,29 @@ V15:
 - Feed zeigt passend zur Auswahl entweder circle-intern oder Beiträge aus mehreren Circles
 - Profilbild in der Kontaktinfo ist anklickbar und öffnet eine große Bildansicht
 - Profilbild und Name im Einzelchat führen weiterhin zur Kontaktinfo
+
+
+V16 – Circle Hub:
+Alle 20 geplanten Funktionsbereiche wurden in die Testversion integriert:
+1 Chat+ (Antworten, Reaktionen, Pins, Bearbeiten, Favoriten, @Erwähnungen, Lesestatus)
+2 Multi-Circle-System
+3 Circle Catch-up
+4 Family Board
+5 Smart Actions aus Chat
+6 Gemeinsame Listen
+7 Wer-kann?-Anfragen
+8 Circle Moments
+9 Damals/Erinnerungen
+10 Circle Capsule/Zeitkapsel
+11 Bin-angekommen-Orte
+12 Safety Hub inkl. „Hol mich ab“
+13 Safe Walk
+14 Circle Doorbell
+15 Stimmung/Verfügbarkeit
+16 persönlicher Feed-Filter
+17 Circle Inbox
+18 Circle Pulse
+19 Circle Bridge
+20 Kommunikations-/Lebensplattform mit Voice, Calls, Umfragen und gespeicherten Inhalten
+
+Hinweis: Dies ist weiterhin eine lokale Demo/Testversion. Netzwerkdienste wie echte Push-Nachrichten, Calls, Live-Standort und serverseitige Synchronisation sind als interaktive Demo-Oberflächen vorbereitet und benötigen für eine echte App ein Backend/native APIs.
