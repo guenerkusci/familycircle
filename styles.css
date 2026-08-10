@@ -559,3 +559,36 @@ body[data-circle="sport"] .circle-unread-badge{background:#15803D}
 .circle-room{display:grid;place-items:center;text-align:center}.circle-room>span{font-size:30px}.circle-room small{color:var(--muted)}
 .message-actionable{cursor:pointer}
 @media(max-width:390px){.hub-grid{grid-template-columns:1fr 1fr}.hub-tile{min-height:100px;padding:11px}}
+
+
+/* V17 – Hub sichtbar in der oberen Leiste */
+.top-actions{
+  display:grid!important;
+  grid-template-columns:repeat(4,minmax(50px,1fr))!important;
+  gap:3px!important;
+  align-items:start!important;
+  width:min(410px,60vw)!important;
+}
+.top-action{
+  min-width:0!important;
+  padding:5px 1px!important;
+}
+.top-action>span{
+  display:block;
+  font-size:27px!important;
+  line-height:1!important;
+  margin-bottom:4px;
+}
+.top-action b{
+  display:block;
+  font-size:9px!important;
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+}
+#hubTop{color:#7F56D9!important}
+#hubTop .hub-icon{font-size:29px!important}
+@media(max-width:390px){
+  .top-actions{width:63vw!important;gap:1px!important}
+  .top-action b{font-size:8px!important}
+}

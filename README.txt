@@ -102,3 +102,11 @@ Alle 20 geplanten Funktionsbereiche wurden in die Testversion integriert:
 20 Kommunikations-/Lebensplattform mit Voice, Calls, Umfragen und gespeicherten Inhalten
 
 Hinweis: Dies ist weiterhin eine lokale Demo/Testversion. Netzwerkdienste wie echte Push-Nachrichten, Calls, Live-Standort und serverseitige Synchronisation sind als interaktive Demo-Oberflächen vorbereitet und benötigen für eine echte App ein Backend/native APIs.
+
+
+V17 – Korrektur:
+- Der in V16 eingebaute Circle Hub war nicht in der oberen Navigation sichtbar.
+- V17 zeigt jetzt oben ein eigenes „✨ Hub“-Symbol.
+- Über Hub sind die 20 neuen V16-Funktionsbereiche erreichbar.
+- Obere Symbolleiste ist für vier Aktionen auf iPhone-Breite angepasst.
+- Alles andere aus V16 bleibt unverändert.

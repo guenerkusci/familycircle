@@ -1,5 +1,5 @@
 
-// FamilyCircle V16: aggressively remove stale demo caches/service workers from older test builds.
+// FamilyCircle V17: aggressively remove stale demo caches/service workers from older test builds.
 (async function resetOldDemoCache(){
   try{
     if ('caches' in window){
@@ -160,7 +160,7 @@ function applyCircle(id){
  updateCircleHeader();
  modalRoot.innerHTML='';
  show('chat');
-console.info('FamilyCircle build V16 loaded');
+console.info('FamilyCircle build V17 loaded');
  toast(c.name+' geöffnet');
 }
 function openCircleSwitcher(){
@@ -958,8 +958,8 @@ scoreInput.onchange=e=>{if(e.target.files?.[0]){toast('Demo: Highscore-Screensho
 show('chat');
 
 if(circleSwitchBtn){circleSwitchBtn.onclick=openCircleSwitcher; document.body.dataset.circle=activeCircle().theme; updateCircleHeader();}
-
-hubTop?.addEventListener('click',()=>show('hub'));
 document.addEventListener('click',e=>{
  if(e.target?.id==='openHubFromSettings'){document.querySelector('.sheet')?.remove();show('hub');}
 });
+
+if(hubTop){hubTop.addEventListener('click',()=>show('hub'));}
