@@ -1,3 +1,7 @@
+Cirvela V19
+
+Änderungen: Dachmarke Cirvela, professionelleres UI-System, funktionale Medien-Tabs und Medienobjekte. Bestehende Circle-Funktionen bleiben erhalten.
+
 FamilyCircle V7 – korrigierte Testversion mit Cache-Schutz
 
 Diese Version enthält die gewünschte Navigation:

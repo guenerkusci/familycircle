@@ -1,12 +1,12 @@
 {
-  "name": "FamilyCircle",
-  "short_name": "FamilyCircle",
+  "name": "Cirvela",
+  "short_name": "Cirvela",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",
   "background_color": "#F6F8FC",
   "theme_color": "#FFFFFF",
-  "description": "Private FamilyCircle Demo",
+  "description": "Cirvela – private Circle Plattform Demo",
   "icons": [
     {
       "src": "icon-192.png",

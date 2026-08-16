@@ -6,16 +6,16 @@
   <meta name="theme-color" content="#ffffff">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="default">
-  <meta name="apple-mobile-web-app-title" content="FamilyCircle">
+  <meta name="apple-mobile-web-app-title" content="Cirvela">
   <link rel="manifest" href="manifest.json">
   <link rel="apple-touch-icon" href="icon-192.png">
-  <link rel="stylesheet" href="styles.css?v=18">
-  <title>FamilyCircle</title>
+  <link rel="stylesheet" href="styles.css?v=19">
+  <title>Cirvela</title>
 
   <script>
   (function(){
-    const build='V18';
-    window.__FAMILYCIRCLE_BUILD__=build;
+    const build='V19';
+    window.__CIRVELA_BUILD__=build;
     try{
       if('serviceWorker' in navigator){
         navigator.serviceWorker.getRegistrations().then(rs=>Promise.all(rs.map(r=>r.unregister()))).then(()=>{
@@ -37,14 +37,15 @@
   <div id="app">
     <header class="topbar">
       <div class="brandblock">
+        <div class="cirvela-wordmark">Cirvela</div>
         <button id="circleSwitchBtn" class="circle-switch" aria-label="Circle wechseln">
           <span id="circleNameTop">FamilyCircle</span>
           <span id="circleUnreadTop" class="circle-unread-top" hidden>0</span>
           <span class="circle-chevron">⌄</span>
         </button>
         <h1 id="pageTitle">Chats</h1>
-        <div class="subtitle">private Demo <span class="build-badge">V18</span></div>
-        <button id="hubTop" class="hub-launch" aria-label="Circle Hub öffnen"><span>✨</span><b>Circle Hub</b><em id="hubAlert">8</em></button>
+        <div class="subtitle">Private Demo <span class="build-badge">V19</span></div>
+        <button id="hubTop" class="hub-launch" aria-label="Circle Hub öffnen"><b>Circle Hub</b><em id="hubAlert">8</em></button>
       </div>
       <div class="top-actions">
         <button id="statusTop" class="top-action" aria-label="Status">
@@ -77,11 +78,11 @@
     <main id="content"></main>
 
     <nav id="bottomNav" class="bottom-nav" aria-label="Hauptnavigation">
-      <button class="nav-item active" data-tab="chat"><span>💬</span><b>Chats</b></button>
-      <button class="nav-item" data-tab="calendar"><span>📅</span><b>Kalender</b></button>
+      <button class="nav-item active" data-tab="chat"><span class="nav-glyph">◌</span><b>Chats</b></button>
+      <button class="nav-item" data-tab="calendar"><span class="nav-glyph">□</span><b>Kalender</b></button>
       <button id="sosBtn" class="sos-button" aria-label="SOS auslösen">SOS</button>
-      <button class="nav-item" data-tab="location"><span>📍</span><b>Standort</b></button>
-      <button class="nav-item" data-tab="games"><span>🎮</span><b>Spiele</b></button>
+      <button class="nav-item" data-tab="location"><span class="nav-glyph">⌖</span><b>Standort</b></button>
+      <button class="nav-item" data-tab="games"><span class="nav-glyph">◇</span><b>Spiele</b></button>
     </nav>
 
     <div id="modalRoot"></div>
@@ -89,6 +90,6 @@
     <input id="cameraInput" type="file" accept="image/*,video/*" capture="environment" hidden>
     <input id="scoreInput" type="file" accept="image/*" hidden>
   </div>
-  <script src="app.js?v=18"></script>
+  <script src="app.js?v=19"></script>
 </body>
 </html>

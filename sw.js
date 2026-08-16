@@ -1,5 +1,5 @@
 
-const CACHE='familycircle-v18';
+const CACHE='cirvela-v19';
 const ASSETS=['./','index.html','styles.css?v=18','app.js?v=18','manifest.json','icon-192.png','icon-512.png'];
 
 self.addEventListener('install', event => {

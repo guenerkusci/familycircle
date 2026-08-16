@@ -1,5 +1,5 @@
 
-// FamilyCircle V18: aggressively remove stale demo caches/service workers from older test builds.
+// Cirvela V19: aggressively remove stale demo caches/service workers from older test builds.
 (async function resetOldDemoCache(){
   try{
     if ('caches' in window){
@@ -180,7 +180,7 @@ function applyCircle(id){
  updateCircleHeader();
  modalRoot.innerHTML='';
  show('chat');
-console.info('FamilyCircle build V18 loaded');
+console.info('Cirvela build V19 loaded');
  toast(c.name+' geöffnet');
 }
 function openCircleSwitcher(){
@@ -433,13 +433,44 @@ function chatList(){
 }
 
 function mediaPanel(label){
- return `<div class="chat-media-panel">
+ const items={
+  photos:[['photo','Urlaubsfoto','Bild'],['camera','Familienmoment','Bild'],['portrait','Profilfoto','Bild'],['album','Ausflug','Album']],
+  videos:[['video','Geburtstag','Video'],['clip','Training','Video'],['movie','Wochenende','Video']],
+  links:[['link','Reiseplanung','Link'],['link','Restaurant','Link'],['link','Termininfo','Link']],
+  files:[['doc','Einkaufsliste.pdf','PDF'],['doc','Reiseplan.docx','Dokument'],['doc','Tickets.pdf','PDF']]
+ };
+ const icons={photo:'▧',camera:'◉',portrait:'◯',album:'▤',video:'▶',clip:'▷',movie:'▻',link:'↗',doc:'≡'};
+ return `<div class="chat-media-panel" data-media-panel>
    <button class="media-close icon-button" aria-label="Medien schließen">✕</button>
    <h3>${label}</h3>
-   <div class="media-tabs"><button>Fotos</button><button>Videos</button><button>Links</button><button>Dateien</button></div>
-   <div class="media-grid"><div>🖼️</div><div>📷</div><div>🎬</div><div>📄</div><div>🔗</div><div>🖼️</div></div>
-   <p class="small muted">Demo: Hier werden die im Chat geteilten Medien, Links und Dateien gesammelt.</p>
+   <div class="media-tabs">
+    <button class="media-tab active" data-media-tab="photos">Fotos</button><button class="media-tab" data-media-tab="videos">Videos</button><button class="media-tab" data-media-tab="links">Links</button><button class="media-tab" data-media-tab="files">Dateien</button>
+   </div>
+   <div class="media-grid" data-media-grid>${items.photos.map((x,i)=>`<button class="media-item" data-media-kind="photos" data-media-index="${i}"><span>${icons[x[0]]}</span><b>${x[1]}</b><small>${x[2]}</small></button>`).join('')}</div>
+   <p class="small muted">Geteilte Inhalte dieses Chats. Tippe auf einen Eintrag, um ihn zu öffnen.</p>
   </div>`;
+}
+
+function bindMediaPanel(root){
+ const panel=root.querySelector('[data-media-panel]'); if(!panel)return;
+ const data={
+  photos:[['▧','Urlaubsfoto','Bildvorschau'],['◉','Familienmoment','Bildvorschau'],['◯','Profilfoto','Bildvorschau'],['▤','Ausflug','Albumansicht']],
+  videos:[['▶','Geburtstag','Videovorschau'],['▷','Training','Videovorschau'],['▻','Wochenende','Videovorschau']],
+  links:[['↗','Reiseplanung','Geteilter Link'],['↗','Restaurant','Geteilter Link'],['↗','Termininfo','Geteilter Link']],
+  files:[['≡','Einkaufsliste.pdf','PDF-Datei'],['≡','Reiseplan.docx','Dokument'],['≡','Tickets.pdf','PDF-Datei']]
+ };
+ const grid=panel.querySelector('[data-media-grid]');
+ function render(kind){
+   grid.innerHTML=data[kind].map((x,i)=>`<button class="media-item" data-media-kind="${kind}" data-media-index="${i}"><span>${x[0]}</span><b>${x[1]}</b><small>${x[2]}</small></button>`).join('');
+   panel.querySelectorAll('.media-tab').forEach(b=>b.classList.toggle('active',b.dataset.mediaTab===kind));
+ }
+ panel.querySelectorAll('.media-tab').forEach(b=>b.onclick=()=>render(b.dataset.mediaTab));
+ grid.onclick=e=>{const b=e.target.closest('.media-item');if(!b)return;const x=data[b.dataset.mediaKind][+b.dataset.mediaIndex];openMediaDetail(x[1],x[0],x[2]);};
+}
+function openMediaDetail(name,icon,type){
+ const d=document.createElement('div');d.className='sheet';
+ d.innerHTML=`<div class="sheet-card media-detail"><div class="sheet-head"><h3>${name}</h3><button class="icon-button close-sheet">✕</button></div><div class="media-detail-preview">${icon}</div><p><b>${type}</b></p><p class="muted small">Demo-Vorschau des ausgewählten Chat-Inhalts.</p><button class="primary wide media-detail-action">Öffnen · Demo</button></div>`;
+ document.body.appendChild(d);d.querySelector('.close-sheet').onclick=()=>d.remove();d.querySelector('.media-detail-action').onclick=()=>toast(name+' geöffnet · Demo');d.onclick=e=>{if(e.target===d)d.remove()};
 }
 
 function openFamilyChat(){
@@ -662,6 +693,7 @@ function openMedia(label){
  s.innerHTML=`<div class="sheet-card">${mediaPanel(label)}</div>`;
  document.body.appendChild(s);
  s.querySelector('.media-close').onclick=()=>s.remove();
+ bindMediaPanel(s);
  s.onclick=e=>{if(e.target===s)s.remove()};
 }
 
@@ -999,7 +1031,7 @@ cameraInput.onchange=e=>{if(e.target.files?.[0]){toast('Demo: Kamera-Medium ausg
 scoreInput.onchange=e=>{if(e.target.files?.[0]){toast('Demo: Highscore-Screenshot ausgewählt.');e.target.value=''}};
 
 show('chat');
-console.info('FamilyCircle build V18 loaded');
+console.info('Cirvela build V19 loaded');
 
 if(circleSwitchBtn){circleSwitchBtn.onclick=openCircleSwitcher; document.body.dataset.circle=activeCircle().theme; updateCircleHeader();}
 

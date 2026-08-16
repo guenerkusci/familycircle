@@ -581,3 +581,40 @@ body[data-circle="sport"] .circle-unread-badge{background:#15803D}
 .voice-demo{display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:8px;background:#F2F4F7;border-radius:14px;padding:9px}.compact-voice{margin-top:6px}.voice-play,.voice-speed,.voice-inline-play,.voice-inline-speed{border:0;background:white;border-radius:999px;min-width:34px;height:34px;font-weight:850}.voice-wave{letter-spacing:1px;color:#1769E0;white-space:nowrap;overflow:hidden}.voice-bubble{min-width:220px}.feed-category-chips{display:flex;gap:6px;overflow-x:auto;margin-top:8px;scrollbar-width:none}.feed-category-chips button{border:1px solid var(--line);background:white;border-radius:999px;padding:7px 10px;white-space:nowrap;font-size:10px;font-weight:750}
 body[data-circle="couple"]{--blue:#C11574;--blueSoft:#FCE7F3}body[data-circle="travel"]{--blue:#0E7490;--blueSoft:#ECFEFF}body[data-circle="school"]{--blue:#7C3AED;--blueSoft:#F5F3FF}
 @media(max-width:390px){.hub-grid{grid-template-columns:1fr 1fr}.hub-tile{min-height:96px;padding:10px}.hub-launch{font-size:9px}.top-action{min-width:52px}}
+
+/* V19 — Cirvela professional visual system. Functionality preserved, presentation refined. */
+:root{
+ --bg:#F4F6F8;--card:#FFFFFF;--text:#17202A;--muted:#6B7280;--line:#E2E7EC;
+ --blue:#2457D6;--blueSoft:#EEF3FF;--red:#C9362B;--green:#17875B;
+ --shadow:0 2px 10px rgba(16,24,40,.045);--radius:14px;
+}
+body{background:#F4F6F8;letter-spacing:-.01em}
+.topbar{padding:calc(12px + env(safe-area-inset-top)) 16px 11px;background:rgba(255,255,255,.985);box-shadow:0 1px 0 var(--line);border:0;align-items:flex-end}
+.cirvela-wordmark{font-size:24px;font-weight:900;letter-spacing:-.8px;color:#111827;line-height:1;margin-bottom:3px}
+.circle-switch{font-size:13px!important;font-weight:750!important;color:var(--circleAccent,var(--blue))!important;margin:0 0 4px!important;gap:5px!important}
+.circle-unread-top{font-size:9px!important;min-width:18px!important;height:18px!important}
+.brandblock h1{font-size:20px!important;font-weight:820!important;letter-spacing:-.4px!important;margin:0 0 2px!important}
+.brandblock .subtitle{font-size:10px!important;color:#8A94A3!important}
+.build-badge{background:#F1F4F8;color:#667085;font-size:8px}
+.hub-launch{background:transparent!important;box-shadow:none!important;border:1px solid #D8DEE7!important;border-radius:9px!important;color:#475467!important;padding:5px 8px!important;margin-top:6px!important}
+.hub-launch em{background:#D33B32!important}
+.top-actions{gap:4px!important}.top-action{min-width:58px!important;border-radius:10px!important;padding:5px!important}.top-action .top-icon,.top-action .top-icon svg{width:30px!important;height:30px!important}.top-action>span:last-child{font-size:9px!important;font-weight:700!important}.top-action.active{background:#F0F4FA!important}
+.card,.post,.setting-list{border-radius:14px!important;box-shadow:var(--shadow)!important;border-color:#E5E9EF!important}
+.chat-screen{background:#F1F0ED!important}.chat-header{box-shadow:0 1px 0 var(--line)}
+.bubble{border-radius:12px!important;box-shadow:0 1px 3px rgba(16,24,40,.06)!important}.bubble.mine{background:#E3F4DE!important}
+.contacts-button{border-radius:9px!important;background:#EEF3FA!important;color:#2457D6!important}
+.avatar,.circle-option-icon{background:#F0F3F7!important;border:1px solid #E1E6EC}
+.bottom-nav{background:rgba(255,255,255,.985)!important;border-top:1px solid #E1E6EC!important;backdrop-filter:blur(20px)}
+.nav-item{border-radius:10px!important}.nav-item.active{background:#F2F5FA!important}.nav-glyph{font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display",sans-serif!important;font-size:28px!important;font-weight:400!important;line-height:.9!important;color:currentColor}
+.sos-button{background:#C9362B!important;box-shadow:0 5px 14px rgba(201,54,43,.18)!important;font-size:17px!important;letter-spacing:.4px}
+.chat-composer{background:#F7F8FA!important;border-top:1px solid #E1E6EC!important}.chat-composer textarea.chat-message-input,.chat-composer input{border:1px solid #DDE3EA!important;box-shadow:none!important}
+.sheet{background:rgba(15,23,42,.42)!important}.sheet-card{border-radius:18px 18px 0 0!important;box-shadow:0 -8px 30px rgba(15,23,42,.08)}
+.media-tabs{gap:5px!important}.media-tabs button{border:1px solid #E1E6EC!important;background:#F7F8FA!important;border-radius:9px!important;color:#5B6573!important}.media-tabs button.active{background:#EAF0FC!important;color:#2457D6!important;border-color:#C8D6F5!important}
+.media-grid{grid-template-columns:repeat(2,1fr)!important;gap:8px!important}
+.media-grid .media-item{aspect-ratio:auto!important;min-height:105px;border:1px solid #E1E6EC;background:#FAFBFC;border-radius:11px;padding:14px 10px;display:flex;flex-direction:column;align-items:flex-start;justify-content:center;gap:4px;text-align:left;color:#17202A}
+.media-item span{font-size:26px;color:#2457D6}.media-item b{font-size:13px}.media-item small{font-size:10px;color:#7B8491}
+.media-detail-preview{height:220px;border:1px solid #E1E6EC;border-radius:12px;background:#F6F8FA;display:grid;place-items:center;font-size:62px;color:#2457D6;margin:12px 0}
+.story-ring{background:#D8DEE8!important;padding:2px!important}.story-ring .avatar{border:2px solid white!important}.story-create .story-ring{background:#CBD3DD!important}
+.post-image{background:#F0F3F7!important;color:#667085!important}
+.circle-option{grid-template-columns:46px minmax(0,1fr) auto!important}.circle-option.selected{background:#F3F6FA!important}.circle-unread-badge,.badge{background:#D33B32!important}
+@media(max-width:390px){.cirvela-wordmark{font-size:21px}.brandblock h1{font-size:18px!important}.top-action{min-width:52px!important}}
