@@ -1,5 +1,5 @@
 
-// Cirvela V24: aggressively remove stale demo caches/service workers from older test builds.
+// Cirvela V26: aggressively remove stale demo caches/service workers from older test builds.
 (async function resetOldDemoCache(){
   try{
     if ('caches' in window){
@@ -322,6 +322,7 @@ function updateCircleHeader(){
 }
 function applyCircle(id){
  const c=circlePresets[id]; if(!c)return;
+ const sectionBeforeSwitch=current;
  currentCircleId=id;
  members=c.members.map(x=>({...x}));
  chatData=c.chats.map(x=>({...x}));
@@ -329,8 +330,10 @@ function applyCircle(id){
  applyCircleDesign(id);
  updateCircleHeader();
  modalRoot.innerHTML='';
- show('chat');
-console.info('Cirvela build V24 loaded');
+ const keepSection=['calendar','location','games','status','feed'].includes(sectionBeforeSwitch);
+ if(sectionBeforeSwitch==='feed') feedCircleFocus=id;
+ show(keepSection?sectionBeforeSwitch:'chat');
+ console.info('Cirvela build V26 loaded');
  toast(c.name+' geöffnet');
 }
 function openCircleSwitcher(){
@@ -360,6 +363,7 @@ function openCircleSwitcher(){
 
 let current='chat';
 let currentChat=null;
+let feedCircleFocus=null;
 let yesCount=0;
 let rapidCount=0;
 let lastSosTap=0;
@@ -368,6 +372,50 @@ let demoEvents=[
  {icon:'🎂',title:'Oma Geburtstag',date:'Morgen',visible:'Alle'},
  {icon:'⚽',title:'Fußball Noah',date:'Mo 17:00',visible:'Familie'}
 ];
+
+
+const circleCalendarPresets={
+ friends:[
+  {icon:'🍕',title:'Freundeabend',date:'Fr 20:00',visible:'Alle im FriendsCircle'},
+  {icon:'🎉',title:'Geburtstag Mert',date:'Sa',visible:'FriendsCircle'},
+  {icon:'☕',title:'Brunch',date:'So 11:00',visible:'Seda · Elif'}
+ ],
+ girls:[
+  {icon:'🌸',title:'Girls Night',date:'Fr 19:30',visible:'GirlsCircle'},
+  {icon:'💅',title:'Beauty-Termin',date:'Sa 14:00',visible:'Lisa · Sophie'},
+  {icon:'🥂',title:'Dinner',date:'So 18:30',visible:'Alle im GirlsCircle'}
+ ],
+ work:[
+  {icon:'💼',title:'Team-Meeting',date:'Mo 10:30',visible:'WorkCircle'},
+  {icon:'📊',title:'Projekt-Review',date:'Mi 14:00',visible:'Anna · David'},
+  {icon:'🏁',title:'Sprint-Ende',date:'Fr 16:00',visible:'Team'}
+ ],
+ sport:[
+  {icon:'⚽',title:'Training',date:'Heute 18:30',visible:'SportCircle'},
+  {icon:'🏆',title:'Ligaspiel',date:'Sa 15:00',visible:'Team'},
+  {icon:'🏃',title:'Lauftreff',date:'So 09:00',visible:'Emre · Leon'}
+ ],
+ couple:[
+  {icon:'❤️',title:'Dinner-Date',date:'Fr 19:00',visible:'Wir zwei'},
+  {icon:'🎬',title:'Kino',date:'Sa 20:15',visible:'Wir zwei'},
+  {icon:'☕',title:'Sonntagsfrühstück',date:'So 10:30',visible:'Wir zwei'}
+ ],
+ travel:[
+  {icon:'✈️',title:'Abflug',date:'08:10',visible:'TravelCircle'},
+  {icon:'🏨',title:'Check-in Hotel',date:'15:00',visible:'Reisegruppe'},
+  {icon:'🗺️',title:'Stadttour',date:'Morgen 10:00',visible:'Alle'}
+ ],
+ school:[
+  {icon:'🎓',title:'Elternabend',date:'Do 18:00',visible:'SchoolCircle'},
+  {icon:'📚',title:'Mathe-Test',date:'Fr',visible:'Emma · Tom'},
+  {icon:'🏫',title:'Schulfest',date:'Sa 13:00',visible:'Alle'}
+ ]
+};
+function currentCalendarEvents(){
+ if(currentCircleId==='family') return demoEvents;
+ if(!circleCalendarPresets[currentCircleId]) circleCalendarPresets[currentCircleId]=[];
+ return circleCalendarPresets[currentCircleId];
+}
 
 let postComments={
   0:[{avatar:'👨',name:'Papa',text:'Tolles Foto ❤️',likes:2},{avatar:'👧',name:'Lisa',text:'Das war richtig schön 😊',likes:1},{avatar:'👦',name:'Noah',text:'Nächstes Mal wieder!',likes:0}],
@@ -544,10 +592,13 @@ function featureRow(icon,titleText,sub){return `<div class="feature-row"><span>$
 function pulseLine(icon,name,status){return `<div class="pulse-line"><span>${icon}</span><span><b>${name}</b><small>${status}</small></span></div>`}
 
 function statusView(){
- return `<div class="section-pad"><h2 style="margin:2px 0 6px">Status & Moments</h2><p class="muted" style="margin-top:0">Kurzstatus, Tagesmomente und Erinnerungen · freiwillig</p></div>
+ const c=activeCircle();
+ const statusTexts=['☕ Hat Zeit · vor 12 Min','🚗 Unterwegs · vor 35 Min','📚 Beschäftigt · 17:40','⚡ Aktiv · 16:15'];
+ const statusMembers=members.filter(m=>m.name!==c.label).slice(0,4);
+ return `<div class="section-pad"><h2 style="margin:2px 0 6px">Status & Moments · ${c.name}</h2><p class="muted" style="margin-top:0">Kurzstatus, Tagesmomente und Erinnerungen dieses Circles · freiwillig</p></div>
  ${card(`<div class="card-title-row"><h3>😊 Deine Stimmung</h3><button class="ghost feature-open" data-feature="mood">Ändern</button></div><div class="status-mood-current">${circleFeatureState.mood}</div>`)}
  ${card(`<div class="card-title-row"><h3>📸 Unser Tag</h3><button class="ghost feature-open" data-feature="moments">Öffnen</button></div><div class="moment-mini"><span>🌅</span><span>🍕</span><span>⚽</span><span>❤️</span></div><button class="secondary wide feature-open" data-feature="memories" style="margin-top:10px">🕰️ Damals anzeigen</button>`)}
- ${card(`<h3>Aktuelle Statusmeldungen</h3><div class="setting-row"><span class="setting-icon">👩</span><span class="setting-copy"><b>Mama</b><small>☕ Hat Zeit zum Quatschen · vor 12 Min</small></span><span>●</span></div><div class="setting-row"><span class="setting-icon">👨</span><span class="setting-copy"><b>Papa</b><small>🚗 Unterwegs · vor 35 Min</small></span><span>●</span></div><div class="setting-row"><span class="setting-icon">👧</span><span class="setting-copy"><b>Lisa</b><small>📚 Beschäftigt · 17:40</small></span><span>●</span></div><div class="setting-row"><span class="setting-icon">👦</span><span class="setting-copy"><b>Noah</b><small>⚽ Training · 16:15</small></span><span>●</span></div>`)}
+ ${card(`<h3>Aktuelle Statusmeldungen · ${c.name}</h3>${statusMembers.map((m,i)=>`<div class="setting-row"><span class="setting-icon">${m.avatar}</span><span class="setting-copy"><b>${m.name}</b><small>${statusTexts[i]||'● Aktiv'}</small></span><span>●</span></div>`).join('')}`)}
  <div class="section-pad"><button class="primary wide feature-open" data-feature="doorbell">🔔 Circle Doorbell</button></div>`;
 }
 function showStatus(){
@@ -879,9 +930,15 @@ function setupChatInput(){
  if(!inp)return;
  const resize=()=>{inp.style.height='auto';inp.style.height=Math.min(Math.max(inp.scrollHeight,39),112)+'px'};
  inp.addEventListener('input',resize);
- inp.addEventListener('focus',()=>{document.body.classList.add('keyboard-open');updateKeyboardLayout();});
+ inp.addEventListener('focus',()=>{
+   document.body.classList.add('keyboard-open');
+   updateKeyboardLayout();
+   requestAnimationFrame(()=>{const m=document.getElementById('messages');if(m)m.scrollTop=m.scrollHeight;});
+ });
  inp.addEventListener('blur',()=>setTimeout(()=>{
    document.body.classList.remove('keyboard-open');
+   document.documentElement.style.removeProperty('--cirvela-vv-height');
+   document.documentElement.style.removeProperty('--cirvela-vv-top');
    document.documentElement.style.setProperty('--keyboard-nav-shift','0px');
  },80));
  const messages=document.getElementById('messages');
@@ -895,9 +952,12 @@ function setupChatInput(){
 function updateKeyboardLayout(){
  if(!document.body.classList.contains('keyboard-open'))return;
  const vv=window.visualViewport;
- if(!vv)return;
- const hidden=Math.max(0,window.innerHeight-(vv.height+vv.offsetTop));
- document.documentElement.style.setProperty('--keyboard-nav-shift',(-hidden)+'px');
+ const height=vv?vv.height:window.innerHeight;
+ const top=vv?vv.offsetTop:0;
+ document.documentElement.style.setProperty('--cirvela-vv-height',Math.max(260,height)+'px');
+ document.documentElement.style.setProperty('--cirvela-vv-top',Math.max(0,top)+'px');
+ const messages=document.getElementById('messages');
+ if(messages) requestAnimationFrame(()=>messages.scrollTop=messages.scrollHeight);
 }
 if(window.visualViewport){
  visualViewport.addEventListener('resize',updateKeyboardLayout);
@@ -927,7 +987,7 @@ function storyStrip(){
  </div>`;
 }
 function feedView(){
- const scope=getFeedScope(),c=activeCircle(),custom=getCustomFeedCircles();
+ const c=activeCircle(),forcedCircle=feedCircleFocus===currentCircleId,scope=forcedCircle?'circle':getFeedScope(),custom=getCustomFeedCircles();
  const scopeTitle=feedScopeLabel(scope);
  const scopeSub=scope==='all'?'Beiträge aus all deinen Circles':scope==='custom'?`${custom.length} ausgewählte Circles`:`Nur ${c.name}`;
  const scopeBanner=`<div class="section-pad"><div class="feed-scope-banner"><span>${scope==='circle'?'🔒':scope==='custom'?'🎛️':'🌐'}</span><div><b>${scopeTitle}</b><small>${scopeSub}</small></div><button id="feedScopeQuick" class="ghost">Ändern</button></div><div class="feed-category-chips"><button>📸 Moment</button><button>📢 Wichtig</button><button>🎂 Ereignis</button><button>📊 Abstimmung</button></div></div>`;
@@ -1000,9 +1060,10 @@ function openPostSheet(){
 }
 
 function calendarView(){
- return card(`<h2>📅 Familienkalender</h2><div class="grid2"><button id="addEvent" class="primary">+ Eintrag</button><button id="calendarFilter" class="secondary">Sichtbarkeit</button></div>
- ${demoEvents.map(e=>`<div class="setting-row"><span class="setting-icon">${e.icon}</span><span class="setting-copy"><b>${e.title}</b><small>Sichtbar: ${e.visible}</small></span><b>${e.date}</b></div>`).join('')}
- <div class="info-banner" style="margin-top:12px">🎂 Geburtstage werden in der echten App aus dem bei der Anmeldung hinterlegten Geburtsdatum jährlich automatisch eingetragen.</div>`);
+ const c=activeCircle(),events=currentCalendarEvents();
+ return card(`<h2>📅 ${c.name} · Kalender</h2><div class="grid2"><button id="addEvent" class="primary">+ Eintrag</button><button id="calendarFilter" class="secondary">Sichtbarkeit</button></div>
+ ${events.map(e=>`<div class="setting-row"><span class="setting-icon">${e.icon}</span><span class="setting-copy"><b>${e.title}</b><small>Sichtbar: ${e.visible}</small></span><b>${e.date}</b></div>`).join('')}
+ <div class="info-banner" style="margin-top:12px">Kalendereinträge werden nur für den aktuell ausgewählten ${c.name} angezeigt.</div>`);
 }
 function openEventSheet(){
  const s=document.createElement('div');s.className='sheet';s.innerHTML=`<div class="sheet-card"><div class="sheet-head"><button class="icon-button close-sheet">✕</button><h3>Kalendereintrag</h3><span></span></div>
@@ -1011,24 +1072,27 @@ function openEventSheet(){
  <div class="grid2"><div class="form-row"><label>Von</label><input id="efrom" type="date"></div><div class="form-row"><label>Bis</label><input id="eto" type="date"></div></div>
  <div class="form-row"><label>Sichtbar für</label>${members.slice(0,4).map((m,i)=>`<div class="member-check"><span>${m.avatar} ${m.name}</span><input class="evis" type="checkbox" value="${m.name}" ${i<2?'checked':''}></div>`).join('')}</div>
  <button id="saveEvent" class="primary wide">Eintrag speichern · Demo</button></div>`;
- document.body.appendChild(s);s.querySelector('.close-sheet').onclick=()=>s.remove();s.querySelector('#saveEvent').onclick=()=>{let t=s.querySelector('#etitle').value.trim()||'Neuer Termin';let vis=[...s.querySelectorAll('.evis:checked')].map(x=>x.value).join(' · ')||'Nur ich';demoEvents.unshift({icon:'📌',title:t,date:'Neu',visible:vis});s.remove();show('calendar')};
+ document.body.appendChild(s);s.querySelector('.close-sheet').onclick=()=>s.remove();s.querySelector('#saveEvent').onclick=()=>{let t=s.querySelector('#etitle').value.trim()||'Neuer Termin';let vis=[...s.querySelectorAll('.evis:checked')].map(x=>x.value).join(' · ')||'Nur ich';currentCalendarEvents().unshift({icon:'📌',title:t,date:'Neu',visible:vis});s.remove();show('calendar')};
 }
 
 function locationView(){
- return card(`<h2>📍 Live-Standort</h2><div class="privacy-banner"><span class="status-dot"></span><b>Privat by default</b><br><span class="small">Ohne deine Freigabe sieht niemand deinen Standort.</span></div>
+ const c=activeCircle();
+ return card(`<h2>📍 ${c.name} · Live-Standort</h2><div class="privacy-banner"><span class="status-dot"></span><b>Privat by default</b><br><span class="small">Ohne deine Freigabe sieht niemand deinen Standort.</span></div>
  <div class="form-row"><label>Wer darf meinen Standort sehen?</label>${members.slice(0,4).map((m,i)=>`<div class="member-check"><span>${m.avatar} ${m.name}</span><input type="checkbox" ${i<2?'checked':''}></div>`).join('')}</div>
  <div class="form-row"><label>Dauer der Freigabe</label><select id="duration"><option>15 Minuten</option><option selected>1 Stunde</option><option>Bis heute Abend</option><option>24 Stunden</option><option>Bis ich es beende</option></select></div>
  <div class="grid2"><button id="startLocation" class="primary">Freigabe starten</button><button id="stopLocation" class="danger">Alle stoppen</button></div>`)
- +card(`<h3>Familienkarte · Demo</h3><div class="map-card"><div class="map-road"></div><span class="pin p1">👩</span><span class="pin p2">👨</span><span class="pin p3">👧</span></div>
+ +card(`<h3>${c.name} · Karte · Demo</h3><div class="map-card"><div class="map-road"></div><span class="pin p1">👩</span><span class="pin p2">👨</span><span class="pin p3">👧</span></div>
  <div class="location-status"><span>🛡️</span><span class="small muted">Standortverlauf wird nur nach deiner Freigabe verwendet.</span></div>`)
  +card(`<h3>🛟 Sicherheit unterwegs</h3><div class="grid2"><button class="secondary feature-open" data-feature="safeWalk">🚶 Safe Walk</button><button class="secondary feature-open" data-feature="arrived">🏠 Bin angekommen</button></div><button class="primary wide feature-open" data-feature="safety" style="margin-top:10px">Safety Hub öffnen</button>`);
 }
 
 function gamesView(){
- return card(`<h2>🎮 Spiele-Hub</h2>
+ const c=activeCircle();
+ const rank=members.filter(m=>m.name!==c.label).slice(0,3);
+ return card(`<h2>🎮 ${c.name} · Spiele-Hub</h2>
  <div class="game-card"><div class="game-icon">🧱</div><div class="game-info"><b>Block Blast!</b><div class="small muted">Externes Spiel · Integration wird geprüft</div></div><button id="openBlock" class="secondary">Öffnen</button></div>
  <div class="game-card"><div class="game-icon">👆</div><div class="game-info"><b>Family Tap Challenge</b><div class="small muted">Eigenes Demo-Spiel</div></div><button id="tapGame" class="secondary">Spielen</button></div>`)
- +card(`<h3>Block Blast · Familienrangliste</h3><div class="score-row"><span>🥇 Lisa</span><b>48.250</b></div><div class="score-row"><span>🥈 Papa</span><b>37.190</b></div><div class="score-row"><span>🥉 Mama</span><b>29.820</b></div>
+ +card(`<h3>Block Blast · ${c.name} Rangliste</h3>${rank.map((m,i)=>`<div class="score-row"><span>${['🥇','🥈','🥉'][i]} ${m.name}</span><b>${['48.250','37.190','29.820'][i]}</b></div>`).join('')}
  <div class="grid2" style="margin-top:12px"><button id="scoreManual" class="ghost">Score eintragen</button><button id="scoreShot" class="secondary">Screenshot</button></div>
  <p class="small muted">Demo: Fremde Highscores werden nicht automatisch ausgelesen. Die offizielle Integration ist nur möglich, wenn der Spieleentwickler eine erlaubte Schnittstelle anbietet.</p>`);
 }
@@ -1185,7 +1249,7 @@ sosBtn.addEventListener('click',e=>{
  if(!modalRoot.innerHTML)sosModal();
 });
 
-navItems.forEach(b=>b.onclick=()=>show(b.dataset.tab));
+navItems.forEach(b=>b.onclick=()=>{if(b.dataset.tab==='feed')feedCircleFocus=null;show(b.dataset.tab)});
 settingsTop.onclick=()=>show('settings');
 
 galleryInput.onchange=e=>{if(e.target.files?.[0]){toast('Demo: '+e.target.files[0].name+' ausgewählt. Story-/Beitragseditor wäre der nächste Schritt.');e.target.value=''}};
@@ -1193,7 +1257,7 @@ cameraInput.onchange=e=>{if(e.target.files?.[0]){toast('Demo: Kamera-Medium ausg
 scoreInput.onchange=e=>{if(e.target.files?.[0]){toast('Demo: Highscore-Screenshot ausgewählt.');e.target.value=''}};
 
 show('chat');
-console.info('Cirvela build V24 loaded');
+console.info('Cirvela build V26 loaded');
 
 if(circleSwitchBtn){circleSwitchBtn.onclick=openCircleSwitcher;} document.body.dataset.circle=activeCircle().theme; applyCircleDesign(currentCircleId); updateCircleHeader(); renderCircleCarousel();
 

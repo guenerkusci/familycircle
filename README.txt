@@ -168,3 +168,18 @@ V24 – Layoutkorrektur:
 - Circle-Leiste kann den Markenbereich nicht mehr überdecken.
 - Chat-Kopfzeile berücksichtigt die neue tatsächliche Höhe der oberen Leiste.
 - Sonst keine Design- oder Funktionsänderungen.
+
+
+V25 – gezielte Korrekturen gegenüber V24:
+- Cirvela-Schrift wieder mit Schwarz→Rot-Verlauf; das V enthält verblasstes Schwarz und verblasstes Rot.
+- Beim Öffnen der iPhone-Tastatur sitzt die Schreibleiste direkt über der Tastatur; der sichtbare Chatbereich bleibt scrollbar und zeigt die letzten Nachrichten.
+- Circle-Wechsel bleibt in der aktuell gewählten Haupt-Rubrik: Kalender, Standort, Spiele, Status oder Feed.
+- Kalender, Standort, Spiele und Status zeigen jetzt Inhalte/Bezeichnungen des jeweils gewählten Circles; Feed fokussiert beim Circle-Wechsel den gewählten Circle.
+- Modale Unterseiten besitzen eine beim Scrollen sichtbare Zurück-Taste.
+- Sonstige Navigation, Designs und bestehende Funktionen wurden nicht absichtlich verändert.
+
+
+V26 – nur zwei Korrekturen gegenüber V25:
+- Cirvela wird nicht mehr durch ältere CSS-Regeln komplett in Großbuchstaben erzwungen.
+- Ältere Overlay-Schließen-Schaltflächen werden als Zurück-Pfeil dargestellt; ihre bestehende Funktion bleibt unverändert.
+- Keine weiteren Design- oder Funktionsänderungen.

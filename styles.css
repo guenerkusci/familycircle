@@ -1022,3 +1022,131 @@ body.keyboard-open .chat-header{top:0 !important}
   :root{--cirvela-topbar-offset:138px}
   .circle-carousel{margin-top:7px !important}
 }
+
+
+/* ============================================================
+   V25 – gezielte Korrekturen
+   1. Cirvela-Wortmarke wieder Schwarz -> Übergangs-V -> Rot
+   2. Chat bei geöffneter iOS-Tastatur nutzt den sichtbaren Viewport
+   3. Unterseiten/Sheets besitzen eine dauerhaft sichtbare Zurück-Taste
+   ============================================================ */
+
+/* Robuste Wortmarke: Das V enthält sowohl verblasstes Schwarz als auch verblasstes Rot. */
+.cirvela-wordmark{
+  background:none!important;
+  color:inherit!important;
+  -webkit-text-fill-color:initial!important;
+}
+.cirvela-wordmark .cirvela-black{
+  color:#080808!important;
+  -webkit-text-fill-color:#080808!important;
+}
+.cirvela-wordmark .cirvela-v{
+  display:inline-block!important;
+  background:linear-gradient(90deg,#4a4545 0%,#746969 34%,#a98080 56%,#c96f70 78%,#da5a5b 100%)!important;
+  -webkit-background-clip:text!important;
+  background-clip:text!important;
+  color:transparent!important;
+  -webkit-text-fill-color:transparent!important;
+}
+.cirvela-wordmark .cirvela-red{
+  display:inline-block!important;
+  background:linear-gradient(90deg,#d85b5c 0%,#e43836 45%,#e52420 100%)!important;
+  -webkit-background-clip:text!important;
+  background-clip:text!important;
+  color:transparent!important;
+  -webkit-text-fill-color:transparent!important;
+}
+
+/* iOS: Chatfläche entspricht beim Tippen exakt dem tatsächlich sichtbaren Viewport.
+   Dadurch sitzt die Schreibleiste direkt über der Tastatur und die letzten Nachrichten
+   bleiben im scrollbaren Bereich sichtbar. */
+body.keyboard-open .chat-screen{
+  position:fixed!important;
+  left:0!important;
+  right:0!important;
+  top:var(--cirvela-vv-top,0px)!important;
+  bottom:auto!important;
+  height:var(--cirvela-vv-height,100dvh)!important;
+  min-height:0!important;
+  display:flex!important;
+  flex-direction:column!important;
+  overflow:hidden!important;
+}
+body.keyboard-open .chat-header{
+  position:relative!important;
+  top:0!important;
+  flex:0 0 auto!important;
+}
+body.keyboard-open .messages{
+  flex:1 1 auto!important;
+  min-height:0!important;
+  height:auto!important;
+  overflow-y:auto!important;
+  -webkit-overflow-scrolling:touch!important;
+  padding-bottom:10px!important;
+}
+body.keyboard-open .chat-composer{
+  position:relative!important;
+  left:auto!important;
+  right:auto!important;
+  bottom:auto!important;
+  transform:none!important;
+  flex:0 0 auto!important;
+  margin:0!important;
+}
+
+/* Unterseiten: Zurück-Pfeil bleibt beim Scrollen sichtbar. */
+.sheet{
+  overflow-y:auto!important;
+}
+.sheet-card{
+  max-height:calc(100dvh - env(safe-area-inset-top))!important;
+  overflow-y:auto!important;
+}
+.sheet-head{
+  position:sticky!important;
+  top:0!important;
+  z-index:12!important;
+  min-height:44px!important;
+  padding:4px 0 8px!important;
+  background:inherit!important;
+}
+.sheet-head .close-sheet{
+  font-size:0!important;
+  width:42px!important;
+  height:42px!important;
+  flex:0 0 42px!important;
+}
+.sheet-head .close-sheet::before{
+  content:"‹";
+  display:block;
+  font-size:34px;
+  line-height:34px;
+  font-weight:500;
+  color:#111827;
+}
+
+
+/* V26 – gezielte Altlasten-Korrektur */
+.cirvela-wordmark{
+  text-transform:none !important;
+}
+
+.close-overlay,
+.overlay-close,
+.modal-close,
+.switcher-close{
+  font-size:0 !important;
+}
+.close-overlay::before,
+.overlay-close::before,
+.modal-close::before,
+.switcher-close::before{
+  content:"‹";
+  display:block;
+  font-size:34px;
+  line-height:1;
+  font-weight:500;
+  color:#111827;
+}
