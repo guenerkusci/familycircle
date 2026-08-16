@@ -121,3 +121,14 @@ V18 – Circle-Plattform auf Basis der tatsächlich hochgeladenen V16:
 - Circle Inbox, Circle Pulse und Circle Bridge.
 - Status und Standort wurden um passende Hub-Funktionen ergänzt.
 - Alle neuen Funktionen bleiben in dieser GitHub-Pages-Testversion lokal/interaktiv; echte Push-, Call-, Live-Standort- und Cloud-Synchronisation benötigen später Backend/native iOS-Funktionen.
+
+
+V20 – Cirvela Quiet Glass
+- Komplette visuelle Überarbeitung ohne Funktionsverlust.
+- Ruhiger, erwachsener Cirvela-Look mit Glass/Minimal-Ästhetik.
+- Aktueller Circle ist die primäre Überschrift; Cirvela ist die dezente Dachmarke.
+- Kompaktere obere Navigation und schlankere untere Navigation.
+- Neutraler Chatbereich, kompaktere Nachrichtenblasen und schwebende Schreibleiste.
+- SOS bleibt klar sichtbar, ist aber stärker in die Navigation integriert.
+- Feed, Stories, Circle-Switcher, Sheets, Profile und Circle Hub wurden visuell beruhigt.
+- Vorhandene Funktionen und Weiterleitungen bleiben bestehen.

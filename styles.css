@@ -618,3 +618,188 @@ body{background:#F4F6F8;letter-spacing:-.01em}
 .post-image{background:#F0F3F7!important;color:#667085!important}
 .circle-option{grid-template-columns:46px minmax(0,1fr) auto!important}.circle-option.selected{background:#F3F6FA!important}.circle-unread-badge,.badge{background:#D33B32!important}
 @media(max-width:390px){.cirvela-wordmark{font-size:21px}.brandblock h1{font-size:18px!important}.top-action{min-width:52px!important}}
+
+
+/* ============================================================
+   V20 — CIRVELA Quiet Glass
+   Mature, minimal iOS-inspired visual system. No functionality
+   is removed; this layer intentionally overrides prior skins.
+   ============================================================ */
+:root{
+  --bg:#F7F8FA;
+  --card:#FFFFFF;
+  --text:#101828;
+  --muted:#667085;
+  --line:rgba(16,24,40,.09);
+  --blue:#3157D5;
+  --blueSoft:#EEF1FB;
+  --red:#C83A31;
+  --green:#238763;
+  --shadow:0 10px 30px rgba(16,24,40,.055);
+  --glass:rgba(255,255,255,.82);
+  --circleAccent:#3157D5;
+}
+html,body{background:var(--bg)!important;color:var(--text)!important}
+body{font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","Inter","Segoe UI",sans-serif!important;letter-spacing:-.012em!important}
+
+/* Header: brand is quiet; current Circle is the primary context. */
+.topbar{
+  position:sticky!important;top:0!important;
+  display:grid!important;grid-template-columns:minmax(0,1fr) auto!important;
+  align-items:end!important;gap:10px!important;
+  padding:calc(10px + env(safe-area-inset-top)) 14px 10px!important;
+  background:var(--glass)!important;
+  -webkit-backdrop-filter:blur(28px) saturate(150%)!important;
+  backdrop-filter:blur(28px) saturate(150%)!important;
+  border-bottom:1px solid var(--line)!important;
+  box-shadow:0 5px 24px rgba(16,24,40,.025)!important;
+}
+.brandblock{display:grid!important;grid-template-columns:1fr auto!important;column-gap:8px!important;align-items:center!important;min-width:0!important}
+.cirvela-wordmark{
+  grid-column:1/2!important;
+  font-size:11px!important;line-height:1!important;font-weight:850!important;
+  text-transform:uppercase!important;letter-spacing:1.7px!important;color:#667085!important;
+  margin:0 0 5px!important;
+}
+.circle-switch{
+  grid-column:1/3!important;justify-self:start!important;
+  margin:0 0 3px!important;padding:0!important;
+  font-size:25px!important;line-height:1.06!important;font-weight:790!important;
+  letter-spacing:-.65px!important;color:var(--circleAccent,var(--blue))!important;
+  background:transparent!important;
+}
+.circle-chevron{font-size:14px!important;color:#98A2B3!important;margin-left:2px!important}
+.circle-unread-top{font-size:9px!important;min-width:18px!important;height:18px!important;background:#D83A34!important}
+.brandblock h1{
+  grid-column:1/2!important;font-size:13px!important;line-height:1.15!important;font-weight:720!important;
+  color:#344054!important;letter-spacing:-.15px!important;margin:1px 0 0!important;
+}
+.brandblock .subtitle{
+  grid-column:1/2!important;font-size:9px!important;color:#98A2B3!important;margin-top:4px!important;
+}
+.build-badge{font-size:8px!important;padding:2px 6px!important;border-radius:999px!important;background:#EEF1F5!important;color:#667085!important}
+.hub-launch{
+  grid-column:2/3!important;grid-row:3/5!important;align-self:end!important;
+  width:38px!important;height:38px!important;padding:0!important;margin:0!important;
+  display:grid!important;place-items:center!important;border-radius:11px!important;
+  border:1px solid var(--line)!important;background:rgba(255,255,255,.72)!important;color:#475467!important;
+  box-shadow:none!important;font-size:0!important;
+}
+.hub-launch:before{content:"⌁";font-size:23px!important;font-weight:600!important;line-height:1!important}
+.hub-launch em{position:absolute!important;transform:translate(13px,-13px)!important;min-width:16px!important;height:16px!important;font-size:8px!important;border:2px solid white!important}
+
+/* Compact top destinations: simple monochrome line treatment. */
+.top-actions{display:flex!important;gap:2px!important;align-items:flex-end!important;padding-bottom:2px!important}
+.top-action{
+  min-width:49px!important;min-height:50px!important;padding:5px 3px!important;border-radius:12px!important;
+  color:#667085!important;background:transparent!important;gap:2px!important;
+}
+.top-action .top-icon,.top-action .top-icon svg{width:26px!important;height:26px!important}
+.top-action>span:last-child{font-size:8px!important;font-weight:680!important;letter-spacing:.02em!important}
+.top-action.active{background:#EEF1F6!important;color:#263B7B!important}
+.status-icon svg circle:first-child{stroke:#667085!important}.status-icon svg circle:last-child{stroke:#667085!important;fill:#F2F4F7!important}
+.feed-house svg path:first-child{fill:#667085!important}.feed-house svg path:last-child{stroke:#667085!important}
+.settings-gear svg path{fill:#7A8492!important}.settings-gear svg circle{stroke:#667085!important}
+
+/* Content surfaces: flatter, calmer, less card-heavy. */
+main{max-width:720px!important}
+.card,.post,.setting-list,.contact-card,.contact-actions-card{
+  border:1px solid var(--line)!important;border-radius:16px!important;background:#FFF!important;
+  box-shadow:0 5px 18px rgba(16,24,40,.035)!important;
+}
+.card{padding:15px!important;margin:12px!important}
+.setting-group{margin:12px!important}.setting-title{font-size:10px!important;letter-spacing:.09em!important}
+.setting-row{min-height:54px!important}.setting-row .setting-icon{filter:grayscale(.85);opacity:.78}
+.primary,.secondary,.danger,.ghost{border-radius:11px!important;min-height:44px!important}
+
+/* Chat: neutral background, clearer hierarchy, tighter bubbles. */
+.chat-screen{background:#F3F4F6!important;min-height:calc(100vh - 165px)!important}
+.chat-header{
+  top:0!important;background:rgba(255,255,255,.92)!important;
+  -webkit-backdrop-filter:blur(22px)!important;backdrop-filter:blur(22px)!important;
+  border-bottom:1px solid var(--line)!important;padding:7px 10px!important;box-shadow:none!important;
+}
+.chat-header .avatar{width:42px!important;height:42px!important;font-size:21px!important}
+.chat-person b{font-size:15px!important}.chat-person small{font-size:10px!important;color:#98A2B3!important}
+.messages{padding:13px 12px 104px!important;gap:6px!important}
+.bubble{
+  max-width:min(79%,328px)!important;padding:9px 11px 6px!important;border-radius:15px!important;
+  border:1px solid rgba(16,24,40,.06)!important;background:#FFF!important;
+  box-shadow:0 2px 7px rgba(16,24,40,.035)!important;font-size:14px!important;line-height:1.35!important;
+}
+.bubble.mine{background:#E9F2EA!important;border-color:#D8E8DA!important}
+.msg-time{font-size:8px!important;color:#8993A1!important}
+.contacts-button{background:#F0F2F5!important;color:#344054!important;border-radius:10px!important}
+.avatar,.circle-option-icon{background:#F3F5F7!important;border:1px solid var(--line)!important}
+
+/* Composer: floating capsule, no broad gray strip. */
+.chat-composer{
+  left:10px!important;right:10px!important;bottom:calc(78px + env(safe-area-inset-bottom))!important;
+  border:1px solid var(--line)!important;border-radius:19px!important;
+  background:rgba(255,255,255,.93)!important;
+  -webkit-backdrop-filter:blur(24px)!important;backdrop-filter:blur(24px)!important;
+  box-shadow:0 8px 26px rgba(16,24,40,.08)!important;padding:5px 6px!important;gap:3px!important;
+}
+.chat-composer textarea.chat-message-input,.chat-composer input{
+  background:transparent!important;border:0!important;border-radius:13px!important;
+  padding:9px 8px!important;font-size:14px!important;box-shadow:none!important;
+}
+.chat-composer button{width:34px!important;height:34px!important;flex:0 0 34px!important;font-size:17px!important}
+.chat-composer .send{width:38px!important;height:38px!important;flex-basis:38px!important;background:#263B7B!important;box-shadow:none!important}
+body.keyboard-open .chat-composer{left:8px!important;right:8px!important;bottom:6px!important;border-radius:17px!important}
+
+/* Bottom navigation: slimmer and integrated SOS. */
+body{padding-bottom:calc(78px + env(safe-area-inset-bottom))!important}
+.bottom-nav{
+  min-height:72px!important;height:calc(72px + env(safe-area-inset-bottom))!important;
+  padding:5px 10px calc(5px + env(safe-area-inset-bottom))!important;
+  background:rgba(255,255,255,.88)!important;
+  -webkit-backdrop-filter:blur(28px) saturate(160%)!important;backdrop-filter:blur(28px) saturate(160%)!important;
+  border-top:1px solid var(--line)!important;box-shadow:0 -8px 28px rgba(16,24,40,.03)!important;
+  grid-template-columns:1fr 1fr 80px 1fr 1fr!important;
+}
+.nav-item{min-height:58px!important;border-radius:12px!important;color:#667085!important;padding:4px 2px!important}
+.nav-item.active{background:#EEF1F6!important;color:#263B7B!important}
+.nav-item b{font-size:9px!important;font-weight:680!important}
+.nav-glyph{font-size:24px!important;font-weight:500!important;line-height:1!important}
+.sos-button{
+  width:66px!important;height:66px!important;align-self:center!important;justify-self:center!important;
+  transform:none!important;border:5px solid rgba(255,255,255,.98)!important;
+  background:#B93832!important;box-shadow:0 7px 20px rgba(185,56,50,.16)!important;
+  font-size:13px!important;font-weight:850!important;letter-spacing:.08em!important;
+}
+
+/* Feed / stories: private journal instead of playful social media. */
+.stories{gap:10px!important;padding:11px 12px!important;background:transparent!important;border-bottom:1px solid var(--line)!important}
+.story-ring{width:54px!important;height:54px!important;padding:1px!important;background:#D7DCE3!important}
+.story-ring .avatar{width:52px!important;height:52px!important;border:2px solid #FFF!important;font-size:22px!important}
+.story-label{font-size:9px!important;color:#667085!important;font-weight:650!important}
+.composer-card{border-radius:15px!important}.composer-launch{background:#F7F8FA!important;border-radius:12px!important}
+.mini-actions button{background:#F0F2F5!important;border-radius:10px!important;color:#475467!important;font-size:11px!important}
+.post{margin:12px!important;border-radius:16px!important}.post-image{background:#F2F4F7!important}.post-actions{gap:14px!important}
+.feed-category-chips button{background:#FFF!important;color:#475467!important;border-radius:9px!important;font-size:9px!important}
+
+/* Circle switcher is a serious workspace picker. */
+.circle-sheet .sheet-card{background:#F8F9FB!important}.circle-option{border-radius:13px!important;margin:5px 0!important;background:#FFF!important;border:1px solid var(--line)!important}.circle-option.selected{background:#EEF1F6!important;border-color:#D7DDE6!important}
+.circle-option-icon{border-radius:12px!important}
+.circle-unread-badge,.badge{background:#B93832!important}
+
+/* Sheets / profiles: native-like sectioned hierarchy. */
+.sheet{background:rgba(15,23,42,.32)!important;-webkit-backdrop-filter:blur(3px)!important;backdrop-filter:blur(3px)!important}
+.sheet-card{border-radius:22px 22px 0 0!important;background:#F8F9FB!important;box-shadow:0 -14px 50px rgba(15,23,42,.12)!important}
+.sheet-head{background:transparent!important}.sheet-head h3{font-size:18px!important}
+.media-tabs button{background:#FFF!important;border-radius:10px!important}.media-tabs button.active{background:#E9EDF4!important;color:#263B7B!important;border-color:#D8DEE7!important}
+.media-grid .media-item{background:#FFF!important;border-radius:13px!important;box-shadow:none!important}
+.media-item span{filter:grayscale(.75);opacity:.8}
+.contact-hero{padding-top:10px!important}.contact-avatar-large{box-shadow:0 0 0 1px var(--line)!important}.contact-hero h2{font-size:24px!important;letter-spacing:-.5px!important}
+
+/* Hub: information dashboard, not a game menu. */
+.hub-hero{background:#172033!important;border-radius:16px!important;box-shadow:none!important}.hub-hero h2{font-size:22px!important}.hub-grid{gap:8px!important;padding:0 12px 8px!important}.hub-tile{min-height:92px!important;border-radius:14px!important;box-shadow:none!important}.hub-tile>span{font-size:18px!important;filter:grayscale(.8);opacity:.78}.hub-tile b{font-size:12px!important}.hub-tile small{font-size:9px!important}
+
+/* Accessibility / restrained motion. */
+button{transition:background-color .12s ease,opacity .12s ease,transform .08s ease!important}
+button:active{transform:scale(.985)}
+@media (prefers-reduced-motion:reduce){button{transition:none!important}}
+@media(max-width:390px){
+ .topbar{padding-left:11px!important;padding-right:9px!important}.circle-switch{font-size:22px!important}.top-action{min-width:45px!important}.top-action>span:last-child{font-size:7px!important}.hub-launch{width:34px!important;height:34px!important}.bottom-nav{grid-template-columns:1fr 1fr 74px 1fr 1fr!important}.sos-button{width:62px!important;height:62px!important}.chat-composer{bottom:calc(75px + env(safe-area-inset-bottom))!important}
+}
