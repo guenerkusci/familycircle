@@ -1,5 +1,5 @@
 
-// Cirvela V19: aggressively remove stale demo caches/service workers from older test builds.
+// Cirvela V21: aggressively remove stale demo caches/service workers from older test builds.
 (async function resetOldDemoCache(){
   try{
     if ('caches' in window){
@@ -139,6 +139,109 @@ const circlePresets={
 let currentCircleId='family';
 function activeCircle(){return circlePresets[currentCircleId]||circlePresets.family;}
 
+const circleDesignCatalog={
+ family:[
+  {id:'warm',name:'Warm Home',desc:'Creme, warmes Blau und ruhige Familienfarben',accent:'#3467C8',tint:'#EDF3FF',surface:'#FFF8EF',chat:'#F2ECE3',panel:'#FFFDF9',nav:'#F8FAFE',pattern:'soft'},
+  {id:'sage',name:'Sage',desc:'Salbei, Eukalyptus und natürliche Flächen',accent:'#3D7B69',tint:'#EAF5F0',surface:'#F4F8F3',chat:'#EAF1EA',panel:'#FBFDFB',nav:'#F4F8F5',pattern:'leaf'},
+  {id:'coast',name:'Coastal',desc:'Helles Blau, Sand und frische Kontraste',accent:'#2477A8',tint:'#E7F4FB',surface:'#F7FBFD',chat:'#EAF4F7',panel:'#FFFFFF',nav:'#F2F9FC',pattern:'wave'}
+ ],
+ friends:[
+  {id:'violet',name:'Violet Night',desc:'Violett und Indigo mit moderner Social-Note',accent:'#6857D9',tint:'#F0EDFF',surface:'#F8F7FD',chat:'#EFEAF8',panel:'#FFFFFF',nav:'#F7F5FF',pattern:'dots'},
+  {id:'mint',name:'Mint Club',desc:'Mint, Petrol und klare helle Flächen',accent:'#168A7A',tint:'#E8F7F4',surface:'#F5FBFA',chat:'#E8F3F0',panel:'#FFFFFF',nav:'#F1FAF8',pattern:'soft'},
+  {id:'sunset',name:'Sunset',desc:'Koralle, Pfirsich und Violett als Akzente',accent:'#C45F6B',tint:'#FFF0EE',surface:'#FFF9F7',chat:'#F6ECEA',panel:'#FFFFFF',nav:'#FFF5F2',pattern:'sunset'}
+ ],
+ girls:[
+  {id:'bloom',name:'Bloom',desc:'Florale Rosé- und Lavendeltöne mit feinem Blütenmuster',accent:'#A14979',tint:'#FAEDF5',surface:'#FFF8FC',chat:'#F7EAF3',panel:'#FFFCFE',nav:'#FFF4FA',pattern:'flowers'},
+  {id:'lavender',name:'Lavender',desc:'Lavendel und Puderblau, elegant statt verspielt',accent:'#7560B5',tint:'#F1EDFA',surface:'#FAF8FD',chat:'#F0ECF7',panel:'#FFFFFF',nav:'#F7F4FC',pattern:'petals'},
+  {id:'rose-noir',name:'Rose Noir',desc:'Altrosa, Anthrazit und elegante Kontraste',accent:'#8A3E5A',tint:'#F7E9EF',surface:'#FCF7F9',chat:'#F0E8EB',panel:'#FFFFFF',nav:'#F8F2F5',pattern:'soft'}
+ ],
+ work:[
+  {id:'slate',name:'Slate',desc:'Schiefergrau, Stahlblau und klare Business-Flächen',accent:'#365B7D',tint:'#EAF0F6',surface:'#F5F7FA',chat:'#EAF0F7',panel:'#FFFFFF',nav:'#F0F4F8',pattern:'grid'},
+  {id:'cobalt',name:'Cobalt',desc:'Sattes Blau und kühle neutrale Flächen',accent:'#2457B2',tint:'#E9F0FF',surface:'#F7F9FD',chat:'#EAF0F8',panel:'#FFFFFF',nav:'#F3F6FC',pattern:'lines'},
+  {id:'graphite',name:'Graphite',desc:'Dunkle Akzente mit hellem, minimalem Unterbau',accent:'#414A59',tint:'#ECEFF2',surface:'#F6F7F8',chat:'#ECEFF2',panel:'#FFFFFF',nav:'#F2F3F5',pattern:'soft'}
+ ],
+ sport:[
+  {id:'field',name:'Field',desc:'Grün, Kreideweiß und dynamische Sportflächen',accent:'#2C7A4B',tint:'#E9F5ED',surface:'#F7FBF8',chat:'#EAF4EA',panel:'#FFFFFF',nav:'#F1F8F3',pattern:'field'},
+  {id:'navy',name:'Navy Team',desc:'Navy, Eisblau und klare Team-Kontraste',accent:'#264A7C',tint:'#EAF0F8',surface:'#F7F9FC',chat:'#E9EFF5',panel:'#FFFFFF',nav:'#F1F5FA',pattern:'lines'},
+  {id:'energy',name:'Energy',desc:'Petrol mit orangem Energiekontrast',accent:'#147D79',tint:'#E6F5F3',surface:'#F6FBFA',chat:'#E8F2F0',panel:'#FFFFFF',nav:'#F0F9F7',pattern:'energy'}
+ ],
+ couple:[
+  {id:'rose',name:'Soft Rose',desc:'Rosenholz, Creme und warme private Atmosphäre',accent:'#9C5365',tint:'#F9EBEF',surface:'#FFF9FA',chat:'#F5EBED',panel:'#FFFFFF',nav:'#FCF3F5',pattern:'hearts'},
+  {id:'dusk',name:'Dusk',desc:'Mauve, Abendblau und ruhige Übergänge',accent:'#6F597B',tint:'#F0EAF3',surface:'#FAF8FB',chat:'#EEE9F0',panel:'#FFFFFF',nav:'#F6F2F7',pattern:'soft'},
+  {id:'wine',name:'Wine',desc:'Bordeaux-Akzent mit zurückhaltendem Beige',accent:'#7D3545',tint:'#F5E8EB',surface:'#FCF8F7',chat:'#F1E9E7',panel:'#FFFFFF',nav:'#F8F2F1',pattern:'soft'}
+ ],
+ travel:[
+  {id:'coastal',name:'Coastal Trip',desc:'Meerblau, Sand und helle Reiseflächen',accent:'#247C9D',tint:'#E8F5F8',surface:'#F8FBFA',chat:'#EDF3EF',panel:'#FFFFFF',nav:'#F3FAFB',pattern:'wave'},
+  {id:'terracotta',name:'Terracotta',desc:'Terrakotta, Sand und warme Reiseerinnerungen',accent:'#B46549',tint:'#FBEDE7',surface:'#FFF9F5',chat:'#F3ECE4',panel:'#FFFFFF',nav:'#FCF4EF',pattern:'sunset'},
+  {id:'sky',name:'Sky',desc:'Himmelblau und klares Weiß',accent:'#3B78B4',tint:'#EAF4FF',surface:'#F8FBFF',chat:'#EAF2F8',panel:'#FFFFFF',nav:'#F3F8FD',pattern:'clouds'}
+ ],
+ school:[
+  {id:'study',name:'Study',desc:'Tintenblau, Papierweiß und strukturierte Flächen',accent:'#40608A',tint:'#ECF1F8',surface:'#FAFBFD',chat:'#EDF1F5',panel:'#FFFFFF',nav:'#F5F7FA',pattern:'paper'},
+  {id:'mint',name:'Fresh Mint',desc:'Mint und Blau für einen ruhigen Lernbereich',accent:'#357B70',tint:'#E9F5F1',surface:'#F8FBFA',chat:'#EAF2EF',panel:'#FFFFFF',nav:'#F2F8F6',pattern:'grid'},
+  {id:'navy',name:'Classic Navy',desc:'Klassisch, seriös und kontrastreich',accent:'#334F76',tint:'#EAF0F7',surface:'#F7F9FC',chat:'#E9EEF5',panel:'#FFFFFF',nav:'#F1F5F9',pattern:'lines'}
+ ]
+};
+const defaultCircleDesign={family:'warm',friends:'violet',girls:'bloom',work:'slate',sport:'field',couple:'rose',travel:'coastal',school:'study'};
+function getCircleDesigns(){try{return JSON.parse(localStorage.getItem('cirvela-circle-designs')||'{}')}catch(e){return {}}}
+function getCircleDesign(id){const saved=getCircleDesigns();return saved[id]||defaultCircleDesign[id]||circleDesignCatalog[id]?.[0]?.id||'warm'}
+function setCircleDesign(id,design){const saved=getCircleDesigns();saved[id]=design;localStorage.setItem('cirvela-circle-designs',JSON.stringify(saved));if(id===currentCircleId)applyCircleDesign(id);}
+function designData(id,designId){return (circleDesignCatalog[id]||circleDesignCatalog.family).find(x=>x.id===designId)||(circleDesignCatalog[id]||circleDesignCatalog.family)[0]}
+function applyCircleDesign(id=currentCircleId){
+ const d=designData(id,getCircleDesign(id));
+ document.body.dataset.circleDesign=d.id;document.body.dataset.circlePattern=d.pattern||'soft';
+ const s=document.documentElement.style;
+ s.setProperty('--circle-accent',d.accent);s.setProperty('--circle-tint',d.tint);s.setProperty('--circle-surface',d.surface);s.setProperty('--circle-chat',d.chat);s.setProperty('--circle-panel',d.panel);s.setProperty('--circle-nav',d.nav);
+}
+function circleDesignPreview(id,selected){
+ const list=circleDesignCatalog[id]||[];
+ return `<div class="circle-design-grid">${list.map(d=>`<button class="circle-design-card ${d.id===selected?'selected':''}" data-circle-design="${d.id}" style="--preview-accent:${d.accent};--preview-tint:${d.tint};--preview-chat:${d.chat}"><span class="design-preview"><i></i><i></i><i></i></span><b>${d.name}</b><small>${d.desc}</small>${d.id===selected?'<em>Ausgewählt</em>':''}</button>`).join('')}</div>`;
+}
+
+const chatBackgrounds={
+ default:{name:'Circle-Design',className:'chat-bg-default'},
+ linen:{name:'Linen',className:'chat-bg-linen'},
+ mist:{name:'Mist',className:'chat-bg-mist'},
+ botanical:{name:'Botanical',className:'chat-bg-botanical'},
+ dusk:{name:'Dusk',className:'chat-bg-dusk'},
+ ocean:{name:'Ocean',className:'chat-bg-ocean'},
+ rose:{name:'Rose',className:'chat-bg-rose'}
+};
+function chatBackgroundKey(){return `cirvela-chat-bg-${currentCircleId}-${currentChat===null?'group':'chat-'+currentChat}`}
+function chatCustomBackgroundKey(){return chatBackgroundKey()+'-custom'}
+function getChatBackground(){return localStorage.getItem(chatBackgroundKey())||'default'}
+function setChatBackground(id){localStorage.setItem(chatBackgroundKey(),id);applyChatBackground();}
+function applyChatBackground(){
+ const el=document.getElementById('messages');if(!el)return;
+ Object.values(chatBackgrounds).forEach(x=>el.classList.remove(x.className));el.classList.remove('chat-bg-custom');el.style.removeProperty('--custom-chat-bg');
+ const id=getChatBackground();
+ if(id==='custom'){
+  const img=localStorage.getItem(chatCustomBackgroundKey());if(img){el.classList.add('chat-bg-custom');el.style.setProperty('--custom-chat-bg',`url(${JSON.stringify(img)})`)}else el.classList.add('chat-bg-default');
+ }else el.classList.add((chatBackgrounds[id]||chatBackgrounds.default).className);
+}
+function openChatBackgroundPicker(){
+ const chosen=getChatBackground();
+ const s=document.createElement('div');s.className='sheet chat-wallpaper-sheet';
+ s.innerHTML=`<div class="sheet-card"><div class="sheet-head"><button class="icon-button close-sheet">✕</button><h3>Chat-Hintergrund</h3><span></span></div><p class="small muted">Dieser Hintergrund gilt nur für diesen Chat. Das Circle-Design bleibt davon unabhängig.</p><div class="wallpaper-grid">${Object.entries(chatBackgrounds).map(([id,b])=>`<button class="wallpaper-card ${id===chosen?'selected':''}" data-wallpaper="${id}"><span class="wallpaper-swatch ${b.className}"></span><b>${b.name}</b></button>`).join('')}<button class="wallpaper-card ${chosen==='custom'?'selected':''}" id="customWallpaper"><span class="wallpaper-swatch wallpaper-custom">＋</span><b>Eigenes Bild</b></button></div><button id="resetWallpaper" class="ghost wide" style="margin-top:12px">Standard wiederherstellen</button></div>`;
+ document.body.appendChild(s);
+ s.querySelector('.close-sheet').onclick=()=>s.remove();s.onclick=e=>{if(e.target===s)s.remove()};
+ s.querySelectorAll('[data-wallpaper]').forEach(b=>b.onclick=()=>{setChatBackground(b.dataset.wallpaper);s.remove();toast('Chat-Hintergrund geändert')});
+ s.querySelector('#resetWallpaper').onclick=()=>{localStorage.removeItem(chatBackgroundKey());localStorage.removeItem(chatCustomBackgroundKey());applyChatBackground();s.remove();toast('Standard-Hintergrund wiederhergestellt')};
+ s.querySelector('#customWallpaper').onclick=()=>chooseCustomChatWallpaper(s);
+}
+function chooseCustomChatWallpaper(sheet){
+ const input=document.createElement('input');input.type='file';input.accept='image/*';input.hidden=true;document.body.appendChild(input);
+ input.onchange=()=>{const file=input.files?.[0];if(!file){input.remove();return}const reader=new FileReader();reader.onload=()=>{
+   const img=new Image();img.onload=()=>{try{const max=1000,scale=Math.min(1,max/Math.max(img.width,img.height));const canvas=document.createElement('canvas');canvas.width=Math.round(img.width*scale);canvas.height=Math.round(img.height*scale);canvas.getContext('2d').drawImage(img,0,0,canvas.width,canvas.height);const data=canvas.toDataURL('image/jpeg',.72);localStorage.setItem(chatCustomBackgroundKey(),data);localStorage.setItem(chatBackgroundKey(),'custom');applyChatBackground();sheet.remove();toast('Eigenes Hintergrundbild gespeichert')}catch(e){toast('Bild konnte nicht gespeichert werden')}input.remove()};img.src=reader.result;};reader.readAsDataURL(file)};input.click();
+}
+function setupChatBackgroundLongPress(){
+ const area=document.getElementById('messages');if(!area)return;let timer=null,startX=0,startY=0;
+ const cancel=()=>{if(timer){clearTimeout(timer);timer=null}};
+ area.addEventListener('pointerdown',e=>{if(e.target.closest('.bubble,button,a,input,textarea'))return;startX=e.clientX;startY=e.clientY;cancel();timer=setTimeout(()=>{timer=null;navigator.vibrate?.(20);openChatBackgroundPicker()},650)});
+ area.addEventListener('pointermove',e=>{if(Math.hypot(e.clientX-startX,e.clientY-startY)>12)cancel()});
+ area.addEventListener('pointerup',cancel);area.addEventListener('pointercancel',cancel);area.addEventListener('contextmenu',e=>{if(!e.target.closest('.bubble'))e.preventDefault()});
+}
+
+
 function getFeedScope(){
  return localStorage.getItem('fc-feed-scope') || 'circle';
 }
@@ -177,10 +280,11 @@ function applyCircle(id){
  members=c.members.map(x=>({...x}));
  chatData=c.chats.map(x=>({...x}));
  document.body.dataset.circle=c.theme;
+ applyCircleDesign(id);
  updateCircleHeader();
  modalRoot.innerHTML='';
  show('chat');
-console.info('Cirvela build V19 loaded');
+console.info('Cirvela build V21 loaded');
  toast(c.name+' geöffnet');
 }
 function openCircleSwitcher(){
@@ -511,6 +615,8 @@ function openFamilyChat(){
    el.onclick=(e)=>{ e.stopPropagation(); openChat(Number(el.dataset.personChat)); };
  });
  setupChatInput();
+ applyChatBackground();
+ setupChatBackgroundLongPress();
  document.querySelectorAll('[data-smart-open]').forEach(b=>b.onclick=e=>{e.stopPropagation();openFeature('smartActions')});
  document.querySelectorAll('.voice-inline-play').forEach(b=>b.onclick=e=>{e.stopPropagation();b.textContent=b.textContent==='▶'?'❚❚':'▶'});
  document.querySelectorAll('.voice-inline-speed').forEach(b=>b.onclick=e=>{e.stopPropagation();const speeds=['1×','1,5×','2×'];b.textContent=speeds[(speeds.indexOf(b.textContent)+1)%3]});
@@ -561,6 +667,8 @@ function openChat(i){
  document.getElementById('send').addEventListener('pointerdown',e=>e.preventDefault());
  document.getElementById('send').onclick=sendMessage;
  setupChatInput();
+ applyChatBackground();
+ setupChatBackgroundLongPress();
  bind();
 }
 
@@ -638,7 +746,7 @@ function openContactProfile(i){
  demo('profileStorage','Speicher verwalten');
  demo('profileStarred','Mit Stern markiert');
  demo('profileNotifications','Benachrichtigungen');
- demo('profileDesign','Chatdesign');
+ const pd=document.getElementById('profileDesign');if(pd)pd.onclick=()=>openChatBackgroundPicker();
  demo('profilePhotos','In Fotos speichern');
  demo('profileDisappearing','Selbstlöschende Nachrichten');
  demo('profileLock','Chat sperren');
@@ -940,7 +1048,7 @@ function openSetting(key){
  blocked:['Blockierte Mitglieder',`<p class="muted">Keine blockierten Mitglieder.</p><button class="ghost wide">Mitglied auswählen · Demo</button>`],
  hubSettings:['Circle Hub',`<div class="privacy-banner"><b>✨ Circle Hub</b><br>Alle erweiterten Funktionen findest du oben über „Hub“: Catch-up, Board, Listen, Safe Walk, Zeitkapsel, Circle Inbox und mehr.</div><button id="openHubFromSettings" class="primary wide" style="margin-top:12px">Circle Hub öffnen</button>`],
  notifications:['Benachrichtigungen',`<div class="member-check"><span>💬 Chat-Nachrichten</span><input type="checkbox" checked></div><div class="member-check"><span>📅 Kalender-Erinnerungen</span><input type="checkbox" checked></div><div class="member-check"><span>🚨 SOS-Mitteilungen</span><input type="checkbox" checked></div><div class="member-check"><span>🎮 Spiel-Ranglisten</span><input type="checkbox"></div>`],
- appearance:['Darstellung',`<div class="form-row"><label>Design</label><select><option>System</option><option>Hell</option><option>Dunkel</option></select></div><div class="form-row"><label>Textgröße</label><select><option>Standard</option><option>Groß</option><option>Sehr groß</option></select></div>`],
+ appearance:['Darstellung',`<div class="form-row"><label>App-Darstellung</label><select id="appAppearance"><option>System</option><option>Hell</option><option>Dunkel</option></select></div><div class="form-row"><label>Textgröße</label><select><option>Standard</option><option>Groß</option><option>Sehr groß</option></select></div><div class="appearance-divider"></div><div class="circle-design-head"><div><b>Circle-Designs</b><small>Jeder Circle kann seine eigene Atmosphäre haben.</small></div></div><div class="form-row"><label>Circle auswählen</label><select id="circleDesignSelect">${Object.values(circlePresets).map(c=>`<option value="${c.id}" ${c.id===currentCircleId?'selected':''}>${c.name}</option>`).join('')}</select></div><div id="circleDesignChoices">${circleDesignPreview(currentCircleId,getCircleDesign(currentCircleId))}</div><div class="info-banner" style="margin-top:12px">Beim Wechsel des Circles wird sein gespeichertes Design automatisch geladen. Chat-Hintergründe kannst du zusätzlich direkt im Chat ändern.</div>`],
  language:['Sprache',`<div class="form-row"><label>App-Sprache</label><select><option>Deutsch</option><option>English</option></select></div>`],
  export:['Daten exportieren',`<div class="info-banner">In der echten App sollst du eine Kopie deiner eigenen Daten anfordern können.</div><button class="secondary wide" style="margin-top:12px">Export vorbereiten · Demo</button>`],
  storage:['Speicher & Medien',`<div class="setting-row"><span class="setting-copy"><b>Medien-Cache</b><small>Demo · 0 MB</small></span></div><button class="ghost wide" style="margin-top:12px">Lokalen Cache leeren</button>`],
@@ -955,6 +1063,12 @@ function openSetting(key){
      const saved=s.querySelector('#feedScopeSaved');
      if(saved)saved.textContent='Gespeichert: '+feedScopeLabel(r.value);
    }));
+ }
+ if(key==='appearance'){
+   const select=s.querySelector('#circleDesignSelect');
+   const choices=s.querySelector('#circleDesignChoices');
+   const render=()=>{const id=select.value;choices.innerHTML=circleDesignPreview(id,getCircleDesign(id));choices.querySelectorAll('[data-circle-design]').forEach(b=>b.onclick=()=>{setCircleDesign(id,b.dataset.circleDesign);render();toast(circlePresets[id].name+' Design gespeichert')})};
+   select.addEventListener('change',render);render();
  }
  s.querySelector('#configureCustomFeed')?.addEventListener('click',()=>{s.remove();openFeature('feedFilter')});
  s.querySelectorAll('button.danger,button.secondary,button.ghost').forEach(b=>{if(!b.classList.contains('close-sheet'))b.addEventListener('click',()=>toast('Demo-Aktion ausgeführt.'))});
@@ -1031,9 +1145,9 @@ cameraInput.onchange=e=>{if(e.target.files?.[0]){toast('Demo: Kamera-Medium ausg
 scoreInput.onchange=e=>{if(e.target.files?.[0]){toast('Demo: Highscore-Screenshot ausgewählt.');e.target.value=''}};
 
 show('chat');
-console.info('Cirvela build V19 loaded');
+console.info('Cirvela build V21 loaded');
 
-if(circleSwitchBtn){circleSwitchBtn.onclick=openCircleSwitcher; document.body.dataset.circle=activeCircle().theme; updateCircleHeader();}
+if(circleSwitchBtn){circleSwitchBtn.onclick=openCircleSwitcher; document.body.dataset.circle=activeCircle().theme; applyCircleDesign(currentCircleId); updateCircleHeader();}
 
 hubTop?.addEventListener('click',()=>show('hub'));
 document.addEventListener('click',e=>{

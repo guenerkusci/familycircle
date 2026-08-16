@@ -1,4 +1,4 @@
-Cirvela V19
+Cirvela V21
 
 Änderungen: Dachmarke Cirvela, professionelleres UI-System, funktionale Medien-Tabs und Medienobjekte. Bestehende Circle-Funktionen bleiben erhalten.
 
@@ -132,3 +132,14 @@ V20 – Cirvela Quiet Glass
 - SOS bleibt klar sichtbar, ist aber stärker in die Navigation integriert.
 - Feed, Stories, Circle-Switcher, Sheets, Profile und Circle Hub wurden visuell beruhigt.
 - Vorhandene Funktionen und Weiterleitungen bleiben bestehen.
+
+
+V21 – Circle Designs & Chat-Hintergründe
+- Mehr Farbdifferenzierung zwischen Kopfbereich, Circle-Flächen, Chat, Karten und Navigation.
+- Jeder Circle erhält ein eigenes gespeichertes Design und lädt dieses automatisch beim Wechsel.
+- Einstellungen > Darstellung > Circle-Designs: Circle auswählen und mehrere passende Designs wählen.
+- GirlsCircle enthält u. a. das florale Design „Bloom“; andere Circles haben eigene seriöse Designsets.
+- Chat-Hintergrund lässt sich durch langes Drücken auf eine freie Chatfläche ändern.
+- Vordefinierte Hintergründe: Circle-Design, Linen, Mist, Botanical, Dusk, Ocean, Rose.
+- Eigenes Hintergrundbild kann ausgewählt, komprimiert und lokal für den jeweiligen Chat gespeichert werden.
+- Chat-Hintergrund und Circle-Design werden getrennt gespeichert.

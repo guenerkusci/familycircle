@@ -803,3 +803,95 @@ button:active{transform:scale(.985)}
 @media(max-width:390px){
  .topbar{padding-left:11px!important;padding-right:9px!important}.circle-switch{font-size:22px!important}.top-action{min-width:45px!important}.top-action>span:last-child{font-size:7px!important}.hub-launch{width:34px!important;height:34px!important}.bottom-nav{grid-template-columns:1fr 1fr 74px 1fr 1fr!important}.sos-button{width:62px!important;height:62px!important}.chat-composer{bottom:calc(75px + env(safe-area-inset-bottom))!important}
 }
+
+
+/* ===== Cirvela V21 – Color Spaces + per-Circle designs ===== */
+:root{
+ --circle-accent:#3467C8;--circle-tint:#EDF3FF;--circle-surface:#FFF8EF;--circle-chat:#F2ECE3;--circle-panel:#FFFDF9;--circle-nav:#F8FAFE;
+}
+body{background:linear-gradient(180deg,var(--circle-surface) 0,#F7F9FC 46%,#F6F8FC 100%)!important}
+.topbar{
+ background:linear-gradient(135deg,color-mix(in srgb,var(--circle-tint) 72%,white),rgba(255,255,255,.97) 58%)!important;
+ border-bottom:1px solid color-mix(in srgb,var(--circle-accent) 16%,#E6EAF0)!important;
+}
+.cirvela-wordmark{color:#1D2939!important}.circle-switch{color:var(--circle-accent)!important}
+.circle-unread-top,.circle-unread-badge,.badge{background:var(--circle-accent)!important}
+.top-action.active{background:var(--circle-tint)!important;color:var(--circle-accent)!important}
+.hub-launch{border-color:color-mix(in srgb,var(--circle-accent) 22%,#E6EAF0)!important;background:color-mix(in srgb,var(--circle-tint) 58%,white)!important}
+.chat-header,.contacts-head{background:color-mix(in srgb,var(--circle-tint) 52%,white)!important;border-color:color-mix(in srgb,var(--circle-accent) 14%,#E6EAF0)!important}
+.chat-screen{background:var(--circle-chat)!important}
+.messages{background-color:var(--circle-chat)!important;position:relative;transition:background .22s ease}
+.chat-composer{background:color-mix(in srgb,var(--circle-panel) 88%,white)!important;border-color:color-mix(in srgb,var(--circle-accent) 18%,#E6EAF0)!important}
+.chat-composer .send{background:var(--circle-accent)!important}
+.contacts-button,.secondary{background:var(--circle-tint)!important;color:var(--circle-accent)!important}
+.bubble.mine{background:color-mix(in srgb,var(--circle-accent) 10%,#F2FFF0)!important;border-color:color-mix(in srgb,var(--circle-accent) 20%,#D8E8DA)!important}
+.bottom-nav{background:color-mix(in srgb,var(--circle-nav) 90%,rgba(255,255,255,.9))!important;border-color:color-mix(in srgb,var(--circle-accent) 12%,#E1E6EC)!important}
+.nav-item.active{background:var(--circle-tint)!important;color:var(--circle-accent)!important}
+.card,.post,.setting-list,.contact-card,.contact-actions-card{background:var(--circle-panel)!important;border-color:color-mix(in srgb,var(--circle-accent) 10%,#E6EAF0)!important}
+.setting-group{border-radius:17px;background:color-mix(in srgb,var(--circle-surface) 55%,transparent);padding:1px 0 7px}
+.setting-title{color:color-mix(in srgb,var(--circle-accent) 72%,#344054)!important;padding-left:4px}
+.stories{background:color-mix(in srgb,var(--circle-tint) 48%,white)!important}
+.story-ring{background:linear-gradient(145deg,var(--circle-accent),color-mix(in srgb,var(--circle-accent) 55%,#C86DA8))!important}
+.feed-scope-banner,.composer-card{background:var(--circle-panel)!important}
+.post-head{background:color-mix(in srgb,var(--circle-tint) 34%,white)}
+.circle-option.selected{background:var(--circle-tint)!important;border-color:color-mix(in srgb,var(--circle-accent) 26%,#D7DDE6)!important}
+.primary{background:color-mix(in srgb,var(--circle-accent) 76%,#101828)!important}
+
+/* Pattern personalities. Kept subtle for an adult visual language. */
+body[data-circle-pattern="flowers"] .messages:before,
+body[data-circle-pattern="petals"] .messages:before,
+body[data-circle-pattern="leaf"] .messages:before,
+body[data-circle-pattern="wave"] .messages:before,
+body[data-circle-pattern="grid"] .messages:before,
+body[data-circle-pattern="field"] .messages:before,
+body[data-circle-pattern="paper"] .messages:before,
+body[data-circle-pattern="lines"] .messages:before,
+body[data-circle-pattern="sunset"] .messages:before,
+body[data-circle-pattern="hearts"] .messages:before,
+body[data-circle-pattern="clouds"] .messages:before,
+body[data-circle-pattern="energy"] .messages:before,
+body[data-circle-pattern="dots"] .messages:before{
+ content:"";position:absolute;inset:0;pointer-events:none;opacity:.22;background-size:48px 48px;z-index:0
+}
+body[data-circle-pattern="flowers"] .messages:before{background-image:radial-gradient(circle at 12px 12px,color-mix(in srgb,var(--circle-accent) 40%,transparent) 0 2px,transparent 3px),radial-gradient(circle at 17px 12px,color-mix(in srgb,var(--circle-accent) 25%,transparent) 0 2px,transparent 3px),radial-gradient(circle at 14px 17px,color-mix(in srgb,var(--circle-accent) 28%,transparent) 0 2px,transparent 3px)}
+body[data-circle-pattern="petals"] .messages:before{background-image:radial-gradient(ellipse at 14px 12px,color-mix(in srgb,var(--circle-accent) 28%,transparent) 0 3px,transparent 4px),radial-gradient(ellipse at 20px 18px,color-mix(in srgb,var(--circle-accent) 18%,transparent) 0 3px,transparent 4px)}
+body[data-circle-pattern="leaf"] .messages:before{background-image:radial-gradient(ellipse at 12px 14px,color-mix(in srgb,var(--circle-accent) 24%,transparent) 0 5px,transparent 6px)}
+body[data-circle-pattern="wave"] .messages:before{background-image:repeating-radial-gradient(ellipse at 0 0,color-mix(in srgb,var(--circle-accent) 18%,transparent) 0 1px,transparent 1px 12px)}
+body[data-circle-pattern="grid"] .messages:before,body[data-circle-pattern="paper"] .messages:before{background-image:linear-gradient(color-mix(in srgb,var(--circle-accent) 12%,transparent) 1px,transparent 1px),linear-gradient(90deg,color-mix(in srgb,var(--circle-accent) 12%,transparent) 1px,transparent 1px)}
+body[data-circle-pattern="lines"] .messages:before{background-image:repeating-linear-gradient(135deg,color-mix(in srgb,var(--circle-accent) 12%,transparent) 0 1px,transparent 1px 12px)}
+body[data-circle-pattern="field"] .messages:before{background-image:linear-gradient(90deg,transparent 49%,color-mix(in srgb,var(--circle-accent) 15%,transparent) 50%,transparent 51%)}
+body[data-circle-pattern="sunset"] .messages:before{background-image:radial-gradient(circle at 20% 20%,color-mix(in srgb,var(--circle-accent) 22%,transparent) 0 7px,transparent 8px)}
+body[data-circle-pattern="hearts"] .messages:before{background-image:radial-gradient(circle at 12px 12px,color-mix(in srgb,var(--circle-accent) 18%,transparent) 0 3px,transparent 4px),radial-gradient(circle at 17px 12px,color-mix(in srgb,var(--circle-accent) 18%,transparent) 0 3px,transparent 4px)}
+body[data-circle-pattern="clouds"] .messages:before{background-image:radial-gradient(ellipse at 16px 16px,color-mix(in srgb,var(--circle-accent) 15%,transparent) 0 8px,transparent 9px)}
+body[data-circle-pattern="energy"] .messages:before{background-image:repeating-linear-gradient(120deg,transparent 0 22px,color-mix(in srgb,var(--circle-accent) 11%,transparent) 22px 24px,transparent 24px 46px)}
+body[data-circle-pattern="dots"] .messages:before{background-image:radial-gradient(circle,color-mix(in srgb,var(--circle-accent) 22%,transparent) 0 1.4px,transparent 1.5px)}
+.messages>.bubble{position:relative;z-index:1}
+
+/* Circle design settings */
+.appearance-divider{height:1px;background:var(--line);margin:18px 0}
+.circle-design-head{display:flex;justify-content:space-between;align-items:end;margin:2px 0 10px}.circle-design-head>div{display:grid;gap:3px}.circle-design-head b{font-size:17px}.circle-design-head small{font-size:11px;color:var(--muted)}
+.circle-design-grid{display:grid;grid-template-columns:1fr;gap:9px;margin-top:10px}
+.circle-design-card{position:relative;border:1px solid var(--line);background:white;border-radius:15px;padding:11px;text-align:left;display:grid;grid-template-columns:80px 1fr;grid-template-rows:auto auto;column-gap:11px;align-items:center;min-height:80px}
+.circle-design-card.selected{border-color:var(--circle-accent);box-shadow:0 0 0 2px color-mix(in srgb,var(--circle-accent) 18%,transparent)}
+.circle-design-card .design-preview{grid-row:1/3;width:80px;height:56px;border-radius:11px;overflow:hidden;display:grid;grid-template-columns:1fr 1fr;background:var(--preview-chat);border:1px solid rgba(0,0,0,.05)}
+.design-preview i:first-child{grid-column:1/3;height:17px;background:var(--preview-tint);border-bottom:2px solid var(--preview-accent)}
+.design-preview i:nth-child(2){margin:7px 2px 7px 7px;border-radius:8px;background:white}
+.design-preview i:nth-child(3){margin:7px 7px 7px 2px;border-radius:8px;background:color-mix(in srgb,var(--preview-accent) 16%,white)}
+.circle-design-card b{font-size:13px}.circle-design-card small{font-size:9px;color:var(--muted);line-height:1.3}.circle-design-card em{position:absolute;right:8px;top:7px;font-style:normal;font-size:8px;font-weight:800;color:var(--circle-accent);background:var(--circle-tint);padding:3px 6px;border-radius:999px}
+
+/* Long-press chat wallpaper picker */
+.wallpaper-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin-top:12px}
+.wallpaper-card{border:1px solid var(--line);background:white;border-radius:14px;padding:7px;display:grid;gap:6px;text-align:center;color:#344054}.wallpaper-card.selected{border-color:var(--circle-accent);box-shadow:0 0 0 2px color-mix(in srgb,var(--circle-accent) 18%,transparent)}.wallpaper-card b{font-size:10px}
+.wallpaper-swatch{height:76px;border-radius:10px;border:1px solid rgba(0,0,0,.05);display:grid;place-items:center;font-size:26px;overflow:hidden}
+.wallpaper-custom{background:linear-gradient(135deg,#F0F2F5,#FFF);color:var(--circle-accent)}
+.wallpaper-swatch.chat-bg-default{background:var(--circle-chat)}
+.wallpaper-swatch.chat-bg-linen,.messages.chat-bg-linen{background-color:#EFE9DF!important;background-image:repeating-linear-gradient(0deg,rgba(95,75,52,.035) 0 1px,transparent 1px 5px),repeating-linear-gradient(90deg,rgba(95,75,52,.025) 0 1px,transparent 1px 7px)!important}
+.wallpaper-swatch.chat-bg-mist,.messages.chat-bg-mist{background:linear-gradient(135deg,#EEF2F7,#F8FAFC 45%,#E9F0F5)!important}
+.wallpaper-swatch.chat-bg-botanical,.messages.chat-bg-botanical{background-color:#EAF3ED!important;background-image:radial-gradient(ellipse at 18px 20px,rgba(53,123,112,.13) 0 7px,transparent 8px)!important;background-size:54px 54px!important}
+.wallpaper-swatch.chat-bg-dusk,.messages.chat-bg-dusk{background:linear-gradient(160deg,#EDE8F1,#E6EAF1 55%,#F2E9EB)!important}
+.wallpaper-swatch.chat-bg-ocean,.messages.chat-bg-ocean{background:linear-gradient(150deg,#E7F4F8,#EDF7F5 50%,#E7EFF8)!important}
+.wallpaper-swatch.chat-bg-rose,.messages.chat-bg-rose{background:linear-gradient(150deg,#F8EBF0,#F7F0F6 50%,#F2ECE9)!important}
+.messages.chat-bg-custom{background-image:linear-gradient(rgba(255,255,255,.12),rgba(255,255,255,.12)),var(--custom-chat-bg)!important;background-size:cover!important;background-position:center!important;background-attachment:local!important}
+.messages.chat-bg-linen:before,.messages.chat-bg-mist:before,.messages.chat-bg-botanical:before,.messages.chat-bg-dusk:before,.messages.chat-bg-ocean:before,.messages.chat-bg-rose:before,.messages.chat-bg-custom:before{display:none!important}
+.chat-wallpaper-sheet .sheet-card{padding-bottom:calc(18px + env(safe-area-inset-bottom))}
+@media(max-width:390px){.wallpaper-grid{grid-template-columns:repeat(3,1fr)}.wallpaper-swatch{height:65px}.circle-design-card{grid-template-columns:68px 1fr}.circle-design-card .design-preview{width:68px}}
