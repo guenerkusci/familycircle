@@ -104,9 +104,16 @@ Alle 20 geplanten Funktionsbereiche wurden in die Testversion integriert:
 Hinweis: Dies ist weiterhin eine lokale Demo/Testversion. Netzwerkdienste wie echte Push-Nachrichten, Calls, Live-Standort und serverseitige Synchronisation sind als interaktive Demo-Oberflächen vorbereitet und benötigen für eine echte App ein Backend/native APIs.
 
 
-V17 – Korrektur:
-- Der in V16 eingebaute Circle Hub war nicht in der oberen Navigation sichtbar.
-- V17 zeigt jetzt oben ein eigenes „✨ Hub“-Symbol.
-- Über Hub sind die 20 neuen V16-Funktionsbereiche erreichbar.
-- Obere Symbolleiste ist für vier Aktionen auf iPhone-Breite angepasst.
-- Alles andere aus V16 bleibt unverändert.
+V18 – Circle-Plattform auf Basis der tatsächlich hochgeladenen V16:
+- Sichtbarer Circle Hub direkt unter der Versionsanzeige; dadurch sind die neuen Funktionen zuverlässig erreichbar.
+- WhatsApp-artige Chat+-Funktionen: Antworten/Zitieren, Reaktionen, Weiterleiten, Bearbeiten/Löschen, Pins/Ankündigungen, @Erwähnungen, Gruppen-Lesestatus, Favoriten, Suche und Chat-Sperre (interaktive Demo).
+- Sprachnachrichten mit Wellenform und 1×/1,5×/2× Geschwindigkeitsumschaltung.
+- Circle-Switcher erweitert um CoupleCircle, TravelCircle und SchoolCircle.
+- Catch-up, Family/Circle Board, Smart Actions, gemeinsame Listen und „Wer kann?“.
+- Circle Moments, Damals und Zeitkapsel.
+- Bin angekommen, Safety Hub, Safe Walk und Circle Doorbell.
+- Freiwillige Stimmung/Verfügbarkeit.
+- Feed: aktueller Circle, alle Circles oder „Mein Feed“ mit eigener Circle-Auswahl.
+- Circle Inbox, Circle Pulse und Circle Bridge.
+- Status und Standort wurden um passende Hub-Funktionen ergänzt.
+- Alle neuen Funktionen bleiben in dieser GitHub-Pages-Testversion lokal/interaktiv; echte Push-, Call-, Live-Standort- und Cloud-Synchronisation benötigen später Backend/native iOS-Funktionen.

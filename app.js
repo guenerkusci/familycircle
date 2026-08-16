@@ -1,5 +1,5 @@
 
-// FamilyCircle V17: aggressively remove stale demo caches/service workers from older test builds.
+// FamilyCircle V18: aggressively remove stale demo caches/service workers from older test builds.
 (async function resetOldDemoCache(){
   try{
     if ('caches' in window){
@@ -118,6 +118,21 @@ const circlePresets={
     {name:'Sam',avatar:'🥅',preview:'👍',time:'Gestern',badge:0},
     {name:'Team',avatar:'🏆',preview:'Coach: Aufstellung ist online',time:'Heute',badge:3}
    ]
+ },
+ couple:{
+   id:'couple',name:'CoupleCircle',label:'Wir zwei',icon:'❤️',theme:'couple',unread:1,lastActivity:'Alex: Abendessen um 19 Uhr?',
+   members:[{name:'Alex',avatar:'🥰',online:true},{name:'Du',avatar:'🙂',online:true},{name:'Wir',avatar:'❤️',online:true}],
+   chats:[{name:'Alex',avatar:'🥰',preview:'Abendessen um 19 Uhr?',time:'18:05',badge:1},{name:'Wir',avatar:'❤️',preview:'Gemeinsame Liste aktualisiert',time:'Heute',badge:0}]
+ },
+ travel:{
+   id:'travel',name:'TravelCircle',label:'Reisegruppe',icon:'✈️',theme:'travel',unread:3,lastActivity:'Mia: Tickets sind gespeichert ✈️',
+   members:[{name:'Mia',avatar:'🧳',online:true},{name:'Jonas',avatar:'😎',online:false},{name:'Lea',avatar:'🌴',online:true},{name:'Reisegruppe',avatar:'✈️',online:true}],
+   chats:[{name:'Mia',avatar:'🧳',preview:'Tickets sind gespeichert ✈️',time:'16:21',badge:2},{name:'Jonas',avatar:'😎',preview:'Hotel sieht super aus',time:'15:48',badge:1},{name:'Lea',avatar:'🌴',preview:'Packliste ergänzt',time:'Heute',badge:0},{name:'Reisegruppe',avatar:'✈️',preview:'Abflug 08:10',time:'Morgen',badge:3}]
+ },
+ school:{
+   id:'school',name:'SchoolCircle',label:'Schule',icon:'🎓',theme:'school',unread:2,lastActivity:'Frau Weber: Elternabend am Donnerstag',
+   members:[{name:'Frau Weber',avatar:'👩‍🏫',online:true},{name:'Emma',avatar:'🧒',online:false},{name:'Tom',avatar:'👦',online:true},{name:'Schule',avatar:'🎓',online:true}],
+   chats:[{name:'Frau Weber',avatar:'👩‍🏫',preview:'Elternabend am Donnerstag',time:'14:10',badge:2},{name:'Emma',avatar:'🧒',preview:'Hausaufgaben erledigt',time:'13:44',badge:0},{name:'Tom',avatar:'👦',preview:'Mathe Seite 42',time:'12:30',badge:0},{name:'Schule',avatar:'🎓',preview:'Stundenplan aktualisiert',time:'Heute',badge:1}]
  }
 };
 
@@ -128,10 +143,15 @@ function getFeedScope(){
  return localStorage.getItem('fc-feed-scope') || 'circle';
 }
 function setFeedScope(value){
- const v=value==='all'?'all':'circle';
+ const v=['all','custom'].includes(value)?value:'circle';
  localStorage.setItem('fc-feed-scope',v);
  return v;
 }
+function getCustomFeedCircles(){
+ try{return JSON.parse(localStorage.getItem('fc-custom-feed')||'["family","friends","girls"]')}catch(e){return ['family','friends','girls']}
+}
+function setCustomFeedCircles(ids){localStorage.setItem('fc-custom-feed',JSON.stringify(ids));}
+function feedScopeLabel(v){return v==='all'?'Alle Circles zusammen':v==='custom'?'Mein Feed':'Nur aktueller Circle'}
 
 function unreadOutsideCurrent(){
  return Object.values(circlePresets).reduce((sum,c)=>sum+(c.id===currentCircleId?0:(c.unread||0)),0);
@@ -143,11 +163,11 @@ function updateCircleHeader(){
  const total=unreadOutsideCurrent();
  if(total>0){
    circleUnreadTop.hidden=false;
-   circleUnreadTop.textContent=unreadLabel(total);
+   circleUnreadTop.textContent=unreadLabel(total);const ha=document.getElementById('hubAlert');if(ha){ha.hidden=false;ha.textContent=unreadLabel(total)};
    circleSwitchBtn.setAttribute('aria-label',`${c.name} · ${total} ungelesene Nachrichten in anderen Circles`);
  }else{
    circleUnreadTop.hidden=true;
-   circleUnreadTop.textContent='0';
+   circleUnreadTop.textContent='0';const ha=document.getElementById('hubAlert');if(ha){ha.hidden=true;ha.textContent='0'};
    circleSwitchBtn.setAttribute('aria-label',`${c.name} · Circle wechseln`);
  }
 }
@@ -160,7 +180,7 @@ function applyCircle(id){
  updateCircleHeader();
  modalRoot.innerHTML='';
  show('chat');
-console.info('FamilyCircle build V17 loaded');
+console.info('FamilyCircle build V18 loaded');
  toast(c.name+' geöffnet');
 }
 function openCircleSwitcher(){
@@ -185,7 +205,7 @@ function openCircleSwitcher(){
   </div>`;
  document.getElementById('closeCircleSheet').onclick=()=>modalRoot.innerHTML='';
  document.querySelectorAll('[data-circle-id]').forEach(b=>b.onclick=()=>applyCircle(b.dataset.circleId));
- document.getElementById('createCircleDemo').onclick=()=>toast('Demo: Circle erstellen – Name, Farbe, Bild und Mitglieder wählen.');
+ document.getElementById('createCircleDemo').onclick=()=>toast('Demo: Circle erstellen – z. B. Couple, Travel, School oder eigener Circle.');
 }
 
 let current='chat';
@@ -201,7 +221,8 @@ let demoEvents=[
 
 let postComments={
   0:[{avatar:'👨',name:'Papa',text:'Tolles Foto ❤️',likes:2},{avatar:'👧',name:'Lisa',text:'Das war richtig schön 😊',likes:1},{avatar:'👦',name:'Noah',text:'Nächstes Mal wieder!',likes:0}],
-  1:[{avatar:'👩',name:'Mama',text:'Ich bin dabei 🍕',likes:1},{avatar:'👧',name:'Lisa',text:'Ich auch!',likes:0}]
+  1:[{avatar:'👩',name:'Mama',text:'Ich bin dabei 🍕',likes:1},{avatar:'👧',name:'Lisa',text:'Ich auch!',likes:0}],
+  2:[],3:[],4:[],5:[],6:[],7:[]
 };
 
 const names={chat:'Chats',calendar:'Kalender',location:'Standort',games:'Spiele',feed:'Familien-Feed',settings:'Einstellungen',hub:'Circle Hub'};
@@ -214,24 +235,26 @@ function setActive(tab){
  navItems.forEach(b=>b.classList.toggle('active',b.dataset.tab===tab));
  feedTop.classList.toggle('active',tab==='feed');
  settingsTop.classList.toggle('active',tab==='settings');
- statusTop.classList.remove('active');
+ statusTop.classList.remove('active'); if(hubTop)hubTop.classList.toggle('active',tab==='hub');
 }
 
 
 const circleFeatureState={
- mood:'😊 Gut',
- boardDone:false,
- safeWalk:false,
- doorbell:false,
+ mood:localStorage.getItem('fc-mood')||'😊 Gut', boardDone:false,
+ safeWalk:localStorage.getItem('fc-safe-walk')==='1', doorbell:localStorage.getItem('fc-doorbell')==='1',
  inbox:[
-  {circle:'FriendsCircle',icon:'🫶',count:5,text:'Mert: Heute Abend noch spontan?'},
-  {circle:'GirlsCircle',icon:'💗',count:2,text:'Lisa: Welches Outfit? 👗'},
-  {circle:'SportCircle',icon:'⚽',count:1,text:'Coach: Training heute 18:30'}
+  {id:'family',circle:'FamilyCircle',icon:'👨‍👩‍👧‍👦',count:2,text:'Mama: Bringst du Brot mit?'},
+  {id:'friends',circle:'FriendsCircle',icon:'🫶',count:8,text:'Neue Nachrichten + 3 Fotos'},
+  {id:'sport',circle:'SportCircle',icon:'⚽',count:4,text:'Training wurde auf 19:00 verschoben'},
+  {id:'travel',circle:'TravelCircle',icon:'✈️',count:3,text:'Mia: Tickets sind gespeichert'}
  ],
  lists:[
   {icon:'🛒',title:'Einkauf',items:['Milch','Brot','Tomaten'],done:1},
+  {icon:'🏠',title:'Haushalt',items:['Müll rausbringen','Spülmaschine'],done:0},
   {icon:'🎁',title:'Geschenke',items:['Oma Geburtstag'],done:0},
-  {icon:'✈️',title:'Urlaub',items:['Pässe','Ladekabel','Tickets'],done:1}
+  {icon:'✈️',title:'Urlaubspackliste',items:['Pässe','Ladekabel','Tickets'],done:1},
+  {icon:'💡',title:'Ideen',items:['Ausflug See','Grillabend'],done:0},
+  {icon:'💰',title:'Ausgaben',items:['Pizza 32 €','Tickets 48 €'],done:0}
  ]
 };
 
@@ -245,37 +268,51 @@ function hubView(){
  const c=activeCircle();
  return `
  <div class="hub-hero">
-   <div><span class="eyebrow">${c.icon} ${c.name}</span><h2>Dein Circle heute</h2><p>Kommunikation, Organisation, Erinnerungen und Sicherheit an einem Ort.</p></div>
+   <div><span class="eyebrow">${c.icon} ${c.name}</span><h2>Was passiert gerade?</h2><p>Dein gemeinsamer Überblick für Menschen, Termine, Aufgaben, Erinnerungen und Sicherheit.</p></div>
    <button id="catchUpBtn" class="primary compact">⚡ Catch-up</button>
  </div>
  <section class="today-board card">
-   <div class="card-title-row"><h3>📌 Family Board</h3><button id="pulseBtn" class="ghost">Pulse</button></div>
+   <div class="card-title-row"><h3>📌 ${c.id==='family'?'Family Board':'Circle Board'}</h3><button id="pulseBtn" class="ghost">💓 Pulse</button></div>
    <div class="board-item">🗓️ <span><b>Zahnarzt Lisa</b><small>Heute · 15:30</small></span></div>
    <div class="board-item">🛒 <span><b>Einkauf</b><small>Papa übernimmt · 2 offen</small></span></div>
-   <div class="board-item">⚽ <span><b>Training Noah</b><small>18:00 · SportCircle</small></span></div>
+   <div class="board-item">📍 <span><b>Mama unterwegs</b><small>Standort freiwillig geteilt</small></span></div>
    <div class="board-item">🎂 <span><b>Omas Geburtstag</b><small>in 3 Tagen</small></span></div>
+   <div class="board-item">💬 <span><b>${unreadOutsideCurrent()} ungelesen</b><small>in anderen Circles</small></span></div>
  </section>
+ <div class="hub-section-title"><b>Kommunikation</b><small>WhatsApp-Komfort + Circle-Funktionen</small></div>
  <div class="hub-grid">
-   ${hubTile('💬','Chat+','Antworten, Reaktionen, Pins','chatPlus')}
-   ${hubTile('🧠','Smart Actions','Termin & Liste aus Chat','smartActions')}
-   ${hubTile('📝','Gemeinsame Listen','Einkauf, Reise, Ideen','lists')}
-   ${hubTile('🙋','Wer kann?','Aufgaben schnell verteilen','whoCan')}
+   ${hubTile('💬','Chat+','Antworten · Reaktionen · Pins','chatPlus')}
+   ${hubTile('🎙️','Voice & Calls','Wellenform · 1×/1,5×/2×','calls')}
+   ${hubTile('🧠','Smart Actions','Chat wird Termin, Liste, Erinnerung','smartActions')}
+   ${hubTile('📊','Umfragen','Abstimmen ohne Chat-Chaos','polls')}
+ </div>
+ <div class="hub-section-title"><b>Organisation</b><small>Gemeinsam planen statt suchen</small></div>
+ <div class="hub-grid">
+   ${hubTile('📝','Gemeinsame Listen','Einkauf · Haushalt · Reise · Ausgaben','lists')}
+   ${hubTile('🙋','Wer kann?','Aufgaben direkt verteilen','whoCan')}
+   ${hubTile('📥','Circle Inbox','Alle ungelesenen Circles zentral','inbox')}
+   ${hubTile('💓','Circle Pulse','Was ist heute wirklich wichtig?','pulse')}
+ </div>
+ <div class="hub-section-title"><b>Erinnerungen & Nähe</b><small>Mehr als nur Nachrichten</small></div>
+ <div class="hub-grid">
    ${hubTile('📸','Circle Moments','Gemeinsame Tageschronik','moments')}
    ${hubTile('🕰️','Damals','Erinnerungen wiederentdecken','memories')}
-   ${hubTile('🔐','Zeitkapsel','Nachrichten für später','capsule')}
-   ${hubTile('🏠','Bin angekommen','Freiwillige Ankunftsmeldung','arrived')}
-   ${hubTile('🛟','Safety Hub','SOS & Abholen','safety')}
-   ${hubTile('🚶','Safe Walk','Sicher nach Hause','safeWalk')}
+   ${hubTile('🔐','Zeitkapsel','Fotos & Nachrichten für später','capsule')}
    ${hubTile('🔔','Circle Doorbell','Zeige, dass du Zeit hast','doorbell')}
-   ${hubTile('😊','Stimmung','Status ohne Nachricht','mood')}
-   ${hubTile('📰','Feed Filter','Mein Feed individuell','feedFilter')}
-   ${hubTile('📥','Circle Inbox','Alles Ungelesene zentral','inbox')}
-   ${hubTile('💓','Circle Pulse','Was ist gerade wichtig?','pulse')}
-   ${hubTile('🌉','Circle Bridge','Zwischen Circles teilen','bridge')}
-   ${hubTile('🎙️','Voice & Calls','Sprachmemos, Gruppen-Calls','calls')}
-   ${hubTile('📊','Umfragen','Abstimmen ohne Chat-Chaos','polls')}
+   ${hubTile('😊','Stimmung','Freiwilliger Kurzstatus','mood')}
    ${hubTile('⭐','Gespeichert','Favoriten & wichtige Nachrichten','saved')}
-   ${hubTile('🧩','Circle Räume','Family, Friends, Work, Sport','circles')}
+ </div>
+ <div class="hub-section-title"><b>Sicherheit & Standort</b><small>Freiwillig, transparent, zeitlich begrenzt</small></div>
+ <div class="hub-grid">
+   ${hubTile('🏠','Bin angekommen','Ankunft ohne extra Nachricht','arrived')}
+   ${hubTile('🛟','Safety Hub','SOS · Hol mich ab · Standort','safety')}
+   ${hubTile('🚶','Safe Walk','Begleitung bis zur Ankunft','safeWalk')}
+ </div>
+ <div class="hub-section-title"><b>Circle-Plattform</b><small>Getrennte Lebensbereiche – kontrolliert verbunden</small></div>
+ <div class="hub-grid">
+   ${hubTile('📰','Mein Feed','Circles individuell auswählen','feedFilter')}
+   ${hubTile('🌉','Circle Bridge','Einzelne Inhalte teilen, Privates bleibt privat','bridge')}
+   ${hubTile('🧩','Circle Räume','Family · Friends · Couple · Work · Travel · School','circles')}
  </div>`;
 }
 function hubTile(icon,titleText,sub,key){
@@ -284,85 +321,90 @@ function hubTile(icon,titleText,sub,key){
 
 function openFeature(key){
  const c=activeCircle();
+ const custom=getCustomFeedCircles();
  const sheets={
- chatPlus:['Chat+',`<div class="feature-list">
-   ${featureRow('↩️','Antworten','Auf einzelne Nachrichten antworten')}
-   ${featureRow('❤️','Reaktionen','❤️ 😂 👍 😮 😢')}
-   ${featureRow('📌','Anpinnen','Wichtige Nachrichten oben halten')}
-   ${featureRow('✏️','Bearbeiten','Eigene Nachricht nachträglich ändern')}
-   ${featureRow('⭐','Markieren','Nachrichten als Favorit speichern')}
-   ${featureRow('@','Erwähnen','Mit @Name gezielt ansprechen')}
-   ${featureRow('✓✓','Gruppen-Lesestatus','Gelesen von / noch offen')}
-  </div>`],
- smartActions:['Smart Actions',`<div class="smart-demo"><div class="bubble theirs"><b>Mama</b><br>Sonntag um 14 Uhr bei Oma?</div>
-   <button class="smart-action">📅 Zum Kalender hinzufügen</button>
-   <div class="bubble theirs"><b>Papa</b><br>Kann jemand Milch mitbringen?</div>
-   <button class="smart-action">🛒 Zur Einkaufsliste hinzufügen</button>
-   <div class="bubble theirs"><b>Lisa</b><br>Erinnert mich morgen an den Arzt.</div>
-   <button class="smart-action">⏰ Erinnerung erstellen</button></div>`],
- lists:['Gemeinsame Listen',circleFeatureState.lists.map(l=>`<div class="list-card"><b>${l.icon} ${l.title}</b>${l.items.map((x,i)=>`<label><input type="checkbox" ${i<l.done?'checked':''}> ${x}</label>`).join('')}<button class="ghost">＋ Eintrag</button></div>`).join('')],
- whoCan:['Wer kann?',`<div class="request-card"><h3>🚗 Wer kann Lisa morgen um 16:00 abholen?</h3>
-   ${['Mama ❌','Papa ✅','Tolga ❓'].map(x=>`<button class="choice-line">${x}</button>`).join('')}
-   <div class="success-banner">✓ Papa übernimmt · automatisch als erledigt markiert</div></div>`],
- moments:['Circle Moments',`<div class="moment-cover">📸<b>Unser Tag</b><small>6 Fotos · 3 Mitglieder</small></div>
-   <div class="moment-grid"><div>🌅</div><div>🍕</div><div>⚽</div><div>❤️</div></div>
-   <button class="primary wide">＋ Moment hinzufügen</button>`],
- memories:['Damals',`<div class="memory-card"><span>❤️ Vor genau einem Jahr</span><h3>Familienausflug am Bodensee</h3><div class="memory-photo">🏞️</div><p>12 Fotos · 4 Chatmomente</p></div>`],
- capsule:['Circle Capsule',`<div class="capsule-card"><div class="capsule-lock">🔐</div><h3>Lisas 18. Geburtstag</h3><p>Fotos, Videos und Sprachnachrichten sammeln.</p><b>Öffnet am 17.07.2034</b><button class="secondary wide">Beitrag hinzufügen</button></div>`],
- arrived:['Bin angekommen',`<div class="place-grid">${['🏠 Zuhause','🏫 Schule','🏢 Arbeit','⚽ Verein'].map(x=>`<button class="place-card">${x}</button>`).join('')}</div>
-   <div class="privacy-banner">Freiwillig: Nur ausgewählte Personen erhalten eine Ankunftsmeldung. Die Freigabe kann jederzeit beendet werden.</div>`],
- safety:['Safety Hub',`<div class="safety-actions"><button class="safety-red">🚨 SOS auslösen</button><button class="safety-yellow">🚗 Hol mich ab</button><button class="safety-blue">📍 Standort teilen</button></div>
-   <div class="info-banner">Empfänger, Dauer und Standortfreigabe werden vorher in den Einstellungen festgelegt.</div>`],
- safeWalk:['Safe Walk',`<div class="safe-walk-card"><div class="walk-route">📍────🚶────🏠</div><h3>Begleite mich</h3><p>Geschätzte Dauer: 18 Minuten</p><button id="safeWalkToggle" class="primary wide">${circleFeatureState.safeWalk?'✓ Safe Walk läuft':'Safe Walk starten'}</button></div>`],
- doorbell:['Circle Doorbell',`<div class="doorbell-card"><div class="doorbell-big">🔔</div><h3>Hat jemand kurz Zeit?</h3>
-   <div class="quick-status"><button>☕ Quatschen</button><button>📞 Kurzer Anruf</button><button>🎮 Spielen</button></div>
-   <button id="doorbellToggle" class="primary wide">${circleFeatureState.doorbell?'✓ Verfügbar':'Jetzt verfügbar anzeigen'}</button></div>`],
- mood:['Stimmung',`<div class="mood-grid">${['😊 Gut','😴 Müde','🤒 Krank','📚 Beschäftigt','🚗 Unterwegs','🏠 Zuhause','🔕 Bitte nicht stören'].map(x=>`<button class="mood-choice ${x===circleFeatureState.mood?'selected':''}">${x}</button>`).join('')}</div>`],
- feedFilter:['Mein Feed',`<div class="privacy-banner"><b>Wähle selbst, welche Circles in deinem persönlichen Feed erscheinen.</b></div>
-   ${Object.values(circlePresets).map(x=>`<label class="member-check"><span>${x.icon} ${x.name}</span><input type="checkbox" ${x.id!=='work'?'checked':''}></label>`).join('')}`],
- inbox:['Circle Inbox',`<div class="inbox-list">${circleFeatureState.inbox.map(x=>`<button class="inbox-item"><span>${x.icon}</span><span><b>${x.circle}</b><small>${x.text}</small></span><em>${x.count}</em></button>`).join('')}</div>`],
- pulse:['Circle Pulse',`<div class="pulse-list">
-   ${pulseLine('👨‍👩‍👧‍👦','FamilyCircle','🟢 ruhig · 2 neue Nachrichten')}
-   ${pulseLine('🫶','FriendsCircle','🔥 viel los · 18 neue Nachrichten')}
-   ${pulseLine('⚽','SportCircle','⚠️ Terminänderung')}
-   ${pulseLine('💼','WorkCircle','✓ nichts Dringendes')}
-  </div>`],
- bridge:['Circle Bridge',`<div class="bridge-card"><h3>🌉 Etwas zwischen Circles teilen</h3><div class="share-preview">🎂 Tolgas Geburtstag<br><small>Samstag · 19:00</small></div>
-   <p>Private Chats bleiben getrennt. Nur der ausgewählte Inhalt wird geteilt.</p>
-   ${Object.values(circlePresets).filter(x=>x.id!==currentCircleId).map(x=>`<label class="member-check"><span>${x.icon} ${x.name}</span><input type="checkbox"></label>`).join('')}
-   <button class="primary wide">Ausgewählten Inhalt teilen</button></div>`],
- calls:['Voice & Calls',`<div class="call-options"><button>🎙️ Sprachnachricht</button><button>📞 Audioanruf</button><button>🎥 Videoanruf</button><button>👥 Gruppenanruf</button></div>
-   <div class="member-picker">${members.slice(0,4).map(m=>`<label class="member-check"><span>${m.avatar} ${m.name}</span><input type="checkbox"></label>`).join('')}</div>`],
- polls:['Umfrage',`<div class="poll-card"><h3>🍕 Was essen wir heute?</h3><button>Pizza <b>48%</b></button><button>Pasta <b>32%</b></button><button>Salat <b>20%</b></button><small>5 Stimmen · Mehrfachauswahl aus</small></div>`],
- saved:['Gespeichert',`<div class="saved-list">${featureRow('⭐','Mama: Sonntag um 14 Uhr?','FamilyCircle · gestern')}${featureRow('📌','Coach: Training 18:30','SportCircle · heute')}${featureRow('🔗','Reiseplan Sommer','FriendsCircle · Link')}</div>`],
- circles:['Deine Circle Räume',`<div class="circle-room-grid">${Object.values(circlePresets).map(x=>`<button class="circle-room" data-switch-circle="${x.id}"><span>${x.icon}</span><b>${x.name}</b><small>${x.members.length-1} Mitglieder</small></button>`).join('')}</div>`]
+  chatPlus:['Chat+',`<div class="feature-list">
+    ${featureAction('↩️','Antworten / Zitieren','Auf eine einzelne Nachricht antworten','replyDemo')}
+    ${featureAction('❤️','Reaktionen','❤️ 😂 👍 😮 😢','reactionDemo')}
+    ${featureAction('📌','Anpinnen & Ankündigen','Wichtige Nachricht für die Gruppe sichtbar halten','pinDemo')}
+    ${featureAction('✏️','Bearbeiten / Löschen','Eigene Nachricht verwalten','editDemo')}
+    ${featureAction('↗️','Weiterleiten','An Person oder Circle weitergeben','forwardDemo')}
+    ${featureAction('@','@Erwähnungen','Gezielt Mama, Papa usw. ansprechen','mentionDemo')}
+    ${featureAction('✓✓','Lesestatus','Gelesen von Mama, Lisa · offen: Papa','readDemo')}
+    ${featureAction('⭐','Favoriten','Wichtige Nachrichten speichern','saveDemo')}
+    ${featureAction('🔎','Chat-Suche','Nachrichten, Links und Medien finden','searchDemo')}
+    ${featureAction('🔒','Chat-Sperre','Face ID / Touch ID für private Chats vorbereiten','lockDemo')}
+   </div>`],
+  smartActions:['Smart Actions',`<div class="smart-demo"><div class="bubble theirs"><b>Mama</b><br>Sonntag um 14 Uhr bei Oma?</div>
+    <button class="smart-action" data-smart="calendar">📅 Zum Kalender hinzufügen</button>
+    <div class="bubble theirs"><b>Papa</b><br>Kann jemand Milch mitbringen?</div>
+    <button class="smart-action" data-smart="list">🛒 Zur Einkaufsliste hinzufügen</button>
+    <div class="bubble theirs"><b>Lisa</b><br>Erinnert mich morgen an den Arzt.</div>
+    <button class="smart-action" data-smart="reminder">⏰ Erinnerung erstellen</button></div>`],
+  lists:['Gemeinsame Listen',circleFeatureState.lists.map((l,li)=>`<div class="list-card"><b>${l.icon} ${l.title}</b>${l.items.map((x,i)=>`<label><input class="shared-list-check" data-list="${li}" data-item="${i}" type="checkbox" ${i<l.done?'checked':''}> <span>${x}</span></label>`).join('')}<button class="ghost list-add" data-list="${li}">＋ Eintrag</button></div>`).join('')],
+  whoCan:['Wer kann?',`<div class="request-card"><h3>🚗 Wer kann Lisa morgen um 16:00 abholen?</h3>
+    ${['Mama ❌','Papa ✅','Tolga ❓'].map((x,i)=>`<button class="choice-line who-choice" data-choice="${i}">${x}</button>`).join('')}
+    <div id="whoResult" class="success-banner">✓ Papa übernimmt · Aufgabe erledigt</div></div>`],
+  moments:['Circle Moments',`<div class="moment-cover">📸<b>Unser Tag</b><small>6 Fotos · 3 Mitglieder</small></div>
+    <div class="moment-grid"><div>🌅</div><div>🍕</div><div>⚽</div><div>❤️</div></div>
+    <button id="momentAdd" class="primary wide">＋ Moment hinzufügen</button>`],
+  memories:['Damals',`<div class="memory-card"><span>❤️ Vor genau einem Jahr</span><h3>Familienausflug am Bodensee</h3><div class="memory-photo">🏞️</div><p>12 Fotos · 4 Chatmomente</p><button class="secondary wide" id="memoryShare">Mit ${c.name} teilen</button></div>`],
+  capsule:['Circle Capsule',`<div class="capsule-card"><div class="capsule-lock">🔐</div><h3>Lisas 18. Geburtstag</h3><p>Alle können Fotos, Videos und Sprachnachrichten hineinlegen.</p><b>Öffnet am 17.07.2034</b><button id="capsuleAdd" class="secondary wide">Beitrag hinzufügen</button><button id="capsuleSeal" class="primary wide">Zeitkapsel schließen</button></div>`],
+  arrived:['Bin angekommen',`<div class="place-grid">${['🏠 Zuhause','🏫 Schule','🏢 Arbeit','⚽ Verein'].map(x=>`<button class="place-card arrival-place">${x}</button>`).join('')}</div>
+    <div class="privacy-banner">Freiwillig: Nur ausgewählte Personen bekommen die Ankunftsmeldung. Danach endet die Freigabe automatisch.</div>`],
+  safety:['Safety Hub',`<div class="safety-actions"><button class="safety-red" data-safety="sos">🚨 SOS vorbereiten</button><button class="safety-yellow" data-safety="pickup">🚗 Hol mich ab</button><button class="safety-blue" data-safety="location">📍 Standort zeitlich teilen</button></div>
+    <div class="info-banner">Demo: Empfänger, Dauer und Standortfreigabe werden vorher festgelegt. Es wird nichts real versendet.</div>`],
+  safeWalk:['Safe Walk',`<div class="safe-walk-card"><div class="walk-route">📍────🚶────🏠</div><h3>Begleite mich</h3><p>Geschätzte Dauer: 18 Minuten</p><button id="safeWalkToggle" class="primary wide">${circleFeatureState.safeWalk?'✓ Safe Walk läuft':'Safe Walk starten'}</button><small>Nach Ankunft endet die Freigabe automatisch.</small></div>`],
+  doorbell:['Circle Doorbell',`<div class="doorbell-card"><div class="doorbell-big">🔔</div><h3>Hat jemand kurz Zeit?</h3><div class="quick-status"><button data-door="☕">☕ Quatschen</button><button data-door="📞">📞 Kurzer Anruf</button><button data-door="🎮">🎮 Spielen</button></div><button id="doorbellToggle" class="primary wide">${circleFeatureState.doorbell?'✓ Verfügbar':'Jetzt verfügbar anzeigen'}</button></div>`],
+  mood:['Stimmung',`<div class="mood-grid">${['😊 Gut','😴 Müde','🤒 Krank','📚 Beschäftigt','💼 Arbeit','🚗 Unterwegs','🏠 Zuhause','🔕 Bitte nicht stören'].map(x=>`<button class="mood-choice ${x===circleFeatureState.mood?'selected':''}">${x}</button>`).join('')}</div><p class="small muted">Nur sichtbar, wenn du es selbst aktiv setzt.</p>`],
+  feedFilter:['Mein Feed',`<div class="privacy-banner"><b>Wähle deine Circles für „Mein Feed“.</b><br><span class="small">Die Circles bleiben getrennt; nur ausgewählte Beiträge werden in deiner persönlichen Ansicht zusammengeführt.</span></div>
+    ${Object.values(circlePresets).map(x=>`<label class="member-check"><span>${x.icon} ${x.name}</span><input class="custom-feed-check" data-circle="${x.id}" type="checkbox" ${custom.includes(x.id)?'checked':''}></label>`).join('')}<button id="saveCustomFeed" class="primary wide" style="margin-top:12px">Mein Feed speichern</button>`],
+  inbox:['Circle Inbox',`<div class="inbox-list">${circleFeatureState.inbox.map(x=>`<button class="inbox-item" data-inbox-circle="${x.id}"><span>${x.icon}</span><span><b>${x.circle}</b><small>${x.text}</small></span><em>${x.count}</em></button>`).join('')}</div>`],
+  pulse:['Circle Pulse',`<div class="pulse-list">${pulseLine('👨‍👩‍👧‍👦','FamilyCircle','🟢 ruhig · 2 neue Nachrichten')}${pulseLine('🫶','FriendsCircle','🔥 viel los · 18 neue Nachrichten')}${pulseLine('⚽','SportCircle','⚠️ Terminänderung')}${pulseLine('💼','WorkCircle','✓ nichts Dringendes')}${pulseLine('✈️','TravelCircle','🎫 Tickets gespeichert')}</div>`],
+  bridge:['Circle Bridge',`<div class="bridge-card"><h3>🌉 Etwas zwischen Circles teilen</h3><div class="share-preview">🎂 Tolgas Geburtstag<br><small>Samstag · 19:00</small></div><p>Private Chats bleiben unsichtbar. Nur dieser eine Inhalt wird geteilt.</p>${Object.values(circlePresets).filter(x=>x.id!==currentCircleId).map(x=>`<label class="member-check"><span>${x.icon} ${x.name}</span><input class="bridge-check" data-circle="${x.id}" type="checkbox"></label>`).join('')}<button id="bridgeShare" class="primary wide">Ausgewählten Inhalt teilen</button></div>`],
+  calls:['Voice & Calls',`<div class="voice-demo"><button id="voicePlay" class="voice-play">▶</button><div class="voice-wave">▂▅▃▇▄▆▂▅▇▃▆▄▂▇</div><button id="voiceSpeed" class="voice-speed">1×</button></div><div class="call-options"><button data-call="voice">🎙️ Sprachnachricht</button><button data-call="audio">📞 Audioanruf</button><button data-call="video">🎥 Videoanruf</button><button data-call="group">👥 Gruppenanruf</button></div><div class="member-picker">${members.filter(m=>m.name!==activeCircle().label).slice(0,4).map(m=>`<label class="member-check"><span>${m.avatar} ${m.name}</span><input type="checkbox"></label>`).join('')}</div>`],
+  polls:['Umfrage',`<div class="poll-card"><h3>🍕 Was essen wir heute?</h3><button class="poll-option" data-poll="Pizza">Pizza <b>48%</b></button><button class="poll-option" data-poll="Pasta">Pasta <b>32%</b></button><button class="poll-option" data-poll="Salat">Salat <b>20%</b></button><small>5 Stimmen · Mehrfachauswahl aus</small></div>`],
+  saved:['Gespeichert',`<div class="saved-list">${featureRow('⭐','Mama: Sonntag um 14 Uhr?','FamilyCircle · gestern')}${featureRow('📌','Coach: Training 18:30','SportCircle · heute')}${featureRow('🔗','Reiseplan Sommer','FriendsCircle · Link')}</div>`],
+  circles:['Deine Circle Räume',`<div class="circle-room-grid">${Object.values(circlePresets).map(x=>`<button class="circle-room" data-switch-circle="${x.id}"><span>${x.icon}</span><b>${x.name}</b><small>${x.members.length-1} Mitglieder</small></button>`).join('')}</div>`]
  };
- const d=sheets[key]||['Funktion','Demo'];
- const s=demoSheet(d[0],d[1]);
- s.querySelectorAll('.smart-action,.choice-line,.place-card,.quick-status button,.call-options button,.poll-card button,.primary,.secondary,.ghost').forEach(b=>b.addEventListener('click',()=>toast('Demo-Aktion gespeichert.')));
- s.querySelectorAll('.mood-choice').forEach(b=>b.onclick=()=>{circleFeatureState.mood=b.textContent; s.remove(); toast('Stimmung aktualisiert: '+b.textContent);});
- s.querySelector('#safeWalkToggle')?.addEventListener('click',()=>{circleFeatureState.safeWalk=!circleFeatureState.safeWalk; toast(circleFeatureState.safeWalk?'Safe Walk gestartet':'Safe Walk beendet');});
- s.querySelector('#doorbellToggle')?.addEventListener('click',()=>{circleFeatureState.doorbell=!circleFeatureState.doorbell; toast(circleFeatureState.doorbell?'Du bist jetzt verfügbar':'Verfügbarkeit beendet');});
+ const d=sheets[key]||['Funktion','Demo']; const s=demoSheet(d[0],d[1]);
  s.querySelectorAll('[data-switch-circle]').forEach(b=>b.onclick=()=>{s.remove();applyCircle(b.dataset.switchCircle)});
+ s.querySelectorAll('[data-inbox-circle]').forEach(b=>b.onclick=()=>{s.remove();applyCircle(b.dataset.inboxCircle)});
+ s.querySelectorAll('.mood-choice').forEach(b=>b.onclick=()=>{circleFeatureState.mood=b.textContent;localStorage.setItem('fc-mood',b.textContent);s.remove();toast('Stimmung: '+b.textContent)});
+ s.querySelector('#safeWalkToggle')?.addEventListener('click',()=>{circleFeatureState.safeWalk=!circleFeatureState.safeWalk;localStorage.setItem('fc-safe-walk',circleFeatureState.safeWalk?'1':'0');s.remove();toast(circleFeatureState.safeWalk?'Safe Walk gestartet':'Safe Walk beendet')});
+ s.querySelector('#doorbellToggle')?.addEventListener('click',()=>{circleFeatureState.doorbell=!circleFeatureState.doorbell;localStorage.setItem('fc-doorbell',circleFeatureState.doorbell?'1':'0');s.remove();toast(circleFeatureState.doorbell?'Du bist jetzt verfügbar':'Verfügbarkeit beendet')});
+ let speeds=['1×','1,5×','2×'],speedIndex=0;s.querySelector('#voiceSpeed')?.addEventListener('click',e=>{speedIndex=(speedIndex+1)%3;e.currentTarget.textContent=speeds[speedIndex]});
+ s.querySelector('#voicePlay')?.addEventListener('click',e=>{e.currentTarget.textContent=e.currentTarget.textContent==='▶'?'❚❚':'▶'});
+ s.querySelectorAll('[data-smart]').forEach(b=>b.onclick=()=>toast(b.dataset.smart==='calendar'?'Termin zum Kalender hinzugefügt':b.dataset.smart==='list'?'Zur Einkaufsliste hinzugefügt':'Erinnerung erstellt'));
+ s.querySelectorAll('.who-choice').forEach(b=>b.onclick=()=>{const r=s.querySelector('#whoResult');r.textContent='✓ '+b.textContent.replace(/[❌✅❓]/g,'').trim()+' übernimmt · Aufgabe erledigt'});
+ s.querySelectorAll('.arrival-place').forEach(b=>b.onclick=()=>toast('Ankunftsmeldung vorbereitet: '+b.textContent));
+ s.querySelectorAll('[data-safety]').forEach(b=>b.onclick=()=>toast(b.dataset.safety==='pickup'?'„Hol mich ab“-Anfrage vorbereitet':b.dataset.safety==='location'?'Zeitliche Standortfreigabe vorbereitet':'SOS-Bestätigung geöffnet – Demo'));
+ s.querySelectorAll('[data-door]').forEach(b=>b.onclick=()=>toast(b.dataset.door+' Verfügbarkeit geteilt'));
+ s.querySelectorAll('[data-call]').forEach(b=>b.onclick=()=>toast('Demo: '+b.textContent.trim()+' vorbereitet'));
+ s.querySelectorAll('.poll-option').forEach(b=>b.onclick=()=>toast('Stimme für '+b.dataset.poll+' gespeichert'));
+ s.querySelectorAll('.feature-action').forEach(b=>b.onclick=()=>toast(b.dataset.action==='readDemo'?'Gelesen von Mama, Lisa · noch nicht Papa':'Chat-Aktion: '+b.querySelector('b').textContent));
+ s.querySelector('#momentAdd')?.addEventListener('click',()=>galleryInput.click());
+ s.querySelector('#memoryShare')?.addEventListener('click',()=>toast('Erinnerung im '+c.name+' geteilt'));
+ s.querySelector('#capsuleAdd')?.addEventListener('click',()=>galleryInput.click());
+ s.querySelector('#capsuleSeal')?.addEventListener('click',()=>toast('Zeitkapsel geschlossen · Demo'));
+ s.querySelector('#saveCustomFeed')?.addEventListener('click',()=>{const ids=[...s.querySelectorAll('.custom-feed-check:checked')].map(x=>x.dataset.circle);setCustomFeedCircles(ids);setFeedScope('custom');s.remove();toast('Mein Feed gespeichert')});
+ s.querySelector('#bridgeShare')?.addEventListener('click',()=>{const n=s.querySelectorAll('.bridge-check:checked').length;toast(n?n+' Circle(s) ausgewählt – Inhalt geteilt':'Bitte mindestens einen Circle auswählen')});
 }
+function featureAction(icon,titleText,sub,action){return `<button class="feature-row feature-action" data-action="${action}"><span>${icon}</span><span><b>${titleText}</b><small>${sub}</small></span><i>›</i></button>`}
 function featureRow(icon,titleText,sub){return `<div class="feature-row"><span>${icon}</span><span><b>${titleText}</b><small>${sub}</small></span><i>›</i></div>`}
 function pulseLine(icon,name,status){return `<div class="pulse-line"><span>${icon}</span><span><b>${name}</b><small>${status}</small></span></div>`}
 
 function statusView(){
- return `<div class="section-pad">
-  <h2 style="margin:2px 0 10px">Status</h2>
-  <p class="muted" style="margin-top:0">Aktuelle Statusmeldungen der Mitglieder · Demo</p>
- </div>
- ${card(`<div class="setting-row"><span class="setting-icon">👩</span><span class="setting-copy"><b>Mama</b><small>vor 12 Min</small></span><span>●</span></div>
- <div class="setting-row"><span class="setting-icon">👨</span><span class="setting-copy"><b>Papa</b><small>vor 35 Min</small></span><span>●</span></div>
- <div class="setting-row"><span class="setting-icon">👧</span><span class="setting-copy"><b>Lisa</b><small>Heute, 17:40</small></span><span>●</span></div>
- <div class="setting-row"><span class="setting-icon">👦</span><span class="setting-copy"><b>Noah</b><small>Heute, 16:15</small></span><span>●</span></div>`)}
- `;
+ return `<div class="section-pad"><h2 style="margin:2px 0 6px">Status & Moments</h2><p class="muted" style="margin-top:0">Kurzstatus, Tagesmomente und Erinnerungen · freiwillig</p></div>
+ ${card(`<div class="card-title-row"><h3>😊 Deine Stimmung</h3><button class="ghost feature-open" data-feature="mood">Ändern</button></div><div class="status-mood-current">${circleFeatureState.mood}</div>`)}
+ ${card(`<div class="card-title-row"><h3>📸 Unser Tag</h3><button class="ghost feature-open" data-feature="moments">Öffnen</button></div><div class="moment-mini"><span>🌅</span><span>🍕</span><span>⚽</span><span>❤️</span></div><button class="secondary wide feature-open" data-feature="memories" style="margin-top:10px">🕰️ Damals anzeigen</button>`)}
+ ${card(`<h3>Aktuelle Statusmeldungen</h3><div class="setting-row"><span class="setting-icon">👩</span><span class="setting-copy"><b>Mama</b><small>☕ Hat Zeit zum Quatschen · vor 12 Min</small></span><span>●</span></div><div class="setting-row"><span class="setting-icon">👨</span><span class="setting-copy"><b>Papa</b><small>🚗 Unterwegs · vor 35 Min</small></span><span>●</span></div><div class="setting-row"><span class="setting-icon">👧</span><span class="setting-copy"><b>Lisa</b><small>📚 Beschäftigt · 17:40</small></span><span>●</span></div><div class="setting-row"><span class="setting-icon">👦</span><span class="setting-copy"><b>Noah</b><small>⚽ Training · 16:15</small></span><span>●</span></div>`)}
+ <div class="section-pad"><button class="primary wide feature-open" data-feature="doorbell">🔔 Circle Doorbell</button></div>`;
 }
 function showStatus(){
  current='status'; currentChat=null; navItems.forEach(b=>b.classList.remove('active'));
  feedTop.classList.remove('active'); settingsTop.classList.remove('active'); statusTop.classList.add('active');
- title.textContent='Status'; content.innerHTML=statusView(); window.scrollTo({top:0,behavior:'instant'});
+ title.textContent='Status'; content.innerHTML=statusView(); bind(); window.scrollTo({top:0,behavior:'instant'});
 }
 
 function show(tab){
@@ -414,10 +456,11 @@ function openFamilyChat(){
    </div>
   </div>
   <div class="messages" id="messages">
-   <div class="bubble theirs group-person-message message-actionable" data-person-chat="0"><button class="message-sender" data-person-chat="0">${chatData[0].name}</button><br>${safe(chatData[0].preview)}<span class="msg-time">12:35</span></div>
+   <div class="bubble theirs group-person-message message-actionable" data-person-chat="0"><button class="message-sender" data-person-chat="0">${chatData[0].name}</button><br>${safe(chatData[0].preview)}<button class="inline-smart" data-smart-open="list">🛒 Zur Einkaufsliste</button><span class="msg-time">12:35</span></div>
    <div class="bubble theirs group-person-message message-actionable" data-person-chat="1"><button class="message-sender" data-person-chat="1">${chatData[1].name}</button><br>${safe(chatData[1].preview)}<span class="msg-time">12:37</span></div>
    <div class="bubble mine message-actionable">Alles klar 😊<span class="msg-time">12:38 ✓✓</span></div>
    <div class="bubble theirs group-person-message message-actionable" data-person-chat="2"><button class="message-sender" data-person-chat="2">${chatData[2].name}</button><br>${safe(chatData[2].preview)}<span class="msg-time">12:39</span></div>
+   <div class="bubble theirs voice-bubble message-actionable"><b>${chatData[3]?.name||'Noah'}</b><div class="voice-demo compact-voice"><button class="voice-inline-play">▶</button><div class="voice-wave">▂▅▃▇▄▆▂▅▇▃▆</div><button class="voice-inline-speed">1×</button></div><span class="msg-time">12:41</span></div>
   </div>
   <div class="chat-composer">
    <button id="attach">＋</button><textarea id="msg" class="chat-message-input" rows="1" maxlength="4000" placeholder="Nachricht an ${activeCircle().label}"></textarea>
@@ -437,6 +480,9 @@ function openFamilyChat(){
    el.onclick=(e)=>{ e.stopPropagation(); openChat(Number(el.dataset.personChat)); };
  });
  setupChatInput();
+ document.querySelectorAll('[data-smart-open]').forEach(b=>b.onclick=e=>{e.stopPropagation();openFeature('smartActions')});
+ document.querySelectorAll('.voice-inline-play').forEach(b=>b.onclick=e=>{e.stopPropagation();b.textContent=b.textContent==='▶'?'❚❚':'▶'});
+ document.querySelectorAll('.voice-inline-speed').forEach(b=>b.onclick=e=>{e.stopPropagation();const speeds=['1×','1,5×','2×'];b.textContent=speeds[(speeds.indexOf(b.textContent)+1)%3]});
  window.scrollTo({top:0,behavior:'instant'});
 }
 
@@ -463,9 +509,10 @@ function openChat(i){
    </div>
   </div>
   <div class="messages" id="messages">
-   <div class="bubble mine">Kannst du nachher noch Brot mitbringen? 😊<span class="msg-time">12:40 ✓✓</span></div>
-   <div class="bubble theirs">Klar, mache ich! 🥖<span class="msg-time">12:41</span></div>
-   <div class="bubble mine">Danke! ❤️<span class="msg-time">12:42 ✓✓</span></div>
+   <div class="bubble mine message-actionable">Kannst du nachher noch Brot mitbringen? 😊<span class="msg-time">12:40 ✓✓</span></div>
+   <div class="bubble theirs message-actionable">Klar, mache ich! 🥖<span class="msg-time">12:41</span></div>
+   <div class="bubble theirs voice-bubble message-actionable"><div class="voice-demo compact-voice"><button class="voice-inline-play">▶</button><div class="voice-wave">▂▅▃▇▄▆▂▅▇▃</div><button class="voice-inline-speed">1×</button></div><span class="msg-time">12:42</span></div>
+   <div class="bubble mine message-actionable">Danke! ❤️<span class="msg-time">12:43 ✓✓</span></div>
   </div>
   <div class="chat-composer">
    <button id="attach">＋</button><textarea id="msg" class="chat-message-input" rows="1" maxlength="4000" placeholder="Nachricht"></textarea>
@@ -483,6 +530,7 @@ function openChat(i){
  document.getElementById('send').addEventListener('pointerdown',e=>e.preventDefault());
  document.getElementById('send').onclick=sendMessage;
  setupChatInput();
+ bind();
 }
 
 
@@ -694,25 +742,13 @@ function storyStrip(){
  </div>`;
 }
 function feedView(){
- const scope=getFeedScope();
- const c=activeCircle();
- const scopeBanner=`<div class="section-pad"><div class="feed-scope-banner">
-   <span>${scope==='all'?'🌐':'🔒'}</span>
-   <div><b>${scope==='all'?'Feed aus allen Circles':'Feed nur in '+c.name}</b>
-   <small>${scope==='all'?'Beiträge aus deinen Circles werden gemeinsam angezeigt.':'Beiträge bleiben innerhalb des aktuell geöffneten Circles.'}</small></div>
-   <button id="feedScopeQuick" class="ghost">Ändern</button>
- </div></div>`;
- const ownPosts=
-   postHtml(0,c.icon,c.members[0]?.name||'Mitglied','Heute, 14:05',c.icon,`${c.name}: Schöner gemeinsamer Moment ❤️`,12,5)+
-   postHtml(1,c.members[1]?.avatar||'🙂',c.members[1]?.name||'Mitglied','Heute, 12:22','',`Neuigkeiten aus ${c.name} 😊`,8,4);
- const allPosts=
-   postHtml(0,'👨‍👩‍👧‍👦','Mama · FamilyCircle','Heute, 14:05','👨‍👩‍👧‍👦','Sonntag zusammen ❤️',12,5)+
-   postHtml(1,'🫶','Mert · FriendsCircle','Heute, 13:40','', 'Wer ist heute Abend dabei? 😄',9,3)+
-   postHtml(2,'💼','Anna · WorkCircle','Heute, 11:15','', 'Projekt-Meilenstein geschafft ✅',7,2)+
-   postHtml(3,'⚽','Coach · SportCircle','Heute, 09:30','', 'Training heute 18:30 ⚽',11,4);
- return storyStrip()+scopeBanner+`<div class="card composer-card"><div class="avatar small">🙂</div><button id="newPost" class="composer-launch">Was möchtest du teilen?</button></div>
- <div class="section-pad"><div class="mini-actions"><button id="postPhoto">📷 Foto/Video</button><button id="postText">✍️ Text</button><button id="postAlbum">🖼️ Album</button></div></div>
- ${scope==='all'?allPosts:ownPosts}`;
+ const scope=getFeedScope(),c=activeCircle(),custom=getCustomFeedCircles();
+ const scopeTitle=feedScopeLabel(scope);
+ const scopeSub=scope==='all'?'Beiträge aus all deinen Circles':scope==='custom'?`${custom.length} ausgewählte Circles`:`Nur ${c.name}`;
+ const scopeBanner=`<div class="section-pad"><div class="feed-scope-banner"><span>${scope==='circle'?'🔒':scope==='custom'?'🎛️':'🌐'}</span><div><b>${scopeTitle}</b><small>${scopeSub}</small></div><button id="feedScopeQuick" class="ghost">Ändern</button></div><div class="feed-category-chips"><button>📸 Moment</button><button>📢 Wichtig</button><button>🎂 Ereignis</button><button>📊 Abstimmung</button></div></div>`;
+ const posts={family:postHtml(0,'👩','Mama · FamilyCircle','Heute, 14:05','👨‍👩‍👧‍👦','Sonntag zusammen ❤️',12,5),friends:postHtml(1,'🧑','Mert · FriendsCircle','Heute, 13:40','', 'Wer ist heute Abend dabei? 😄',9,3),girls:postHtml(2,'👧','Lisa · GirlsCircle','Heute, 12:30','', 'Outfit-Abstimmung 👗',7,4),work:postHtml(3,'👩‍💼','Anna · WorkCircle','Heute, 11:15','', 'Projekt-Meilenstein geschafft ✅',7,2),sport:postHtml(4,'🧑‍🏫','Coach · SportCircle','Heute, 09:30','', 'Training heute 18:30 ⚽',11,4),travel:postHtml(5,'🧳','Mia · TravelCircle','Gestern','✈️','Tickets sind gespeichert!',6,2),school:postHtml(6,'👩‍🏫','Frau Weber · SchoolCircle','Gestern','🎓','Elternabend am Donnerstag',5,1),couple:postHtml(7,'🥰','Alex · CoupleCircle','Gestern','❤️','Dinner-Date geplant',8,2)};
+ let selected=scope==='circle'?[currentCircleId]:scope==='all'?Object.keys(posts):custom;
+ return storyStrip()+scopeBanner+`<div class="card composer-card"><div class="avatar small">🙂</div><button id="newPost" class="composer-launch">Was möchtest du teilen?</button></div><div class="section-pad"><div class="mini-actions"><button id="postPhoto">📷 Foto/Video</button><button id="postText">✍️ Text</button><button id="postAlbum">🖼️ Album</button></div></div>${selected.map(id=>posts[id]).filter(Boolean).join('')}`;
 }
 function postHtml(id,av,name,time,img,text,likes,thumbs){
  return `<article class="post">
@@ -799,7 +835,8 @@ function locationView(){
  <div class="form-row"><label>Dauer der Freigabe</label><select id="duration"><option>15 Minuten</option><option selected>1 Stunde</option><option>Bis heute Abend</option><option>24 Stunden</option><option>Bis ich es beende</option></select></div>
  <div class="grid2"><button id="startLocation" class="primary">Freigabe starten</button><button id="stopLocation" class="danger">Alle stoppen</button></div>`)
  +card(`<h3>Familienkarte · Demo</h3><div class="map-card"><div class="map-road"></div><span class="pin p1">👩</span><span class="pin p2">👨</span><span class="pin p3">👧</span></div>
- <div class="location-status"><span>🛡️</span><span class="small muted">Standortverlauf wird in der echten App nur für den vorgesehenen Zweck und nach deiner Freigabe verwendet.</span></div>`);
+ <div class="location-status"><span>🛡️</span><span class="small muted">Standortverlauf wird nur nach deiner Freigabe verwendet.</span></div>`)
+ +card(`<h3>🛟 Sicherheit unterwegs</h3><div class="grid2"><button class="secondary feature-open" data-feature="safeWalk">🚶 Safe Walk</button><button class="secondary feature-open" data-feature="arrived">🏠 Bin angekommen</button></div><button class="primary wide feature-open" data-feature="safety" style="margin-top:10px">Safety Hub öffnen</button>`);
 }
 
 function gamesView(){
@@ -862,10 +899,12 @@ function openSetting(key){
  <p class="small muted">Vor einer App-Store-Version werden hier die vollständige Datenschutzerklärung, Aufbewahrungsfristen, Widerrufsmöglichkeiten und Kontaktinformationen ergänzt.</p>`],
  permissions:['Berechtigungen',`<div class="member-check"><span>📍 Standort</span><span class="small muted">Nicht geprüft · Demo</span></div><div class="member-check"><span>📷 Kamera</span><span class="small muted">Bei Nutzung fragen</span></div><div class="member-check"><span>🎙️ Mikrofon</span><span class="small muted">Bei Nutzung fragen</span></div><div class="member-check"><span>🖼️ Fotos</span><span class="small muted">Bei Nutzung fragen</span></div><div class="member-check"><span>🔔 Mitteilungen</span><span class="small muted">Bei Nutzung fragen</span></div>`],
  visibility:['Sichtbarkeit',`<div class="form-row"><label>Standard für Stories</label><select><option>Alle Familienmitglieder</option><option>Ausgewählte Mitglieder</option></select></div><div class="form-row"><label>Standard für Feed-Beiträge</label><select><option>Alle Familienmitglieder</option><option>Ausgewählte Mitglieder</option></select></div><div class="form-row"><label>Standard für Kalender</label><select><option>Beim Erstellen fragen</option><option>Alle</option></select></div>`],
- feedScope:['Feed-Anzeige',`<div class="privacy-banner"><b>📰 Welche Beiträge möchtest du sehen?</b><br><span class="small">Diese Einstellung gilt für deine persönliche Feed-Ansicht.</span></div>
- <label class="feed-choice"><input type="radio" name="feedScopeChoice" value="circle" ${getFeedScope()==='circle'?'checked':''}><span><b>Nur aktueller Circle</b><small>FamilyCircle, FriendsCircle usw. bleiben im Feed getrennt.</small></span></label>
- <label class="feed-choice"><input type="radio" name="feedScopeChoice" value="all" ${getFeedScope()==='all'?'checked':''}><span><b>Alle Circles zusammen</b><small>Beiträge aus allen deinen Circles erscheinen in einem gemeinsamen Feed.</small></span></label>
- <div id="feedScopeSaved" class="info-banner" style="margin-top:12px">Aktuell: ${getFeedScope()==='all'?'Alle Circles zusammen':'Nur aktueller Circle'}</div>`],
+ feedScope:['Feed-Anzeige',`<div class="privacy-banner"><b>📰 Welche Beiträge möchtest du sehen?</b><br><span class="small">Diese Einstellung gilt nur für deine persönliche Ansicht.</span></div>
+ <label class="feed-choice"><input type="radio" name="feedScopeChoice" value="circle" ${getFeedScope()==='circle'?'checked':''}><span><b>Nur aktueller Circle</b><small>Jeder Circle bleibt im Feed vollständig getrennt.</small></span></label>
+ <label class="feed-choice"><input type="radio" name="feedScopeChoice" value="all" ${getFeedScope()==='all'?'checked':''}><span><b>Alle Circles zusammen</b><small>Beiträge aus allen Circles in einer Ansicht.</small></span></label>
+ <label class="feed-choice"><input type="radio" name="feedScopeChoice" value="custom" ${getFeedScope()==='custom'?'checked':''}><span><b>Mein Feed</b><small>Wähle selbst, welche Circles zusammen angezeigt werden.</small></span></label>
+ <button id="configureCustomFeed" class="secondary wide" style="margin-top:10px">🎛️ Mein Feed auswählen</button>
+ <div id="feedScopeSaved" class="info-banner" style="margin-top:12px">Aktuell: ${feedScopeLabel(getFeedScope())}</div>`],
  blocked:['Blockierte Mitglieder',`<p class="muted">Keine blockierten Mitglieder.</p><button class="ghost wide">Mitglied auswählen · Demo</button>`],
  hubSettings:['Circle Hub',`<div class="privacy-banner"><b>✨ Circle Hub</b><br>Alle erweiterten Funktionen findest du oben über „Hub“: Catch-up, Board, Listen, Safe Walk, Zeitkapsel, Circle Inbox und mehr.</div><button id="openHubFromSettings" class="primary wide" style="margin-top:12px">Circle Hub öffnen</button>`],
  notifications:['Benachrichtigungen',`<div class="member-check"><span>💬 Chat-Nachrichten</span><input type="checkbox" checked></div><div class="member-check"><span>📅 Kalender-Erinnerungen</span><input type="checkbox" checked></div><div class="member-check"><span>🚨 SOS-Mitteilungen</span><input type="checkbox" checked></div><div class="member-check"><span>🎮 Spiel-Ranglisten</span><input type="checkbox"></div>`],
@@ -882,9 +921,10 @@ function openSetting(key){
    s.querySelectorAll('input[name="feedScopeChoice"]').forEach(r=>r.addEventListener('change',()=>{
      setFeedScope(r.value);
      const saved=s.querySelector('#feedScopeSaved');
-     if(saved)saved.textContent='Gespeichert: '+(r.value==='all'?'Alle Circles zusammen':'Nur aktueller Circle');
+     if(saved)saved.textContent='Gespeichert: '+feedScopeLabel(r.value);
    }));
  }
+ s.querySelector('#configureCustomFeed')?.addEventListener('click',()=>{s.remove();openFeature('feedFilter')});
  s.querySelectorAll('button.danger,button.secondary,button.ghost').forEach(b=>{if(!b.classList.contains('close-sheet'))b.addEventListener('click',()=>toast('Demo-Aktion ausgeführt.'))});
 }
 
@@ -912,7 +952,10 @@ function bind(){
  document.querySelectorAll('.feature-open').forEach(b=>b.onclick=()=>openFeature(b.dataset.feature));
  document.getElementById('catchUpBtn')?.addEventListener('click',()=>openFeature('inbox'));
  document.getElementById('pulseBtn')?.addEventListener('click',()=>openFeature('pulse'));
- document.querySelectorAll('.message-actionable').forEach(b=>b.addEventListener('click',e=>{if(e.target.closest('.message-sender'))return;openFeature('chatPlus')}));
+ document.querySelectorAll('.message-actionable').forEach(b=>b.addEventListener('click',e=>{if(e.target.closest('.message-sender,.inline-smart,.voice-inline-play,.voice-inline-speed'))return;openFeature('chatPlus')}));
+ document.querySelectorAll('[data-smart-open]').forEach(b=>b.onclick=e=>{e.stopPropagation();openFeature('smartActions')});
+ document.querySelectorAll('.voice-inline-play').forEach(b=>b.onclick=e=>{e.stopPropagation();b.textContent=b.textContent==='▶'?'❚❚':'▶'});
+ document.querySelectorAll('.voice-inline-speed').forEach(b=>b.onclick=e=>{e.stopPropagation();const speeds=['1×','1,5×','2×'];b.textContent=speeds[(speeds.indexOf(b.textContent)+1)%3]});
 
 }
 
@@ -956,10 +999,11 @@ cameraInput.onchange=e=>{if(e.target.files?.[0]){toast('Demo: Kamera-Medium ausg
 scoreInput.onchange=e=>{if(e.target.files?.[0]){toast('Demo: Highscore-Screenshot ausgewählt.');e.target.value=''}};
 
 show('chat');
+console.info('FamilyCircle build V18 loaded');
 
 if(circleSwitchBtn){circleSwitchBtn.onclick=openCircleSwitcher; document.body.dataset.circle=activeCircle().theme; updateCircleHeader();}
+
+hubTop?.addEventListener('click',()=>show('hub'));
 document.addEventListener('click',e=>{
  if(e.target?.id==='openHubFromSettings'){document.querySelector('.sheet')?.remove();show('hub');}
 });
-
-if(hubTop){hubTop.addEventListener('click',()=>show('hub'));}
