@@ -1,5 +1,5 @@
 
-// Cirvela V23: aggressively remove stale demo caches/service workers from older test builds.
+// Cirvela V24: aggressively remove stale demo caches/service workers from older test builds.
 (async function resetOldDemoCache(){
   try{
     if ('caches' in window){
@@ -330,7 +330,7 @@ function applyCircle(id){
  updateCircleHeader();
  modalRoot.innerHTML='';
  show('chat');
-console.info('Cirvela build V23 loaded');
+console.info('Cirvela build V24 loaded');
  toast(c.name+' geöffnet');
 }
 function openCircleSwitcher(){
@@ -1193,7 +1193,7 @@ cameraInput.onchange=e=>{if(e.target.files?.[0]){toast('Demo: Kamera-Medium ausg
 scoreInput.onchange=e=>{if(e.target.files?.[0]){toast('Demo: Highscore-Screenshot ausgewählt.');e.target.value=''}};
 
 show('chat');
-console.info('Cirvela build V23 loaded');
+console.info('Cirvela build V24 loaded');
 
 if(circleSwitchBtn){circleSwitchBtn.onclick=openCircleSwitcher;} document.body.dataset.circle=activeCircle().theme; applyCircleDesign(currentCircleId); updateCircleHeader(); renderCircleCarousel();
 

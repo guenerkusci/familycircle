@@ -978,3 +978,47 @@ body{padding-bottom:calc(80px + env(safe-area-inset-bottom))!important}
 .chat-header{top:var(--cirvela-topbar-offset)!important}
 body.keyboard-open .chat-header{top:0!important}
 @media (max-width:430px){:root{--cirvela-topbar-offset:112px}}
+
+
+/* V24 – ausschließlich Layoutkorrektur der oberen Leiste:
+   Cirvela/Tools oben, Circle-Karussell immer darunter, ohne Überlagerung. */
+.topbar{
+  display:block !important;
+  width:100% !important;
+  min-height:0 !important;
+}
+.brandline{
+  display:flex !important;
+  width:100% !important;
+  align-items:flex-start !important;
+  justify-content:space-between !important;
+  gap:10px !important;
+}
+.brandblock{
+  position:relative !important;
+  z-index:2 !important;
+  flex:1 1 auto !important;
+  min-width:0 !important;
+}
+.header-tools{
+  position:relative !important;
+  z-index:2 !important;
+  flex:0 0 auto !important;
+}
+.circle-carousel{
+  position:relative !important;
+  z-index:1 !important;
+  width:100% !important;
+  clear:both !important;
+  margin-top:8px !important;
+  padding-top:7px !important;
+}
+/* tatsächliche Höhe des nun zweizeiligen Kopfbereichs */
+:root{--cirvela-topbar-offset:142px}
+.chat-header{top:var(--cirvela-topbar-offset) !important}
+body.keyboard-open .chat-header{top:0 !important}
+
+@media(max-width:430px){
+  :root{--cirvela-topbar-offset:138px}
+  .circle-carousel{margin-top:7px !important}
+}

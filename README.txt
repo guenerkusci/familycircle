@@ -160,3 +160,11 @@ V23 – technischer Fix gegenüber V22:
 - Chat-Kopfzeile bleibt beim Scrollen unterhalb der oberen Cirvela-/Circle-Leiste sichtbar.
 - Im Tastaturmodus sitzt die Chat-Kopfzeile weiterhin korrekt oben.
 - Keine sonstigen Design- oder Funktionsänderungen.
+
+
+V24 – Layoutkorrektur:
+- Cirvela-Schriftzug und Private Demo/V24 bleiben vollständig sichtbar.
+- Circle-Leiste liegt jetzt in einer eigenen Zeile darunter.
+- Circle-Leiste kann den Markenbereich nicht mehr überdecken.
+- Chat-Kopfzeile berücksichtigt die neue tatsächliche Höhe der oberen Leiste.
+- Sonst keine Design- oder Funktionsänderungen.
