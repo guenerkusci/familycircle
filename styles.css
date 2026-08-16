@@ -895,3 +895,86 @@ body[data-circle-pattern="dots"] .messages:before{background-image:radial-gradie
 .messages.chat-bg-linen:before,.messages.chat-bg-mist:before,.messages.chat-bg-botanical:before,.messages.chat-bg-dusk:before,.messages.chat-bg-ocean:before,.messages.chat-bg-rose:before,.messages.chat-bg-custom:before{display:none!important}
 .chat-wallpaper-sheet .sheet-card{padding-bottom:calc(18px + env(safe-area-inset-bottom))}
 @media(max-width:390px){.wallpaper-grid{grid-template-columns:repeat(3,1fr)}.wallpaper-swatch{height:65px}.circle-design-card{grid-template-columns:68px 1fr}.circle-design-card .design-preview{width:68px}}
+
+
+/* V22 – only the approved navigation, circle carousel, wordmark and design controls */
+:root{--v22-header-h:196px}
+.visually-hidden{position:absolute!important;width:1px!important;height:1px!important;padding:0!important;margin:-1px!important;overflow:hidden!important;clip:rect(0,0,0,0)!important;white-space:nowrap!important;border:0!important}
+.topbar{
+  position:sticky!important;top:0!important;z-index:50!important;padding:12px 14px 8px!important;
+  background:linear-gradient(180deg,var(--circle-surface,#fff) 0%,var(--circle-tint,#f7f9fc) 100%)!important;
+}
+.brandline{display:flex;align-items:flex-start;justify-content:space-between;gap:10px}
+.brandblock{min-width:0}
+.cirvela-wordmark{
+  display:inline-block!important;font-size:34px!important;line-height:1!important;font-weight:950!important;letter-spacing:-1.7px!important;
+  background:linear-gradient(90deg,#090909 0%,#090909 37%,#383333 43%,#776969 48%,#b97878 53%,#df4a49 60%,#e52420 76%,#e52420 100%)!important;
+  -webkit-background-clip:text!important;background-clip:text!important;color:transparent!important;-webkit-text-fill-color:transparent!important;
+}
+.header-tools{display:flex;align-items:center;gap:8px;padding-top:3px}
+.hub-launch{margin:0!important;min-height:34px!important;padding:6px 10px!important;border-radius:999px!important;background:rgba(255,255,255,.78)!important;box-shadow:0 2px 8px rgba(16,24,40,.06)!important}
+.settings-top{width:38px;height:38px;border:0;border-radius:50%;background:rgba(255,255,255,.82);display:grid;place-items:center;padding:5px;box-shadow:0 2px 8px rgba(16,24,40,.06)}
+.settings-top svg{width:28px;height:28px}.settings-top.active{outline:2px solid var(--circle-accent,#1769E0)}
+.legacy-circle-switch{display:none!important}
+.circle-carousel{
+  display:flex!important;gap:8px!important;overflow-x:auto!important;overflow-y:hidden!important;scroll-snap-type:x mandatory!important;
+  padding:10px 0 3px!important;-webkit-overflow-scrolling:touch!important;scrollbar-width:none!important;touch-action:pan-x!important
+}
+.circle-carousel::-webkit-scrollbar{display:none}
+.circle-tile{
+  flex:0 0 calc((100% - 24px)/4)!important;min-width:0!important;scroll-snap-align:start!important;border:0!important;background:transparent!important;
+  display:flex!important;flex-direction:column!important;align-items:center!important;gap:4px!important;padding:2px 1px 4px!important;color:var(--tile-accent,#1769E0)!important
+}
+.circle-photo{position:relative;width:58px;height:58px;border-radius:50%;padding:3px;background:conic-gradient(var(--tile-accent,#1769E0),#ff6b6b,var(--tile-accent,#1769E0));display:grid;place-items:center}
+.circle-photo>span{width:52px;height:52px;border-radius:50%;background:linear-gradient(145deg,#fff,#f1f3f6);display:grid;place-items:center;font-size:26px;border:2px solid #fff;box-shadow:0 2px 7px rgba(0,0,0,.1)}
+.circle-photo em{position:absolute;right:-3px;top:-5px;min-width:21px;height:21px;padding:0 5px;border-radius:999px;background:#E52420;color:#fff;border:2px solid #fff;font-style:normal;font-weight:900;font-size:10px;display:grid;place-items:center}
+.circle-tile small{max-width:100%;font-size:9.5px;font-weight:900;line-height:1.05;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:var(--tile-accent,#1769E0)}
+.circle-tile.selected .circle-photo{box-shadow:0 0 0 3px rgba(255,255,255,.9),0 0 0 5px var(--tile-accent,#1769E0)}
+
+/* One navigation only: Chats · Kalender · Standort · SOS · Spiele · Status · Feed */
+body{padding-bottom:calc(80px + env(safe-area-inset-bottom))!important}
+.bottom-nav{
+  display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr)) 70px repeat(3,minmax(0,1fr))!important;
+  min-height:76px!important;height:76px!important;padding:4px 4px calc(4px + env(safe-area-inset-bottom))!important;align-items:center!important;
+  background:rgba(255,255,255,.98)!important
+}
+.nav-item{min-width:0!important;min-height:60px!important;padding:2px 0!important;gap:3px!important;border-radius:11px!important}
+.nav-item .nav-glyph{font-size:23px!important;line-height:1!important;width:27px;height:27px;display:grid;place-items:center}
+.nav-item .nav-glyph svg{width:27px;height:27px;display:block}
+.nav-item b{font-size:8.6px!important;white-space:nowrap!important}
+.controller-glyph svg{width:29px!important;height:23px!important}
+.sos-button{width:64px!important;height:64px!important;font-size:17px!important;border-width:5px!important;transform:none!important;align-self:center!important;justify-self:center!important}
+.chat-composer{bottom:calc(76px + env(safe-area-inset-bottom))!important}
+
+/* Approved visual details */
+.contacts-button{color:#111!important;background:#fff!important;border:1.5px solid var(--circle-accent,#1769E0)!important;border-radius:14px!important;font-weight:850!important;box-shadow:0 2px 7px rgba(16,24,40,.04)!important}
+.camera-black{position:relative;color:#111!important;background:transparent!important;font-size:0!important}
+.camera-black::before{content:'📷';font-size:22px;filter:grayscale(1) brightness(.12);display:block}
+.camera-black>span{display:none!important}
+
+/* More circle designs + separate top/chat/both selection */
+.design-target-tabs{display:grid;grid-template-columns:repeat(3,1fr);gap:5px;margin:10px 0 12px;padding:4px;background:#F2F4F7;border-radius:14px}
+.design-target-tabs button{border:0;border-radius:10px;background:transparent;min-height:38px;padding:5px;font-size:11px;font-weight:800;color:#667085}
+.design-target-tabs button.active{background:#fff;color:#101828;box-shadow:0 2px 8px rgba(16,24,40,.08)}
+.circle-design-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important;max-height:58vh;overflow-y:auto;padding-right:2px}
+.circle-design-card{min-height:142px!important}
+
+/* Circle-specific top area and chat area are independently themeable */
+.topbar{background-color:var(--circle-surface,#fff)!important}
+.messages,.chat-screen{background-color:var(--circle-chat,#ECE7DE)!important}
+.chat-screen .chat-header{background:var(--circle-panel,#fff)!important}
+
+@media(max-width:390px){
+ .cirvela-wordmark{font-size:31px!important}
+ .circle-photo{width:54px;height:54px}.circle-photo>span{width:48px;height:48px;font-size:24px}
+ .bottom-nav{grid-template-columns:repeat(3,minmax(0,1fr)) 66px repeat(3,minmax(0,1fr))!important}
+ .sos-button{width:60px!important;height:60px!important;font-size:16px!important}
+ .nav-item b{font-size:7.8px!important}
+}
+
+
+/* V23 – technischer Fix: Chat-Kopfzeile bleibt unter der oberen Cirvela-/Circle-Leiste sichtbar */
+:root{--cirvela-topbar-offset:118px}
+.chat-header{top:var(--cirvela-topbar-offset)!important}
+body.keyboard-open .chat-header{top:0!important}
+@media (max-width:430px){:root{--cirvela-topbar-offset:112px}}

@@ -143,3 +143,20 @@ V21 – Circle Designs & Chat-Hintergründe
 - Vordefinierte Hintergründe: Circle-Design, Linen, Mist, Botanical, Dusk, Ocean, Rose.
 - Eigenes Hintergrundbild kann ausgewählt, komprimiert und lokal für den jeweiligen Chat gespeichert werden.
 - Chat-Hintergrund und Circle-Design werden getrennt gespeichert.
+
+
+V22 – gezielte Änderungen
+- Oben: Cirvela-Wortmarke mit Schwarz→Rot-Verlauf; der Buchstabe v liegt im Übergang und enthält sowohl verblasstes Schwarz als auch verblasstes Rot.
+- Oben: horizontal wischbare Circle-Leiste, vier Circles gleichzeitig sichtbar; Circle-Name in Designfarbe und Ungelesen-Badge pro Circle.
+- Unten: nur eine Navigationsleiste, Reihenfolge Chats · Kalender · Standort · SOS · Spiele · Status · Feed.
+- SOS zwischen Standort und Spiele.
+- Einstellungen bleibt oben rechts.
+- Spiele mit schwarzem Controller, Kamera schwarz, Kontakte als klar umrandeter Button.
+- Darstellung: deutlich mehr Designs; obere Leiste und Chatbereich getrennt oder gemeinsam wählbar.
+- Alle übrigen Funktionen aus V21 bleiben erhalten.
+
+
+V23 – technischer Fix gegenüber V22:
+- Chat-Kopfzeile bleibt beim Scrollen unterhalb der oberen Cirvela-/Circle-Leiste sichtbar.
+- Im Tastaturmodus sitzt die Chat-Kopfzeile weiterhin korrekt oben.
+- Keine sonstigen Design- oder Funktionsänderungen.

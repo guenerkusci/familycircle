@@ -1,5 +1,5 @@
 
-// Cirvela V21: aggressively remove stale demo caches/service workers from older test builds.
+// Cirvela V23: aggressively remove stale demo caches/service workers from older test builds.
 (async function resetOldDemoCache(){
   try{
     if ('caches' in window){
@@ -16,9 +16,7 @@
 const content=document.getElementById('content');
 const title=document.getElementById('pageTitle');
 const modalRoot=document.getElementById('modalRoot');
-const feedTop=document.getElementById('feedTop');
 const settingsTop=document.getElementById('settingsTop');
-const statusTop=document.getElementById('statusTop');
 const hubTop=document.getElementById('hubTop');
 const galleryInput=document.getElementById('galleryInput');
 const cameraInput=document.getElementById('cameraInput');
@@ -28,6 +26,7 @@ const sosBtn=document.getElementById('sosBtn');
 const circleSwitchBtn=document.getElementById('circleSwitchBtn');
 const circleNameTop=document.getElementById('circleNameTop');
 const circleUnreadTop=document.getElementById('circleUnreadTop');
+const circleCarousel=document.getElementById('circleCarousel');
 
 let members=[
  {name:'Mama',avatar:'👩',online:true},{name:'Papa',avatar:'👨',online:true},
@@ -181,19 +180,47 @@ const circleDesignCatalog={
   {id:'navy',name:'Classic Navy',desc:'Klassisch, seriös und kontrastreich',accent:'#334F76',tint:'#EAF0F7',surface:'#F7F9FC',chat:'#E9EEF5',panel:'#FFFFFF',nav:'#F1F5F9',pattern:'lines'}
  ]
 };
+const universalDesigns=[
+ {id:'sunrise',name:'Sunrise',desc:'Warme Morgenfarben und weiche Flächen',accent:'#D85B38',tint:'#FFF0E8',surface:'#FFF8F2',chat:'#F8EADF',panel:'#FFFFFF',nav:'#FFF5EE',pattern:'sunset'},
+ {id:'ocean-deep',name:'Ocean Blue',desc:'Tiefes Blau mit klaren hellen Flächen',accent:'#1268A8',tint:'#E8F4FB',surface:'#F5FAFD',chat:'#E6F1F7',panel:'#FFFFFF',nav:'#F0F8FC',pattern:'wave'},
+ {id:'forest',name:'Forest',desc:'Waldgrün und natürliche ruhige Töne',accent:'#2F6F4D',tint:'#EAF5EE',surface:'#F5FAF6',chat:'#E8F1E9',panel:'#FFFFFF',nav:'#F1F8F3',pattern:'leaf'},
+ {id:'blossom',name:'Blossom',desc:'Zartes Rosé mit floraler Struktur',accent:'#D44D88',tint:'#FDEAF3',surface:'#FFF8FB',chat:'#F8E5EF',panel:'#FFFFFF',nav:'#FFF2F8',pattern:'flowers'},
+ {id:'aurora',name:'Aurora',desc:'Violett, Blau und kühle Lichtakzente',accent:'#6553B8',tint:'#EFECFB',surface:'#F8F7FD',chat:'#ECE8F7',panel:'#FFFFFF',nav:'#F5F2FC',pattern:'aurora'},
+ {id:'night',name:'Night Sky',desc:'Dunkles Navy mit kontrastreichen Flächen',accent:'#364C78',tint:'#E9EDF5',surface:'#F5F7FA',chat:'#E4E8F0',panel:'#FFFFFF',nav:'#EFF2F7',pattern:'night'},
+ {id:'sand',name:'Warm Sand',desc:'Sand, Creme und dezente Terrakotta',accent:'#A66A42',tint:'#F8EEE4',surface:'#FCF8F3',chat:'#F1E8DE',panel:'#FFFFFF',nav:'#F8F2EC',pattern:'soft'},
+ {id:'mint-universal',name:'Mint',desc:'Frisches Mint mit ruhigem Petrol',accent:'#258573',tint:'#E8F6F2',surface:'#F6FBF9',chat:'#E5F1ED',panel:'#FFFFFF',nav:'#F0F9F6',pattern:'soft'},
+ {id:'sky-universal',name:'Sky Blue',desc:'Luftiges Himmelblau und Weiß',accent:'#3D7EBB',tint:'#EAF4FF',surface:'#F8FBFF',chat:'#E7F1F8',panel:'#FFFFFF',nav:'#F3F8FD',pattern:'clouds'},
+ {id:'minimal',name:'Minimal',desc:'Fast weiß, klare Linien, dezente Akzente',accent:'#545B66',tint:'#F1F3F5',surface:'#FAFAFB',chat:'#F1F2F4',panel:'#FFFFFF',nav:'#F7F8F9',pattern:'soft'},
+ {id:'cherry',name:'Cherry',desc:'Kirschrot, Rosé und helle Kontraste',accent:'#C93555',tint:'#FBE9EE',surface:'#FFF8FA',chat:'#F5E5EA',panel:'#FFFFFF',nav:'#FCF1F4',pattern:'flowers'},
+ {id:'tropical',name:'Tropical',desc:'Türkis, Grün und sonnige Akzente',accent:'#168C86',tint:'#E5F7F5',surface:'#F5FBFA',chat:'#E4F1EC',panel:'#FFFFFF',nav:'#EFF9F7',pattern:'leaf'}
+];
+function designOptionsForCircle(id){
+ const base=circleDesignCatalog[id]||circleDesignCatalog.family;
+ const seen=new Set();return [...base,...universalDesigns].filter(d=>!seen.has(d.id)&&seen.add(d.id));
+}
 const defaultCircleDesign={family:'warm',friends:'violet',girls:'bloom',work:'slate',sport:'field',couple:'rose',travel:'coastal',school:'study'};
 function getCircleDesigns(){try{return JSON.parse(localStorage.getItem('cirvela-circle-designs')||'{}')}catch(e){return {}}}
-function getCircleDesign(id){const saved=getCircleDesigns();return saved[id]||defaultCircleDesign[id]||circleDesignCatalog[id]?.[0]?.id||'warm'}
-function setCircleDesign(id,design){const saved=getCircleDesigns();saved[id]=design;localStorage.setItem('cirvela-circle-designs',JSON.stringify(saved));if(id===currentCircleId)applyCircleDesign(id);}
-function designData(id,designId){return (circleDesignCatalog[id]||circleDesignCatalog.family).find(x=>x.id===designId)||(circleDesignCatalog[id]||circleDesignCatalog.family)[0]}
-function applyCircleDesign(id=currentCircleId){
- const d=designData(id,getCircleDesign(id));
- document.body.dataset.circleDesign=d.id;document.body.dataset.circlePattern=d.pattern||'soft';
- const s=document.documentElement.style;
- s.setProperty('--circle-accent',d.accent);s.setProperty('--circle-tint',d.tint);s.setProperty('--circle-surface',d.surface);s.setProperty('--circle-chat',d.chat);s.setProperty('--circle-panel',d.panel);s.setProperty('--circle-nav',d.nav);
+function getCircleDesignConfig(id){
+ const saved=getCircleDesigns();const raw=saved[id];const fallback=defaultCircleDesign[id]||designOptionsForCircle(id)[0]?.id||'warm';
+ if(typeof raw==='string')return {top:raw,chat:raw};
+ return {top:raw?.top||fallback,chat:raw?.chat||fallback};
 }
-function circleDesignPreview(id,selected){
- const list=circleDesignCatalog[id]||[];
+function getCircleDesign(id){const c=getCircleDesignConfig(id);return c.top===c.chat?c.top:c.top}
+function setCircleDesign(id,design,target='both'){
+ const saved=getCircleDesigns();const cfg=getCircleDesignConfig(id);
+ if(target==='top')cfg.top=design; else if(target==='chat')cfg.chat=design; else cfg.top=cfg.chat=design;
+ saved[id]=cfg;localStorage.setItem('cirvela-circle-designs',JSON.stringify(saved));if(id===currentCircleId)applyCircleDesign(id);renderCircleCarousel();
+}
+function designData(id,designId){return designOptionsForCircle(id).find(x=>x.id===designId)||designOptionsForCircle(id)[0]}
+function applyCircleDesign(id=currentCircleId){
+ const cfg=getCircleDesignConfig(id),top=designData(id,cfg.top),chat=designData(id,cfg.chat);
+ document.body.dataset.circleDesignTop=top.id;document.body.dataset.circleDesignChat=chat.id;document.body.dataset.circlePattern=chat.pattern||'soft';
+ const s=document.documentElement.style;
+ s.setProperty('--circle-accent',top.accent);s.setProperty('--circle-tint',top.tint);s.setProperty('--circle-surface',top.surface);s.setProperty('--circle-panel',top.panel);s.setProperty('--circle-nav',top.nav);
+ s.setProperty('--circle-chat',chat.chat);s.setProperty('--circle-chat-accent',chat.accent);s.setProperty('--circle-chat-tint',chat.tint);
+}
+function circleDesignPreview(id,selected,target='both'){
+ const list=designOptionsForCircle(id);
  return `<div class="circle-design-grid">${list.map(d=>`<button class="circle-design-card ${d.id===selected?'selected':''}" data-circle-design="${d.id}" style="--preview-accent:${d.accent};--preview-tint:${d.tint};--preview-chat:${d.chat}"><span class="design-preview"><i></i><i></i><i></i></span><b>${d.name}</b><small>${d.desc}</small>${d.id===selected?'<em>Ausgewählt</em>':''}</button>`).join('')}</div>`;
 }
 
@@ -257,11 +284,30 @@ function setCustomFeedCircles(ids){localStorage.setItem('fc-custom-feed',JSON.st
 function feedScopeLabel(v){return v==='all'?'Alle Circles zusammen':v==='custom'?'Mein Feed':'Nur aktueller Circle'}
 
 function unreadOutsideCurrent(){
- return Object.values(circlePresets).reduce((sum,c)=>sum+(c.id===currentCircleId?0:(c.unread||0)),0);
+ return Object.values(circlePresets).reduce((sum,c)=>sum+(c.id===currentCircleId?0:circleUnreadCount(c)),0);
 }
 function unreadLabel(n){return n>99?'99+':String(n);}
+function circleUnreadCount(c){
+ const chatTotal=(c.chats||[]).reduce((sum,x)=>sum+(Number(x.badge)||0),0);
+ return Math.max(Number(c.unread)||0,chatTotal);
+}
+function renderCircleCarousel(){
+ if(!circleCarousel)return;
+ circleCarousel.innerHTML=Object.values(circlePresets).map(c=>{
+   const d=designData(c.id,getCircleDesignConfig(c.id).top);
+   const unread=circleUnreadCount(c);
+   return `<button class="circle-tile ${c.id===currentCircleId?'selected':''}" data-circle-carousel="${c.id}" style="--tile-accent:${d.accent}">
+      <span class="circle-photo"><span>${c.icon}</span>${unread?`<em>${unreadLabel(unread)}</em>`:''}</span>
+      <small>${c.name}</small>
+   </button>`;
+ }).join('');
+ circleCarousel.querySelectorAll('[data-circle-carousel]').forEach(b=>b.onclick=()=>applyCircle(b.dataset.circleCarousel));
+ const active=circleCarousel.querySelector('.circle-tile.selected');
+ active?.scrollIntoView({inline:'center',block:'nearest',behavior:'smooth'});
+}
 function updateCircleHeader(){
  const c=activeCircle();
+ renderCircleCarousel();
  circleNameTop.textContent=c.name;
  const total=unreadOutsideCurrent();
  if(total>0){
@@ -284,7 +330,7 @@ function applyCircle(id){
  updateCircleHeader();
  modalRoot.innerHTML='';
  show('chat');
-console.info('Cirvela build V21 loaded');
+console.info('Cirvela build V23 loaded');
  toast(c.name+' geöffnet');
 }
 function openCircleSwitcher(){
@@ -329,7 +375,7 @@ let postComments={
   2:[],3:[],4:[],5:[],6:[],7:[]
 };
 
-const names={chat:'Chats',calendar:'Kalender',location:'Standort',games:'Spiele',feed:'Familien-Feed',settings:'Einstellungen',hub:'Circle Hub'};
+const names={chat:'Chats',calendar:'Kalender',location:'Standort',games:'Spiele',status:'Status',feed:'Familien-Feed',settings:'Einstellungen',hub:'Circle Hub'};
 
 function safe(s){return String(s).replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]));}
 function toast(text){document.querySelector('.toast')?.remove();const t=document.createElement('div');t.className='toast';t.textContent=text;document.body.appendChild(t);setTimeout(()=>t.remove(),2200);}
@@ -337,9 +383,8 @@ function card(html){return `<section class="card">${html}</section>`;}
 
 function setActive(tab){
  navItems.forEach(b=>b.classList.toggle('active',b.dataset.tab===tab));
- feedTop.classList.toggle('active',tab==='feed');
- settingsTop.classList.toggle('active',tab==='settings');
- statusTop.classList.remove('active'); if(hubTop)hubTop.classList.toggle('active',tab==='hub');
+ settingsTop?.classList.toggle('active',tab==='settings');
+ if(hubTop)hubTop.classList.toggle('active',tab==='hub');
 }
 
 
@@ -506,8 +551,7 @@ function statusView(){
  <div class="section-pad"><button class="primary wide feature-open" data-feature="doorbell">🔔 Circle Doorbell</button></div>`;
 }
 function showStatus(){
- current='status'; currentChat=null; navItems.forEach(b=>b.classList.remove('active'));
- feedTop.classList.remove('active'); settingsTop.classList.remove('active'); statusTop.classList.add('active');
+ current='status'; currentChat=null; setActive('status');
  title.textContent='Status'; content.innerHTML=statusView(); bind(); window.scrollTo({top:0,behavior:'instant'});
 }
 
@@ -517,6 +561,7 @@ function show(tab){
  if(tab==='calendar') content.innerHTML=calendarView();
  if(tab==='location') content.innerHTML=locationView();
  if(tab==='games') content.innerHTML=gamesView();
+ if(tab==='status') content.innerHTML=statusView();
  if(tab==='feed') content.innerHTML=feedView();
  if(tab==='settings') content.innerHTML=settingsView();
  if(tab==='hub') content.innerHTML=hubView();
@@ -599,7 +644,7 @@ function openFamilyChat(){
   </div>
   <div class="chat-composer">
    <button id="attach">＋</button><textarea id="msg" class="chat-message-input" rows="1" maxlength="4000" placeholder="Nachricht an ${activeCircle().label}"></textarea>
-   <button id="chatCamera">📷</button><button id="mic">🎙️</button><button id="send" class="send">➤</button>
+   <button id="chatCamera" class="camera-black" aria-label="Kamera"><span>●</span></button><button id="mic">🎙️</button><button id="send" class="send">➤</button>
   </div>
  </section>`;
  document.getElementById('openContacts').onclick=openContacts;
@@ -653,7 +698,7 @@ function openChat(i){
   </div>
   <div class="chat-composer">
    <button id="attach">＋</button><textarea id="msg" class="chat-message-input" rows="1" maxlength="4000" placeholder="Nachricht"></textarea>
-   <button id="chatCamera">📷</button><button id="mic">🎙️</button><button id="send" class="send">➤</button>
+   <button id="chatCamera" class="camera-black" aria-label="Kamera"><span>●</span></button><button id="mic">🎙️</button><button id="send" class="send">➤</button>
   </div>
  </section>`;
  document.getElementById('chatBack').onclick=openFamilyChat;
@@ -1048,7 +1093,7 @@ function openSetting(key){
  blocked:['Blockierte Mitglieder',`<p class="muted">Keine blockierten Mitglieder.</p><button class="ghost wide">Mitglied auswählen · Demo</button>`],
  hubSettings:['Circle Hub',`<div class="privacy-banner"><b>✨ Circle Hub</b><br>Alle erweiterten Funktionen findest du oben über „Hub“: Catch-up, Board, Listen, Safe Walk, Zeitkapsel, Circle Inbox und mehr.</div><button id="openHubFromSettings" class="primary wide" style="margin-top:12px">Circle Hub öffnen</button>`],
  notifications:['Benachrichtigungen',`<div class="member-check"><span>💬 Chat-Nachrichten</span><input type="checkbox" checked></div><div class="member-check"><span>📅 Kalender-Erinnerungen</span><input type="checkbox" checked></div><div class="member-check"><span>🚨 SOS-Mitteilungen</span><input type="checkbox" checked></div><div class="member-check"><span>🎮 Spiel-Ranglisten</span><input type="checkbox"></div>`],
- appearance:['Darstellung',`<div class="form-row"><label>App-Darstellung</label><select id="appAppearance"><option>System</option><option>Hell</option><option>Dunkel</option></select></div><div class="form-row"><label>Textgröße</label><select><option>Standard</option><option>Groß</option><option>Sehr groß</option></select></div><div class="appearance-divider"></div><div class="circle-design-head"><div><b>Circle-Designs</b><small>Jeder Circle kann seine eigene Atmosphäre haben.</small></div></div><div class="form-row"><label>Circle auswählen</label><select id="circleDesignSelect">${Object.values(circlePresets).map(c=>`<option value="${c.id}" ${c.id===currentCircleId?'selected':''}>${c.name}</option>`).join('')}</select></div><div id="circleDesignChoices">${circleDesignPreview(currentCircleId,getCircleDesign(currentCircleId))}</div><div class="info-banner" style="margin-top:12px">Beim Wechsel des Circles wird sein gespeichertes Design automatisch geladen. Chat-Hintergründe kannst du zusätzlich direkt im Chat ändern.</div>`],
+ appearance:['Darstellung',`<div class="form-row"><label>App-Darstellung</label><select id="appAppearance"><option>System</option><option>Hell</option><option>Dunkel</option></select></div><div class="form-row"><label>Textgröße</label><select><option>Standard</option><option>Groß</option><option>Sehr groß</option></select></div><div class="appearance-divider"></div><div class="circle-design-head"><div><b>Circle-Designs</b><small>Obere Leiste und Chatfläche können getrennt oder gemeinsam gestaltet werden.</small></div></div><div class="form-row"><label>Circle auswählen</label><select id="circleDesignSelect">${Object.values(circlePresets).map(c=>`<option value="${c.id}" ${c.id===currentCircleId?'selected':''}>${c.name}</option>`).join('')}</select></div><div class="design-target-tabs"><button data-design-target="both" class="active">Beide Bereiche</button><button data-design-target="top">Obere Leiste</button><button data-design-target="chat">Chatbereich</button></div><div id="circleDesignChoices"></div><div class="info-banner" style="margin-top:12px">Wählst du „Beide Bereiche“, wird dasselbe Design oben und im Chat verwendet. Bei „Obere Leiste“ oder „Chatbereich“ bleiben die Bereiche unabhängig.</div>`],
  language:['Sprache',`<div class="form-row"><label>App-Sprache</label><select><option>Deutsch</option><option>English</option></select></div>`],
  export:['Daten exportieren',`<div class="info-banner">In der echten App sollst du eine Kopie deiner eigenen Daten anfordern können.</div><button class="secondary wide" style="margin-top:12px">Export vorbereiten · Demo</button>`],
  storage:['Speicher & Medien',`<div class="setting-row"><span class="setting-copy"><b>Medien-Cache</b><small>Demo · 0 MB</small></span></div><button class="ghost wide" style="margin-top:12px">Lokalen Cache leeren</button>`],
@@ -1067,7 +1112,10 @@ function openSetting(key){
  if(key==='appearance'){
    const select=s.querySelector('#circleDesignSelect');
    const choices=s.querySelector('#circleDesignChoices');
-   const render=()=>{const id=select.value;choices.innerHTML=circleDesignPreview(id,getCircleDesign(id));choices.querySelectorAll('[data-circle-design]').forEach(b=>b.onclick=()=>{setCircleDesign(id,b.dataset.circleDesign);render();toast(circlePresets[id].name+' Design gespeichert')})};
+   let target='both';
+   const selectedFor=(id)=>{const cfg=getCircleDesignConfig(id);return target==='chat'?cfg.chat:target==='top'?cfg.top:(cfg.top===cfg.chat?cfg.top:'__mixed__')};
+   const render=()=>{const id=select.value;choices.innerHTML=circleDesignPreview(id,selectedFor(id),target);choices.querySelectorAll('[data-circle-design]').forEach(b=>b.onclick=()=>{setCircleDesign(id,b.dataset.circleDesign,target);render();toast(circlePresets[id].name+' Design gespeichert')})};
+   s.querySelectorAll('[data-design-target]').forEach(b=>b.onclick=()=>{target=b.dataset.designTarget;s.querySelectorAll('[data-design-target]').forEach(x=>x.classList.toggle('active',x===b));render()});
    select.addEventListener('change',render);render();
  }
  s.querySelector('#configureCustomFeed')?.addEventListener('click',()=>{s.remove();openFeature('feedFilter')});
@@ -1138,16 +1186,16 @@ sosBtn.addEventListener('click',e=>{
 });
 
 navItems.forEach(b=>b.onclick=()=>show(b.dataset.tab));
-statusTop.onclick=showStatus;feedTop.onclick=()=>show('feed');settingsTop.onclick=()=>show('settings');
+settingsTop.onclick=()=>show('settings');
 
 galleryInput.onchange=e=>{if(e.target.files?.[0]){toast('Demo: '+e.target.files[0].name+' ausgewählt. Story-/Beitragseditor wäre der nächste Schritt.');e.target.value=''}};
 cameraInput.onchange=e=>{if(e.target.files?.[0]){toast('Demo: Kamera-Medium ausgewählt.');e.target.value=''}};
 scoreInput.onchange=e=>{if(e.target.files?.[0]){toast('Demo: Highscore-Screenshot ausgewählt.');e.target.value=''}};
 
 show('chat');
-console.info('Cirvela build V21 loaded');
+console.info('Cirvela build V23 loaded');
 
-if(circleSwitchBtn){circleSwitchBtn.onclick=openCircleSwitcher; document.body.dataset.circle=activeCircle().theme; applyCircleDesign(currentCircleId); updateCircleHeader();}
+if(circleSwitchBtn){circleSwitchBtn.onclick=openCircleSwitcher;} document.body.dataset.circle=activeCircle().theme; applyCircleDesign(currentCircleId); updateCircleHeader(); renderCircleCarousel();
 
 hubTop?.addEventListener('click',()=>show('hub'));
 document.addEventListener('click',e=>{
