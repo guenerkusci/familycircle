@@ -1601,3 +1601,234 @@ html[data-app-appearance="dark"] .messages .inline-smart{
   top:46px!important;
   z-index:160!important;
 }
+
+
+/* ==========================================================
+   V30 – nur die angeforderten Circle-Korrekturen
+   ========================================================== */
+
+/* Circle-Element selbst ist kein rechteckiger Kasten mehr. */
+.circle-carousel-item{
+  appearance:none!important;
+  -webkit-appearance:none!important;
+  background:transparent!important;
+  border:0!important;
+  border-radius:0!important;
+  box-shadow:none!important;
+  outline:none!important;
+  padding:0!important;
+  overflow:visible!important;
+}
+
+/* Der sichtbare Circle ist wieder eindeutig rund. */
+.circle-avatar-ring{
+  position:relative!important;
+  display:grid!important;
+  place-items:center!important;
+  width:50px!important;
+  height:50px!important;
+  aspect-ratio:1/1!important;
+  border-radius:50%!important;
+  border:3px solid var(--circle-accent,#64748b)!important;
+  background:rgba(255,255,255,.94)!important;
+  overflow:visible!important;
+  box-sizing:border-box!important;
+}
+.circle-avatar{
+  display:grid!important;
+  place-items:center!important;
+  width:40px!important;
+  height:40px!important;
+  aspect-ratio:1/1!important;
+  border-radius:50%!important;
+  background:rgba(255,255,255,.88)!important;
+  overflow:hidden!important;
+  line-height:1!important;
+}
+.circle-carousel-item.active .circle-avatar-ring{
+  box-shadow:0 0 0 2px color-mix(in srgb,var(--circle-accent,#64748b) 35%,transparent)!important;
+}
+.circle-carousel-item.pinned .circle-avatar-ring{
+  box-shadow:0 0 0 2px rgba(17,24,39,.16)!important;
+}
+
+/* Fixierte Circles zeigen keinen Drag-Effekt und bleiben unbeweglich. */
+.circle-carousel-item.pinned{
+  cursor:default!important;
+}
+.circle-carousel-item.pinned.circle-dragging{
+  transform:none!important;
+  opacity:1!important;
+}
+
+/* Long-Press-Menü sichtbar über der Leiste. */
+.circle-carousel{
+  overflow-y:visible!important;
+}
+.circle-pin-pop{
+  position:absolute!important;
+  top:51px!important;
+  left:50%!important;
+  transform:translateX(-50%)!important;
+  z-index:300!important;
+  white-space:nowrap!important;
+  pointer-events:auto!important;
+}
+
+
+/* ==========================================================
+   V31 – nur Größenkorrekturen der markierten Flächen
+   ========================================================== */
+
+/* Oberer Bereich kompakter */
+.topbar{
+  padding-top:10px!important;
+  padding-bottom:4px!important;
+}
+.brandline{
+  min-height:54px!important;
+  align-items:center!important;
+}
+.cirvela-wordmark{
+  font-size:42px!important;
+  line-height:.95!important;
+}
+.brand-sub{
+  margin-top:3px!important;
+  font-size:12px!important;
+  line-height:1.1!important;
+}
+.header-tools{
+  gap:6px!important;
+}
+.header-tools button,
+#settingsTop,
+#hubTop{
+  width:42px!important;
+  height:42px!important;
+  min-width:42px!important;
+  min-height:42px!important;
+  font-size:22px!important;
+}
+
+/* Circle-Leiste flacher, Circles + Schrift proportional kleiner */
+.circle-carousel{
+  min-height:62px!important;
+  padding:3px 4px 4px!important;
+  gap:4px!important;
+  margin-top:3px!important;
+}
+.circle-avatar-ring{
+  width:44px!important;
+  height:44px!important;
+  border-width:2px!important;
+}
+.circle-avatar{
+  width:36px!important;
+  height:36px!important;
+  font-size:20px!important;
+}
+.circle-carousel-name{
+  font-size:7.8px!important;
+  line-height:1!important;
+  margin-top:1px!important;
+}
+.circle-unread{
+  min-width:16px!important;
+  height:16px!important;
+  font-size:9px!important;
+  padding:0 3px!important;
+}
+.circle-pin-dot{
+  width:12px!important;
+  height:12px!important;
+  font-size:7px!important;
+}
+
+/* Chat-Kopfzeile nochmals etwas schmaler */
+.chat-header{
+  min-height:46px!important;
+  padding:4px 8px!important;
+}
+.chat-header .contact-btn,
+.chat-header .contacts-button{
+  font-size:11px!important;
+  padding:6px 9px!important;
+}
+.chat-header .chat-avatar,
+.chat-header .avatar.small{
+  width:34px!important;
+  height:34px!important;
+  font-size:19px!important;
+}
+.chat-header .chat-title,
+.chat-header .chat-person b{
+  font-size:15px!important;
+}
+.chat-header .chat-subtitle,
+.chat-header .chat-person span{
+  font-size:10px!important;
+}
+.chat-header .chat-actions button,
+.chat-header-actions .icon-button{
+  width:30px!important;
+  height:30px!important;
+  font-size:17px!important;
+}
+
+/* Untere Navigation kompakter, inklusive proportional kleinerer Symbole/Schriften */
+.bottom-nav{
+  min-height:76px!important;
+  padding:4px 4px calc(4px + env(safe-area-inset-bottom))!important;
+  gap:0!important;
+}
+.bottom-nav .nav-item,
+.bottom-nav button{
+  min-height:58px!important;
+  padding:3px 2px!important;
+}
+.bottom-nav .nav-icon,
+.bottom-nav .nav-item-icon{
+  font-size:24px!important;
+  line-height:1!important;
+}
+.bottom-nav .nav-label,
+.bottom-nav .nav-item-label{
+  font-size:9px!important;
+  line-height:1.05!important;
+  margin-top:2px!important;
+}
+
+/* SOS proportional kleiner, bleibt mittig und hervorgehoben */
+#sosBtn,
+.sos-button,
+.bottom-nav .sos-button{
+  width:66px!important;
+  height:66px!important;
+  min-width:66px!important;
+  min-height:66px!important;
+  font-size:24px!important;
+  border-width:5px!important;
+  margin-top:-8px!important;
+}
+
+/* Schreibzeile leicht kompakter passend zur kleineren Navigation */
+.chat-composer{
+  min-height:50px!important;
+  padding:5px 7px!important;
+}
+.chat-composer input,
+.chat-composer textarea{
+  font-size:15px!important;
+}
+.chat-composer button{
+  width:38px!important;
+  height:38px!important;
+  font-size:18px!important;
+}
+
+/* Neue tatsächliche Höhe des kompakteren oberen Bereichs */
+:root{--cirvela-topbar-offset:118px}
+@media(max-width:430px){
+  :root{--cirvela-topbar-offset:114px}
+}

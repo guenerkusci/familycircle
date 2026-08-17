@@ -217,3 +217,22 @@ V29 – Korrektur nach realem iPhone-Test:
 - Keyboard-Ansicht wurde neu als Flex-Layout aufgebaut: Chat-Kopfzeile, Nachrichten und Schreibleiste füllen den sichtbaren App-Bereich ohne internen Leerraum.
 - Dark Mode korrigiert für die tatsächlichen Nachrichtenklassen .bubble.theirs / .bubble.mine.
 - Bestehende Navigation und sonstige Funktionen wurden nicht absichtlich verändert.
+
+
+V30 – gezielte Circle-Korrekturen:
+- Circle-Darstellung wieder rund; rechteckige Kartenoptik entfernt.
+- Fixierte Circles sind vollständig unbeweglich, bis sie über „Lösen“ oder Einstellungen gelöst werden.
+- Lose Circles bleiben sortierbar; sie können nicht auf die fixierten Plätze gezogen werden.
+- Long-Press wurde für iPhone/Safari zusätzlich mit Touch-Events umgesetzt.
+- Langes Drücken ohne Bewegung öffnet Fixieren/Lösen.
+- Gedrückthalten + horizontales Bewegen sortiert nur lose Circles.
+- Sonstige Bereiche der V29 wurden nicht absichtlich verändert.
+
+
+V31 – nur Größenanpassungen:
+- Oberer Cirvela-/Circle-Bereich kompakter.
+- Circle-Leiste flacher; Circle-Symbole und Circle-Namen proportional kleiner.
+- Chat-Kopfzeile nochmals schmaler.
+- Untere Navigationsleiste flacher; alle Symbole und Beschriftungen proportional kleiner.
+- SOS bleibt mittig, ist aber proportional kleiner.
+- Keine sonstigen Funktions- oder Designänderungen.

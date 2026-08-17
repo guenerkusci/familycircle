@@ -1,5 +1,5 @@
 
-// Cirvela V29: aggressively remove stale demo caches/service workers from older test builds.
+// Cirvela V31: aggressively remove stale demo caches/service workers from older test builds.
 (async function resetOldDemoCache(){
   try{
     if ('caches' in window){
@@ -359,88 +359,144 @@ function toggleCirclePin(id){
 function moveCircle(id,targetId){
  if(id===targetId)return;
  const pinned=getPinnedCircles();
- let order=normalizedCircleOrder();
- const from=order.indexOf(id), to=order.indexOf(targetId);
- if(from<0||to<0)return;
- const idPinned=pinned.includes(id), targetPinned=pinned.includes(targetId);
+ // Fixierte Circles bleiben vollständig an ihrem Platz, bis sie gelöst werden.
+ if(pinned.includes(id))return;
+ // Lose Circles dürfen nicht vor/auf einen fixierten Platz gezogen werden.
+ if(pinned.includes(targetId))return;
 
- if(idPinned){
-   if(!targetPinned)return;
-   order.splice(from,1);
-   order.splice(to,0,id);
- }else{
-   if(targetPinned)return;
-   order.splice(from,1);
-   const pinCount=pinned.length;
-   const safeTo=Math.max(pinCount,to);
-   order.splice(safeTo,0,id);
- }
+ let order=normalizedCircleOrder();
+ const from=order.indexOf(id),to=order.indexOf(targetId);
+ if(from<0||to<0)return;
+
+ order.splice(from,1);
+ const pinCount=pinned.length;
+ let safeTo=order.indexOf(targetId);
+ if(safeTo<0)safeTo=order.length;
+ safeTo=Math.max(pinCount,safeTo);
+ order.splice(safeTo,0,id);
  saveCircleOrder(order);
  renderCircleCarousel();
 }
 function bindCircleGestures(){
  const items=[...document.querySelectorAll('.circle-carousel-item')];
+
  items.forEach(el=>{
-   let timer=null,dragging=false,moved=false,startX=0,startY=0,downAt=0,dragId=el.dataset.circle;
-   const cancel=()=>{if(timer){clearTimeout(timer);timer=null}};
-   const clearPop=()=>{el.querySelector('.circle-pin-pop')?.remove();el.classList.remove('circle-hold')};
+   const id=el.dataset.circle;
+   let longTimer=null;
+   let dragTimer=null;
+   let startX=0,startY=0;
+   let moved=false,dragging=false,longOpened=false,suppressClick=false;
 
-   el.addEventListener('pointerdown',e=>{
-     startX=e.clientX;startY=e.clientY;downAt=Date.now();moved=false;dragging=false;
-     clearPop();
-     timer=setTimeout(()=>{
-       if(!moved&&!dragging){
-         el.classList.add('circle-hold');
-         const pinned=getPinnedCircles().includes(dragId);
-         const menu=document.createElement('button');
-         menu.type='button';
-         menu.className='circle-pin-pop';
-         menu.textContent=pinned?'Lösen':'Fixieren';
-         menu.onclick=ev=>{
-           ev.preventDefault();ev.stopPropagation();
-           toggleCirclePin(dragId);
-           clearPop();
-         };
-         el.appendChild(menu);
-       }
-     },620);
-   });
+   const clearTimers=()=>{
+     if(longTimer){clearTimeout(longTimer);longTimer=null}
+     if(dragTimer){clearTimeout(dragTimer);dragTimer=null}
+   };
+   const clearMenu=()=>{
+     el.querySelector('.circle-pin-pop')?.remove();
+     el.classList.remove('circle-hold');
+   };
+   const openPinMenu=()=>{
+     if(moved||dragging||longOpened)return;
+     longOpened=true;
+     el.classList.add('circle-hold');
+     const pinned=getPinnedCircles().includes(id);
+     const menu=document.createElement('button');
+     menu.type='button';
+     menu.className='circle-pin-pop';
+     menu.textContent=pinned?'Lösen':'Fixieren';
+     menu.addEventListener('click',ev=>{
+       ev.preventDefault();
+       ev.stopPropagation();
+       suppressClick=true;
+       toggleCirclePin(id);
+       clearMenu();
+       setTimeout(()=>suppressClick=false,250);
+     });
+     el.appendChild(menu);
+   };
+   const begin=(x,y)=>{
+     clearTimers();clearMenu();
+     startX=x;startY=y;
+     moved=false;dragging=false;longOpened=false;suppressClick=false;
+     // Ohne Bewegung: nach 650 ms Fixieren/Lösen.
+     longTimer=setTimeout(openPinMenu,650);
+     // Nach 280 ms darf Bewegung als Sortieren interpretiert werden.
+     dragTimer=setTimeout(()=>{},280);
+   };
+   const move=(x,y,event)=>{
+     const dx=x-startX,dy=y-startY;
+     const dist=Math.hypot(dx,dy);
+     if(dist<=10)return;
 
-   el.addEventListener('pointermove',e=>{
-     const dx=e.clientX-startX,dy=e.clientY-startY;
-     const distance=Math.hypot(dx,dy);
-     const held=Date.now()-downAt;
-     if(distance>9){
-       moved=true;
-       cancel();
-       clearPop();
-       // Erst nach kurzem Halten wird Bewegung als Sortieren interpretiert.
-       // Schnelle horizontale Bewegung bleibt normales Scrollen.
-       if(held>=220 && Math.abs(dx)>Math.abs(dy)){
-         dragging=true;
-         el.classList.add('circle-dragging');
-         try{el.setPointerCapture(e.pointerId)}catch(_){}
-         if(e.cancelable)e.preventDefault();
-       }
+     moved=true;
+     clearMenu();
+     if(longTimer){clearTimeout(longTimer);longTimer=null}
+
+     const pinned=getPinnedCircles().includes(id);
+     if(pinned){
+       // Fixierte Circles bewegen sich nicht.
+       dragging=false;
+       return;
      }
-   },{passive:false});
 
-   el.addEventListener('pointerup',e=>{
-     cancel();
-     clearPop();
+     // Nur deutliche horizontale Bewegung nach kurzem Halten startet Sortieren.
+     if(Math.abs(dx)>Math.abs(dy)){
+       dragging=true;
+       suppressClick=true;
+       el.classList.add('circle-dragging');
+       if(event?.cancelable)event.preventDefault();
+     }
+   };
+   const finish=(x,y)=>{
+     clearTimers();
      if(dragging){
        el.classList.remove('circle-dragging');
-       const target=document.elementFromPoint(e.clientX,e.clientY)?.closest('.circle-carousel-item');
-       if(target)moveCircle(dragId,target.dataset.circle);
-       dragging=false;
-       moved=true;
-       setTimeout(()=>{moved=false},80);
+       const target=document.elementFromPoint(x,y)?.closest('.circle-carousel-item');
+       if(target)moveCircle(id,target.dataset.circle);
+       suppressClick=true;
+       setTimeout(()=>suppressClick=false,300);
+     }else if(moved){
+       suppressClick=true;
+       setTimeout(()=>suppressClick=false,180);
      }
+     dragging=false;
+   };
+
+   // Pointer Events (Desktop / moderne Browser)
+   el.addEventListener('pointerdown',e=>begin(e.clientX,e.clientY));
+   el.addEventListener('pointermove',e=>move(e.clientX,e.clientY,e),{passive:false});
+   el.addEventListener('pointerup',e=>finish(e.clientX,e.clientY));
+   el.addEventListener('pointercancel',()=>{clearTimers();clearMenu();el.classList.remove('circle-dragging')});
+
+   // Explizite Touch Events für iPhone/Safari.
+   el.addEventListener('touchstart',e=>{
+     if(e.touches.length!==1)return;
+     const t=e.touches[0];
+     begin(t.clientX,t.clientY);
+   },{passive:true});
+
+   el.addEventListener('touchmove',e=>{
+     if(e.touches.length!==1)return;
+     const t=e.touches[0];
+     move(t.clientX,t.clientY,e);
+   },{passive:false});
+
+   el.addEventListener('touchend',e=>{
+     const t=e.changedTouches&&e.changedTouches[0];
+     if(t)finish(t.clientX,t.clientY);
+   },{passive:true});
+
+   el.addEventListener('contextmenu',e=>{
+     e.preventDefault();
+     openPinMenu();
    });
 
-   el.addEventListener('pointercancel',()=>{
-     cancel();clearPop();el.classList.remove('circle-dragging');dragging=false;
-   });
+   el.addEventListener('click',e=>{
+     if(suppressClick||longOpened||e.target.closest('.circle-pin-pop')){
+       e.preventDefault();
+       e.stopImmediatePropagation();
+     }
+   },true);
  });
 }
 function renderCircleCarousel(){
@@ -456,7 +512,7 @@ function renderCircleCarousel(){
    </button>`;
  }).join('');
  host.querySelectorAll('.circle-carousel-item').forEach(b=>b.onclick=e=>{
-   if(e.target.closest('.circle-pin-pop')||b.classList.contains('circle-dragging'))return;
+   if(e.defaultPrevented||e.target.closest('.circle-pin-pop')||b.classList.contains('circle-dragging'))return;
    applyCircle(b.dataset.circle);
  });
  bindCircleGestures();
@@ -489,7 +545,7 @@ function applyCircle(id){
  const keepSection=['calendar','location','games','status','feed'].includes(sectionBeforeSwitch);
  if(sectionBeforeSwitch==='feed') feedCircleFocus=id;
  show(keepSection?sectionBeforeSwitch:'chat');
- console.info('Cirvela build V29 loaded');
+ console.info('Cirvela build V31 loaded');
  toast(c.name+' geöffnet');
 }
 function openCircleSwitcher(){
@@ -1459,7 +1515,7 @@ scoreInput.onchange=e=>{if(e.target.files?.[0]){toast('Demo: Highscore-Screensho
 
 applyAppAppearance(getAppAppearance());
 show('chat');
-console.info('Cirvela build V29 loaded');
+console.info('Cirvela build V31 loaded');
 
 if(circleSwitchBtn){circleSwitchBtn.onclick=openCircleSwitcher;} document.body.dataset.circle=activeCircle().theme; applyCircleDesign(currentCircleId); updateCircleHeader(); renderCircleCarousel();
 
