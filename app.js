@@ -1,5 +1,5 @@
 
-// Cirvela V33: aggressively remove stale demo caches/service workers from older test builds.
+// Cirvela V34: aggressively remove stale demo caches/service workers from older test builds.
 (async function resetOldDemoCache(){
   try{
     if ('caches' in window){
@@ -326,10 +326,10 @@ function getCircleOrder(){
 function saveCircleOrder(order){localStorage.setItem('cirvela-circle-order',JSON.stringify(order))}
 function getPinnedCircles(){
  const saved=JSON.parse(localStorage.getItem('cirvela-pinned-circles')||'[]');
- return Array.isArray(saved)?saved.filter(id=>circlePresets[id]).slice(0,2):[];
+ return Array.isArray(saved)?saved.filter(id=>circlePresets[id]).slice(0,3):[];
 }
 function savePinnedCircles(ids){
- const clean=[...new Set(ids.filter(id=>circlePresets[id]))].slice(0,2);
+ const clean=[...new Set(ids.filter(id=>circlePresets[id]))].slice(0,3);
  localStorage.setItem('cirvela-pinned-circles',JSON.stringify(clean));
 }
 function normalizedCircleOrder(){
@@ -347,8 +347,8 @@ function toggleCirclePin(id){
    toast(circlePresets[id].name+' gelöst');
    return;
  }
- if(pinned.length>=2){
-   toast('Maximal zwei Circles können fixiert werden.');
+ if(pinned.length>=3){
+   toast('Maximal drei Circles können fixiert werden.');
    return;
  }
  savePinnedCircles([...pinned,id]);
@@ -386,17 +386,22 @@ function bindCircleGestures(){
    const pinnedNow=()=>getPinnedCircles().includes(id);
    const clearTimer=()=>{if(longTimer){clearTimeout(longTimer);longTimer=null}};
    const clearMenu=()=>{
-     el.querySelector('.circle-pin-pop')?.remove();
+     document.querySelectorAll('.circle-pin-pop').forEach(x=>x.remove());
      el.classList.remove('circle-hold');
    };
    const openPinMenu=()=>{
      if(moved||dragging||longOpened)return;
      longOpened=true;
      el.classList.add('circle-hold');
+     document.querySelectorAll('.circle-pin-pop').forEach(x=>x.remove());
      const menu=document.createElement('button');
      menu.type='button';
      menu.className='circle-pin-pop';
-     menu.textContent=pinnedNow()?'Lösen':'Fixieren';
+     menu.textContent=pinnedNow()?'LÖSEN':'FIXIEREN';
+     const r=el.getBoundingClientRect();
+     menu.style.left=Math.max(8,Math.min(window.innerWidth-150,r.left+r.width/2-75))+'px';
+     menu.style.top=Math.min(window.innerHeight-60,r.bottom+8)+'px';
+     menu.addEventListener('pointerdown',ev=>{ev.preventDefault();ev.stopPropagation()});
      menu.addEventListener('click',ev=>{
        ev.preventDefault();ev.stopPropagation();
        suppressClick=true;
@@ -404,7 +409,7 @@ function bindCircleGestures(){
        clearMenu();
        setTimeout(()=>suppressClick=false,250);
      });
-     el.appendChild(menu);
+     document.body.appendChild(menu);
    };
    const begin=(x,y)=>{
      clearTimer();clearMenu();
@@ -530,7 +535,7 @@ function applyCircle(id){
  const keepSection=['calendar','location','games','status','feed'].includes(sectionBeforeSwitch);
  if(sectionBeforeSwitch==='feed') feedCircleFocus=id;
  show(keepSection?sectionBeforeSwitch:'chat');
- console.info('Cirvela build V33 loaded');
+ console.info('Cirvela build V34 loaded');
  toast(c.name+' geöffnet');
 }
 function openCircleSwitcher(){
@@ -829,6 +834,51 @@ function chatList(){
   </div>`).join('')}`;
 }
 
+
+function circleListView(){
+ const order=normalizedCircleOrder();
+ return `<div class="contacts-head"><button id="circlesBack" class="back">‹</button><div><b>Circles</b><div class="small muted">Alle Circles</div></div></div>
+ <div class="circle-list-view">
+ ${order.map(id=>{
+   const c=circlePresets[id],n=circleUnreadCount(c);
+   return `<button class="circle-list-row" data-circle-open="${id}">
+     <span class="circle-list-avatar" style="--circle-accent:${designData(id,getCircleDesignConfig(id).top).accent}">${c.icon}</span>
+     <span class="circle-list-main"><b>${c.name}</b><small>${c.label} · ${c.members.length} Mitglieder</small></span>
+     ${n?`<span class="circle-list-unread">${unreadLabel(n)}</span>`:''}
+     <span class="circle-list-chevron">›</span>
+   </button>`;
+ }).join('')}
+ </div>`;
+}
+function openCircleList(){
+ title.textContent='Circles';
+ content.innerHTML=circleListView();
+ document.getElementById('circlesBack').onclick=openFamilyChat;
+ content.querySelectorAll('[data-circle-open]').forEach(row=>row.onclick=()=>applyCircle(row.dataset.circleOpen));
+ window.scrollTo({top:0,behavior:'instant'});
+}
+function circleMembersView(){
+ const c=activeCircle();
+ return `<div class="contacts-head"><button id="membersBack" class="back">‹</button><div><b>${c.label}</b><div class="small muted">${c.members.length} Circle-Mitglieder</div></div></div>
+ <div class="search">🔎 <span>Mitglieder durchsuchen</span></div>
+ <div class="circle-member-list">
+ ${c.members.map((m,i)=>`<button class="circle-member-row" data-member-index="${i}">
+   <span class="avatar">${m.avatar}</span>
+   <span class="circle-member-main"><b>${m.name}</b><small>${m.online?'online':'offline'}</small></span>
+ </button>`).join('')}
+ </div>`;
+}
+function openCircleMembers(){
+ title.textContent=activeCircle().label;
+ content.innerHTML=circleMembersView();
+ document.getElementById('membersBack').onclick=openFamilyChat;
+ content.querySelectorAll('[data-member-index]').forEach(row=>row.onclick=()=>{
+   const i=Number(row.dataset.memberIndex);
+   if(i<chatData.length)openChat(i); else toast(activeCircle().members[i].name);
+ });
+ window.scrollTo({top:0,behavior:'instant'});
+}
+
 function mediaPanel(label){
  const items={
   photos:[['photo','Urlaubsfoto','Bild'],['camera','Familienmoment','Bild'],['portrait','Profilfoto','Bild'],['album','Ausflug','Album']],
@@ -874,9 +924,9 @@ function openFamilyChat(){
  current='chat'; currentChat=4; setActive('chat'); title.textContent='Chats';
  content.innerHTML=`<section class="chat-screen">
   <div class="chat-header group-header">
-   <button id="openContacts" class="contacts-button">Kontakte</button>
+   <button id="openCircles" class="contacts-button">Circles</button>
    <div class="avatar small">${activeCircle().icon}</div>
-   <div class="chat-person"><b>${activeCircle().label}</b><span class="small muted">Alle Mitglieder · Gruppenchat</span></div>
+   <button id="openCircleMembers" class="chat-person circle-name-button"><b>${activeCircle().label}</b><span class="small muted">Alle Mitglieder · Gruppenchat</span></button>
    <div class="chat-header-actions">
     <button id="groupMedia" class="icon-button" aria-label="Gruppenmedien">▦</button>
     <button id="groupVoice" class="icon-button" aria-label="Gruppenanruf">📞</button>
@@ -895,7 +945,8 @@ function openFamilyChat(){
    <button id="chatCamera" class="camera-black" aria-label="Kamera"><span>●</span></button><button id="mic">🎙️</button><button id="send" class="send">➤</button>
   </div>
  </section>`;
- document.getElementById('openContacts').onclick=openContacts;
+ document.getElementById('openCircles').onclick=openCircleList;
+ document.getElementById('openCircleMembers').onclick=openCircleMembers;
  document.getElementById('groupMedia').onclick=()=>openMedia('Gruppenmedien');
  document.getElementById('groupVoice').onclick=()=>openGroupCall(false);
  document.getElementById('groupVideo').onclick=()=>openGroupCall(true);
@@ -1382,12 +1433,12 @@ if(key==='circle'){
    const box=s.querySelector('.sheet-card')||s;
    const wrap=document.createElement('div');
    wrap.className='pinned-circle-settings';
-   wrap.innerHTML=`<h3>Fixierte Circles</h3><p class="muted">Maximal zwei Circles können ganz links fixiert werden.</p>
+   wrap.innerHTML=`<h3>Fixierte Circles</h3><p class="muted">Maximal drei Circles können ganz links fixiert werden.</p>
    ${Object.values(circlePresets).map(c=>`<label class="pin-setting-row"><span>${c.name}</span><input type="checkbox" data-pin-circle="${c.id}" ${getPinnedCircles().includes(c.id)?'checked':''}></label>`).join('')}`;
    box.appendChild(wrap);
    wrap.querySelectorAll('[data-pin-circle]').forEach(ch=>ch.onchange=()=>{
      let ids=[...wrap.querySelectorAll('[data-pin-circle]:checked')].map(x=>x.dataset.pinCircle);
-     if(ids.length>2){ch.checked=false;toast('Maximal zwei Circles können fixiert werden.');return}
+     if(ids.length>3){ch.checked=false;toast('Maximal drei Circles können fixiert werden.');return}
      savePinnedCircles(ids);saveCircleOrder(normalizedCircleOrder());renderCircleCarousel();
    });
  }
@@ -1500,7 +1551,7 @@ scoreInput.onchange=e=>{if(e.target.files?.[0]){toast('Demo: Highscore-Screensho
 
 applyAppAppearance(getAppAppearance());
 show('chat');
-console.info('Cirvela build V33 loaded');
+console.info('Cirvela build V34 loaded');
 
 if(circleSwitchBtn){circleSwitchBtn.onclick=openCircleSwitcher;} document.body.dataset.circle=activeCircle().theme; applyCircleDesign(currentCircleId); updateCircleHeader(); renderCircleCarousel();
 

@@ -260,3 +260,12 @@ V33 – ausschließlich die bestätigten Änderungen:
 - Fixierte Circles können nicht verschoben werden, bis sie gelöst werden.
 - Tastatur-/Chat-Hintergrund-Verhalten bleibt erhalten.
 - Keine weiteren Design- oder Funktionsänderungen.
+
+V34:
+- Circle-Hub/Zahnrad oben rechts sauber ausgerichtet.
+- Long-Press zeigt FIXIEREN/LÖSEN als großes Vordergrund-Overlay.
+- Maximal 3 Circles fixierbar.
+- Kontakte-Button im Gruppenchat durch Circles ersetzt.
+- Circles öffnet eine Liste aller Circles mit Ungelesen-Markierung und direkter Navigation.
+- Tippen auf den Circle-Namen öffnet die Mitgliederliste des aktuellen Circles.
+- Keine weiteren Funktionen absichtlich verändert.
