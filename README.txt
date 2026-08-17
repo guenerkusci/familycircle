@@ -269,3 +269,11 @@ V34:
 - Circles öffnet eine Liste aller Circles mit Ungelesen-Markierung und direkter Navigation.
 - Tippen auf den Circle-Namen öffnet die Mitgliederliste des aktuellen Circles.
 - Keine weiteren Funktionen absichtlich verändert.
+
+
+V35 – GitHub-Pages-Bereitstellung korrigiert:
+- .nojekyll hinzugefügt, damit GitHub Pages die App als reine statische Seite ausliefert.
+- Asset-Pfade explizit relativ gemacht.
+- Service-Worker-Pfade vereinheitlicht.
+- 404.html als Fallback hinzugefügt.
+- Keine UI-/Funktionsänderungen gegenüber V34.
