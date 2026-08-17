@@ -287,3 +287,15 @@ V36 – ausschließlich die drei vereinbarten Circle-Anpassungen:
 - Alle Circles erhalten einen lebendigeren 3D-Look mit Tiefe, Glanz, Schatten und Highlights.
   Die jeweilige Circle-Farbe bleibt dabei unverändert.
 - Keine weiteren UI- oder Funktionsänderungen.
+
+
+V37 – ausschließlich die zuletzt angeforderten Circle-Änderungen:
+- Das verblasste Rechteck der fixierten Circles überlappt nicht mehr mit dem Bereich darunter.
+- Der Kasten der fixierten Circles wirkt hochwertiger und lebendiger.
+- Circle-Namen wirken kräftiger und plastischer, bleiben aber schwarz.
+- Circle-Kreise sind leicht größer.
+- Der 3D-Look wurde deutlich verstärkt: stärkerer Tiefenring, Glanzlicht, Innenring,
+  Schatten und farbabhängige Highlights.
+- Beim Long Press wird der Circle deutlicher vergrößert/hervorgehoben.
+- FIXIEREN/LÖSEN erscheint mit deutlich mehr Abstand zum gehaltenen Circle.
+- Keine weiteren UI- oder Funktionsänderungen.

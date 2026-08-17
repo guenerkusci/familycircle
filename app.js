@@ -1,5 +1,5 @@
 
-// Cirvela V36: aggressively remove stale demo caches/service workers from older test builds.
+// Cirvela V37: aggressively remove stale demo caches/service workers from older test builds.
 (async function resetOldDemoCache(){
   try{
     if ('caches' in window){
@@ -399,8 +399,11 @@ function bindCircleGestures(){
      menu.className='circle-pin-pop';
      menu.textContent=pinnedNow()?'LÖSEN':'FIXIEREN';
      const r=el.getBoundingClientRect();
-     menu.style.left=Math.max(8,Math.min(window.innerWidth-150,r.left+r.width/2-75))+'px';
-     menu.style.top=Math.min(window.innerHeight-60,r.bottom+8)+'px';
+     const menuW=150, menuH=46, gap=30;
+     menu.style.left=Math.max(8,Math.min(window.innerWidth-menuW-8,r.left+r.width/2-menuW/2))+'px';
+     const below=r.bottom+gap;
+     const above=r.top-gap-menuH;
+     menu.style.top=(below+menuH<=window.innerHeight-8?below:Math.max(8,above))+'px';
      menu.addEventListener('pointerdown',ev=>{ev.preventDefault();ev.stopPropagation()});
      menu.addEventListener('click',ev=>{
        ev.preventDefault();ev.stopPropagation();
@@ -536,7 +539,7 @@ function applyCircle(id){
  const keepSection=['calendar','location','games','status','feed'].includes(sectionBeforeSwitch);
  if(sectionBeforeSwitch==='feed') feedCircleFocus=id;
  show(keepSection?sectionBeforeSwitch:'chat');
- console.info('Cirvela build V36 loaded');
+ console.info('Cirvela build V37 loaded');
  toast(c.name+' geöffnet');
 }
 function openCircleSwitcher(){
@@ -1552,7 +1555,7 @@ scoreInput.onchange=e=>{if(e.target.files?.[0]){toast('Demo: Highscore-Screensho
 
 applyAppAppearance(getAppAppearance());
 show('chat');
-console.info('Cirvela build V36 loaded');
+console.info('Cirvela build V37 loaded');
 
 if(circleSwitchBtn){circleSwitchBtn.onclick=openCircleSwitcher;} document.body.dataset.circle=activeCircle().theme; applyCircleDesign(currentCircleId); updateCircleHeader(); renderCircleCarousel();
 
