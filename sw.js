@@ -1,9 +1,9 @@
-const CACHE='cirvela-v38';
+const CACHE='cirvela-v39';
 const ASSETS=[
   './',
   './index.html',
-  './styles.css?v=38',
-  './app.js?v=38',
+  './styles.css?v=39',
+  './app.js?v=39',
   './manifest.json',
   './icon-192.png',
   './icon-512.png'

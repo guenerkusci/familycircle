@@ -1,5 +1,5 @@
 
-// Cirvela V38: aggressively remove stale demo caches/service workers from older test builds.
+// Cirvela V39: aggressively remove stale demo caches/service workers from older test builds.
 (async function resetOldDemoCache(){
   try{
     if ('caches' in window){
@@ -552,7 +552,7 @@ function applyCircle(id){
  const keepSection=['calendar','location','games','status','feed'].includes(sectionBeforeSwitch);
  if(sectionBeforeSwitch==='feed') feedCircleFocus=id;
  show(keepSection?sectionBeforeSwitch:'chat');
- console.info('Cirvela build V38 loaded');
+ console.info('Cirvela build V39 loaded');
  toast(c.name+' geöffnet');
 }
 function openCircleSwitcher(){
@@ -1617,7 +1617,7 @@ scoreInput.onchange=e=>{if(e.target.files?.[0]){toast('Demo: Highscore-Screensho
 
 applyAppAppearance(getAppAppearance());
 show('chat');
-console.info('Cirvela build V38 loaded');
+console.info('Cirvela build V39 loaded');
 
 if(circleSwitchBtn){circleSwitchBtn.onclick=openCircleSwitcher;} document.body.dataset.circle=activeCircle().theme; applyCircleDesign(currentCircleId); updateCircleHeader(); renderCircleCarousel();
 

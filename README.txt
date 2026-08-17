@@ -311,3 +311,13 @@ V38 – nur die zuletzt vereinbarten Änderungen:
   Verlässt er den sichtbaren Bereich wieder, wird sie wieder addiert.
   Der echte Gelesen/Ungelesen-Status bleibt davon unberührt.
 - Keine weiteren UI- oder Funktionsänderungen.
+
+
+V39 – ausschließlich die zuletzt angeforderten Anpassungen:
+- Nicht fixierte Circles wirken am Rand nicht mehr abgeschnitten; die bisherige Maskierung/Fade wurde entfernt.
+- Circle-Leiste bekam etwas mehr Höhe, damit größere Kreise vollständig sichtbar bleiben.
+- Circle-Kreise wurden etwas größer.
+- Circle-Namen darunter wurden leicht vergrößert.
+- Symbole der unteren Navigation wurden vergrößert.
+- SOS wurde proportional leicht vergrößert, ohne seine Position zu ändern.
+- Keine weiteren Design- oder Funktionsänderungen.
