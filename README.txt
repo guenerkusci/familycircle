@@ -207,3 +207,13 @@ V28 – gezielte Änderungen gegenüber V27:
 - Fixierte Circles können zusätzlich in Einstellungen → Circle-Management ausgewählt werden.
 - Reihenfolge und Fixierungen werden gespeichert.
 - Andere Funktionen wurden nicht absichtlich verändert.
+
+
+V29 – Korrektur nach realem iPhone-Test:
+- Konkreter Laufzeitfehler der Circle-Leiste behoben (falscher Funktionsname designById).
+- Circle-Leiste rendert wieder und zeigt 6 Circles gleichzeitig.
+- Circle-Management ist jetzt tatsächlich in Einstellungen erreichbar.
+- Long-Press ohne Bewegung öffnet Fixieren/Lösen; kurzes Wischen bleibt Scrollen; Halten+Bewegen sortiert.
+- Keyboard-Ansicht wurde neu als Flex-Layout aufgebaut: Chat-Kopfzeile, Nachrichten und Schreibleiste füllen den sichtbaren App-Bereich ohne internen Leerraum.
+- Dark Mode korrigiert für die tatsächlichen Nachrichtenklassen .bubble.theirs / .bubble.mine.
+- Bestehende Navigation und sonstige Funktionen wurden nicht absichtlich verändert.

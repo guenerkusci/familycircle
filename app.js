@@ -1,5 +1,5 @@
 
-// Cirvela V28: aggressively remove stale demo caches/service workers from older test builds.
+// Cirvela V29: aggressively remove stale demo caches/service workers from older test builds.
 (async function resetOldDemoCache(){
   try{
     if ('caches' in window){
@@ -381,51 +381,74 @@ function moveCircle(id,targetId){
 function bindCircleGestures(){
  const items=[...document.querySelectorAll('.circle-carousel-item')];
  items.forEach(el=>{
-   let timer=null,dragging=false,moved=false,startX=0,startY=0,dragId=el.dataset.circle;
+   let timer=null,dragging=false,moved=false,startX=0,startY=0,downAt=0,dragId=el.dataset.circle;
    const cancel=()=>{if(timer){clearTimeout(timer);timer=null}};
+   const clearPop=()=>{el.querySelector('.circle-pin-pop')?.remove();el.classList.remove('circle-hold')};
+
    el.addEventListener('pointerdown',e=>{
-     startX=e.clientX;startY=e.clientY;moved=false;dragging=false;
+     startX=e.clientX;startY=e.clientY;downAt=Date.now();moved=false;dragging=false;
+     clearPop();
      timer=setTimeout(()=>{
-       if(!moved){
+       if(!moved&&!dragging){
          el.classList.add('circle-hold');
          const pinned=getPinnedCircles().includes(dragId);
          const menu=document.createElement('button');
+         menu.type='button';
          menu.className='circle-pin-pop';
          menu.textContent=pinned?'Lösen':'Fixieren';
-         menu.onclick=ev=>{ev.stopPropagation();toggleCirclePin(dragId);menu.remove();el.classList.remove('circle-hold')};
+         menu.onclick=ev=>{
+           ev.preventDefault();ev.stopPropagation();
+           toggleCirclePin(dragId);
+           clearPop();
+         };
          el.appendChild(menu);
-         setTimeout(()=>{if(menu.isConnected)menu.remove();el.classList.remove('circle-hold')},2200);
        }
-     },520);
+     },620);
    });
+
    el.addEventListener('pointermove',e=>{
      const dx=e.clientX-startX,dy=e.clientY-startY;
-     if(Math.hypot(dx,dy)>9){
-       moved=true;cancel();
-       dragging=true;
-       el.classList.add('circle-dragging');
-       el.setPointerCapture?.(e.pointerId);
+     const distance=Math.hypot(dx,dy);
+     const held=Date.now()-downAt;
+     if(distance>9){
+       moved=true;
+       cancel();
+       clearPop();
+       // Erst nach kurzem Halten wird Bewegung als Sortieren interpretiert.
+       // Schnelle horizontale Bewegung bleibt normales Scrollen.
+       if(held>=220 && Math.abs(dx)>Math.abs(dy)){
+         dragging=true;
+         el.classList.add('circle-dragging');
+         try{el.setPointerCapture(e.pointerId)}catch(_){}
+         if(e.cancelable)e.preventDefault();
+       }
      }
-   });
+   },{passive:false});
+
    el.addEventListener('pointerup',e=>{
      cancel();
+     clearPop();
      if(dragging){
        el.classList.remove('circle-dragging');
        const target=document.elementFromPoint(e.clientX,e.clientY)?.closest('.circle-carousel-item');
        if(target)moveCircle(dragId,target.dataset.circle);
-       setTimeout(()=>dragging=false,0);
+       dragging=false;
+       moved=true;
+       setTimeout(()=>{moved=false},80);
      }
    });
-   el.addEventListener('pointercancel',()=>{cancel();el.classList.remove('circle-dragging')});
+
+   el.addEventListener('pointercancel',()=>{
+     cancel();clearPop();el.classList.remove('circle-dragging');dragging=false;
+   });
  });
 }
-
 function renderCircleCarousel(){
  const host=document.getElementById('circleCarousel'); if(!host)return;
  const order=normalizedCircleOrder();
  const pinned=getPinnedCircles();
  host.innerHTML=order.map(id=>{
-   const c=circlePresets[id],cfg=getCircleDesignConfig(id),theme=designById(id,cfg.top);
+   const c=circlePresets[id],cfg=getCircleDesignConfig(id),theme=designData(id,cfg.top);
    const unread=c.unread||0;
    return `<button class="circle-carousel-item ${id===currentCircleId?'active':''} ${pinned.includes(id)?'pinned':''}" data-circle="${id}" style="--circle-accent:${theme.accent}">
      <span class="circle-avatar-ring"><span class="circle-avatar">${c.icon||c.avatar||'◯'}</span>${unread?`<span class="circle-unread">${unread}</span>`:''}${pinned.includes(id)?'<span class="circle-pin-dot">●</span>':''}</span>
@@ -433,7 +456,7 @@ function renderCircleCarousel(){
    </button>`;
  }).join('');
  host.querySelectorAll('.circle-carousel-item').forEach(b=>b.onclick=e=>{
-   if(e.target.closest('.circle-pin-pop'))return;
+   if(e.target.closest('.circle-pin-pop')||b.classList.contains('circle-dragging'))return;
    applyCircle(b.dataset.circle);
  });
  bindCircleGestures();
@@ -466,7 +489,7 @@ function applyCircle(id){
  const keepSection=['calendar','location','games','status','feed'].includes(sectionBeforeSwitch);
  if(sectionBeforeSwitch==='feed') feedCircleFocus=id;
  show(keepSection?sectionBeforeSwitch:'chat');
- console.info('Cirvela build V28 loaded');
+ console.info('Cirvela build V29 loaded');
  toast(c.name+' geöffnet');
 }
 function openCircleSwitcher(){
@@ -1069,7 +1092,10 @@ function setupChatInput(){
    document.body.classList.add('keyboard-open');
    applyChatBackground();
    updateKeyboardLayout();
-   requestAnimationFrame(()=>{if(m)m.scrollTop=keepScroll;});
+   requestAnimationFrame(()=>{
+     if(m)m.scrollTop=keepScroll;
+     document.querySelector('.chat-composer')?.scrollIntoView({block:'end',inline:'nearest'});
+   });
  });
  inp.addEventListener('blur',()=>setTimeout(()=>{
    document.body.classList.remove('keyboard-open');
@@ -1255,6 +1281,7 @@ function settingsView(){
  ['🔔','Benachrichtigungen','Chats, Kalender, SOS','notifications'],
  ['✨','Circle Hub','20 neue Circle-Funktionen','hubSettings'],
  ['🎨','Darstellung','Hell/Dunkel, Textgröße','appearance'],
+ ['⭕','Circle-Management','Reihenfolge & bis zu 2 Circles fixieren','circle'],
  ['🌐','Sprache','Deutsch','language']
  ])}
  ${settingGroup('Deine Daten',[
@@ -1292,6 +1319,7 @@ function openSetting(key){
  blocked:['Blockierte Mitglieder',`<p class="muted">Keine blockierten Mitglieder.</p><button class="ghost wide">Mitglied auswählen · Demo</button>`],
  hubSettings:['Circle Hub',`<div class="privacy-banner"><b>✨ Circle Hub</b><br>Alle erweiterten Funktionen findest du oben über „Hub“: Catch-up, Board, Listen, Safe Walk, Zeitkapsel, Circle Inbox und mehr.</div><button id="openHubFromSettings" class="primary wide" style="margin-top:12px">Circle Hub öffnen</button>`],
  notifications:['Benachrichtigungen',`<div class="member-check"><span>💬 Chat-Nachrichten</span><input type="checkbox" checked></div><div class="member-check"><span>📅 Kalender-Erinnerungen</span><input type="checkbox" checked></div><div class="member-check"><span>🚨 SOS-Mitteilungen</span><input type="checkbox" checked></div><div class="member-check"><span>🎮 Spiel-Ranglisten</span><input type="checkbox"></div>`],
+ circle:['Circle-Management',`<div class="info-banner"><b>Circle-Reihenfolge</b><br>Hier kannst du maximal zwei Circles dauerhaft ganz links fixieren. Die übrige Reihenfolge änderst du direkt oben in der Circle-Leiste durch Gedrückthalten und Ziehen.</div>`],
  appearance:['Darstellung',`<div class="form-row"><label>App-Darstellung</label><select id="appAppearance"><option value="system">System</option><option value="light">Hell</option><option value="dark">Dunkel</option></select></div><div class="form-row"><label>Textgröße</label><select><option>Standard</option><option>Groß</option><option>Sehr groß</option></select></div><div class="appearance-divider"></div><div class="circle-design-head"><div><b>Circle-Designs</b><small>Obere Leiste und Chatfläche können getrennt oder gemeinsam gestaltet werden.</small></div></div><div class="form-row"><label>Circle auswählen</label><select id="circleDesignSelect">${Object.values(circlePresets).map(c=>`<option value="${c.id}" ${c.id===currentCircleId?'selected':''}>${c.name}</option>`).join('')}</select></div><button id="applyAppearanceCircle" class="primary wide appearance-main-apply">Auswahl übernehmen</button><div class="design-target-tabs"><button data-design-target="both" class="active">Beide Bereiche</button><button data-design-target="top">Obere Leiste</button><button data-design-target="chat">Chatbereich</button></div><div id="circleDesignChoices"></div><div class="info-banner" style="margin-top:12px">Wählst du „Beide Bereiche“, wird dasselbe Design oben und im Chat verwendet. Bei „Obere Leiste“ oder „Chatbereich“ bleiben die Bereiche unabhängig.</div>`],
  language:['Sprache',`<div class="form-row"><label>App-Sprache</label><select><option>Deutsch</option><option>English</option></select></div>`],
  export:['Daten exportieren',`<div class="info-banner">In der echten App sollst du eine Kopie deiner eigenen Daten anfordern können.</div><button class="secondary wide" style="margin-top:12px">Export vorbereiten · Demo</button>`],
@@ -1431,7 +1459,7 @@ scoreInput.onchange=e=>{if(e.target.files?.[0]){toast('Demo: Highscore-Screensho
 
 applyAppAppearance(getAppAppearance());
 show('chat');
-console.info('Cirvela build V28 loaded');
+console.info('Cirvela build V29 loaded');
 
 if(circleSwitchBtn){circleSwitchBtn.onclick=openCircleSwitcher;} document.body.dataset.circle=activeCircle().theme; applyCircleDesign(currentCircleId); updateCircleHeader(); renderCircleCarousel();
 
