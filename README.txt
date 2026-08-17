@@ -183,3 +183,12 @@ V26 – nur zwei Korrekturen gegenüber V25:
 - Cirvela wird nicht mehr durch ältere CSS-Regeln komplett in Großbuchstaben erzwungen.
 - Ältere Overlay-Schließen-Schaltflächen werden als Zurück-Pfeil dargestellt; ihre bestehende Funktion bleibt unverändert.
 - Keine weiteren Design- oder Funktionsänderungen.
+
+
+V27 – gezielte Korrekturen gegenüber V26:
+- Gewählte Chat-Hintergründe (inkl. eigenes Bild) bleiben beim Öffnen der Tastatur sichtbar.
+- Beim Fokus auf die Schreibleiste wird der Chat nicht mehr automatisch bis ganz nach unten gescrollt; die bisher sichtbaren Nachrichten bleiben erhalten.
+- Hell / Dunkel / System unter Darstellung funktionieren und werden gespeichert.
+- Direkt unter der Circle-Auswahl gibt es „Auswahl übernehmen“.
+- Jede einzelne Designvorlage besitzt eine eigene „Übernehmen“-Taste.
+- Sonstige Funktionen und Navigation wurden nicht absichtlich verändert.

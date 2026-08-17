@@ -1,5 +1,5 @@
 
-// Cirvela V26: aggressively remove stale demo caches/service workers from older test builds.
+// Cirvela V27: aggressively remove stale demo caches/service workers from older test builds.
 (async function resetOldDemoCache(){
   try{
     if ('caches' in window){
@@ -194,6 +194,27 @@ const universalDesigns=[
  {id:'cherry',name:'Cherry',desc:'Kirschrot, Rosé und helle Kontraste',accent:'#C93555',tint:'#FBE9EE',surface:'#FFF8FA',chat:'#F5E5EA',panel:'#FFFFFF',nav:'#FCF1F4',pattern:'flowers'},
  {id:'tropical',name:'Tropical',desc:'Türkis, Grün und sonnige Akzente',accent:'#168C86',tint:'#E5F7F5',surface:'#F5FBFA',chat:'#E4F1EC',panel:'#FFFFFF',nav:'#EFF9F7',pattern:'leaf'}
 ];
+
+function getAppAppearance(){
+ return localStorage.getItem('cirvela-app-appearance')||'system';
+}
+function resolvedAppAppearance(mode=getAppAppearance()){
+ if(mode==='dark') return 'dark';
+ if(mode==='light') return 'light';
+ return window.matchMedia&&window.matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light';
+}
+function applyAppAppearance(mode=getAppAppearance()){
+ const normalized=['system','light','dark'].includes(mode)?mode:'system';
+ localStorage.setItem('cirvela-app-appearance',normalized);
+ document.documentElement.dataset.appAppearance=resolvedAppAppearance(normalized);
+ document.documentElement.dataset.appAppearanceMode=normalized;
+}
+if(window.matchMedia){
+ const cirvelaScheme=window.matchMedia('(prefers-color-scheme: dark)');
+ const refreshSystemAppearance=()=>{if(getAppAppearance()==='system')applyAppAppearance('system')};
+ if(cirvelaScheme.addEventListener)cirvelaScheme.addEventListener('change',refreshSystemAppearance);
+}
+
 function designOptionsForCircle(id){
  const base=circleDesignCatalog[id]||circleDesignCatalog.family;
  const seen=new Set();return [...base,...universalDesigns].filter(d=>!seen.has(d.id)&&seen.add(d.id));
@@ -221,7 +242,7 @@ function applyCircleDesign(id=currentCircleId){
 }
 function circleDesignPreview(id,selected,target='both'){
  const list=designOptionsForCircle(id);
- return `<div class="circle-design-grid">${list.map(d=>`<button class="circle-design-card ${d.id===selected?'selected':''}" data-circle-design="${d.id}" style="--preview-accent:${d.accent};--preview-tint:${d.tint};--preview-chat:${d.chat}"><span class="design-preview"><i></i><i></i><i></i></span><b>${d.name}</b><small>${d.desc}</small>${d.id===selected?'<em>Ausgewählt</em>':''}</button>`).join('')}</div>`;
+ return `<div class="circle-design-grid">${list.map(d=>`<div class="circle-design-card ${d.id===selected?'selected':''}" data-circle-design-card="${d.id}" style="--preview-accent:${d.accent};--preview-tint:${d.tint};--preview-chat:${d.chat}"><span class="design-preview"><i></i><i></i><i></i></span><b>${d.name}</b><small>${d.desc}</small>${d.id===selected?'<em>Ausgewählt</em>':''}<button type="button" class="design-apply-btn" data-circle-design-apply="${d.id}">${d.id===selected?'Übernommen':'Übernehmen'}</button></div>`).join('')}</div>`;
 }
 
 const chatBackgrounds={
@@ -333,7 +354,7 @@ function applyCircle(id){
  const keepSection=['calendar','location','games','status','feed'].includes(sectionBeforeSwitch);
  if(sectionBeforeSwitch==='feed') feedCircleFocus=id;
  show(keepSection?sectionBeforeSwitch:'chat');
- console.info('Cirvela build V26 loaded');
+ console.info('Cirvela build V27 loaded');
  toast(c.name+' geöffnet');
 }
 function openCircleSwitcher(){
@@ -931,9 +952,12 @@ function setupChatInput(){
  const resize=()=>{inp.style.height='auto';inp.style.height=Math.min(Math.max(inp.scrollHeight,39),112)+'px'};
  inp.addEventListener('input',resize);
  inp.addEventListener('focus',()=>{
+   const m=document.getElementById('messages');
+   const keepScroll=m?m.scrollTop:0;
    document.body.classList.add('keyboard-open');
+   applyChatBackground();
    updateKeyboardLayout();
-   requestAnimationFrame(()=>{const m=document.getElementById('messages');if(m)m.scrollTop=m.scrollHeight;});
+   requestAnimationFrame(()=>{if(m)m.scrollTop=keepScroll;});
  });
  inp.addEventListener('blur',()=>setTimeout(()=>{
    document.body.classList.remove('keyboard-open');
@@ -956,8 +980,7 @@ function updateKeyboardLayout(){
  const top=vv?vv.offsetTop:0;
  document.documentElement.style.setProperty('--cirvela-vv-height',Math.max(260,height)+'px');
  document.documentElement.style.setProperty('--cirvela-vv-top',Math.max(0,top)+'px');
- const messages=document.getElementById('messages');
- if(messages) requestAnimationFrame(()=>messages.scrollTop=messages.scrollHeight);
+ applyChatBackground();
 }
 if(window.visualViewport){
  visualViewport.addEventListener('resize',updateKeyboardLayout);
@@ -1157,7 +1180,7 @@ function openSetting(key){
  blocked:['Blockierte Mitglieder',`<p class="muted">Keine blockierten Mitglieder.</p><button class="ghost wide">Mitglied auswählen · Demo</button>`],
  hubSettings:['Circle Hub',`<div class="privacy-banner"><b>✨ Circle Hub</b><br>Alle erweiterten Funktionen findest du oben über „Hub“: Catch-up, Board, Listen, Safe Walk, Zeitkapsel, Circle Inbox und mehr.</div><button id="openHubFromSettings" class="primary wide" style="margin-top:12px">Circle Hub öffnen</button>`],
  notifications:['Benachrichtigungen',`<div class="member-check"><span>💬 Chat-Nachrichten</span><input type="checkbox" checked></div><div class="member-check"><span>📅 Kalender-Erinnerungen</span><input type="checkbox" checked></div><div class="member-check"><span>🚨 SOS-Mitteilungen</span><input type="checkbox" checked></div><div class="member-check"><span>🎮 Spiel-Ranglisten</span><input type="checkbox"></div>`],
- appearance:['Darstellung',`<div class="form-row"><label>App-Darstellung</label><select id="appAppearance"><option>System</option><option>Hell</option><option>Dunkel</option></select></div><div class="form-row"><label>Textgröße</label><select><option>Standard</option><option>Groß</option><option>Sehr groß</option></select></div><div class="appearance-divider"></div><div class="circle-design-head"><div><b>Circle-Designs</b><small>Obere Leiste und Chatfläche können getrennt oder gemeinsam gestaltet werden.</small></div></div><div class="form-row"><label>Circle auswählen</label><select id="circleDesignSelect">${Object.values(circlePresets).map(c=>`<option value="${c.id}" ${c.id===currentCircleId?'selected':''}>${c.name}</option>`).join('')}</select></div><div class="design-target-tabs"><button data-design-target="both" class="active">Beide Bereiche</button><button data-design-target="top">Obere Leiste</button><button data-design-target="chat">Chatbereich</button></div><div id="circleDesignChoices"></div><div class="info-banner" style="margin-top:12px">Wählst du „Beide Bereiche“, wird dasselbe Design oben und im Chat verwendet. Bei „Obere Leiste“ oder „Chatbereich“ bleiben die Bereiche unabhängig.</div>`],
+ appearance:['Darstellung',`<div class="form-row"><label>App-Darstellung</label><select id="appAppearance"><option value="system">System</option><option value="light">Hell</option><option value="dark">Dunkel</option></select></div><div class="form-row"><label>Textgröße</label><select><option>Standard</option><option>Groß</option><option>Sehr groß</option></select></div><div class="appearance-divider"></div><div class="circle-design-head"><div><b>Circle-Designs</b><small>Obere Leiste und Chatfläche können getrennt oder gemeinsam gestaltet werden.</small></div></div><div class="form-row"><label>Circle auswählen</label><select id="circleDesignSelect">${Object.values(circlePresets).map(c=>`<option value="${c.id}" ${c.id===currentCircleId?'selected':''}>${c.name}</option>`).join('')}</select></div><button id="applyAppearanceCircle" class="primary wide appearance-main-apply">Auswahl übernehmen</button><div class="design-target-tabs"><button data-design-target="both" class="active">Beide Bereiche</button><button data-design-target="top">Obere Leiste</button><button data-design-target="chat">Chatbereich</button></div><div id="circleDesignChoices"></div><div class="info-banner" style="margin-top:12px">Wählst du „Beide Bereiche“, wird dasselbe Design oben und im Chat verwendet. Bei „Obere Leiste“ oder „Chatbereich“ bleiben die Bereiche unabhängig.</div>`],
  language:['Sprache',`<div class="form-row"><label>App-Sprache</label><select><option>Deutsch</option><option>English</option></select></div>`],
  export:['Daten exportieren',`<div class="info-banner">In der echten App sollst du eine Kopie deiner eigenen Daten anfordern können.</div><button class="secondary wide" style="margin-top:12px">Export vorbereiten · Demo</button>`],
  storage:['Speicher & Medien',`<div class="setting-row"><span class="setting-copy"><b>Medien-Cache</b><small>Demo · 0 MB</small></span></div><button class="ghost wide" style="margin-top:12px">Lokalen Cache leeren</button>`],
@@ -1176,11 +1199,34 @@ function openSetting(key){
  if(key==='appearance'){
    const select=s.querySelector('#circleDesignSelect');
    const choices=s.querySelector('#circleDesignChoices');
+   const appearanceSelect=s.querySelector('#appAppearance');
+   const applyMain=s.querySelector('#applyAppearanceCircle');
+   appearanceSelect.value=getAppAppearance();
    let target='both';
    const selectedFor=(id)=>{const cfg=getCircleDesignConfig(id);return target==='chat'?cfg.chat:target==='top'?cfg.top:(cfg.top===cfg.chat?cfg.top:'__mixed__')};
-   const render=()=>{const id=select.value;choices.innerHTML=circleDesignPreview(id,selectedFor(id),target);choices.querySelectorAll('[data-circle-design]').forEach(b=>b.onclick=()=>{setCircleDesign(id,b.dataset.circleDesign,target);render();toast(circlePresets[id].name+' Design gespeichert')})};
-   s.querySelectorAll('[data-design-target]').forEach(b=>b.onclick=()=>{target=b.dataset.designTarget;s.querySelectorAll('[data-design-target]').forEach(x=>x.classList.toggle('active',x===b));render()});
-   select.addEventListener('change',render);render();
+   const render=()=>{
+     const id=select.value;
+     choices.innerHTML=circleDesignPreview(id,selectedFor(id),target);
+     choices.querySelectorAll('[data-circle-design-apply]').forEach(b=>b.onclick=e=>{
+       e.preventDefault();e.stopPropagation();
+       setCircleDesign(id,b.dataset.circleDesignApply,target);
+       render();
+       toast(circlePresets[id].name+' · '+(target==='both'?'beide Bereiche':target==='top'?'obere Leiste':'Chatbereich')+' übernommen');
+     });
+   };
+   s.querySelectorAll('[data-design-target]').forEach(b=>b.onclick=()=>{
+     target=b.dataset.designTarget;
+     s.querySelectorAll('[data-design-target]').forEach(x=>x.classList.toggle('active',x===b));
+     render();
+   });
+   select.addEventListener('change',render);
+   applyMain.onclick=()=>{
+     applyAppAppearance(appearanceSelect.value);
+     if(select.value===currentCircleId)applyCircleDesign(select.value);
+     render();
+     toast('Darstellung für '+circlePresets[select.value].name+' übernommen');
+   };
+   render();
  }
  s.querySelector('#configureCustomFeed')?.addEventListener('click',()=>{s.remove();openFeature('feedFilter')});
  s.querySelectorAll('button.danger,button.secondary,button.ghost').forEach(b=>{if(!b.classList.contains('close-sheet'))b.addEventListener('click',()=>toast('Demo-Aktion ausgeführt.'))});
@@ -1256,8 +1302,9 @@ galleryInput.onchange=e=>{if(e.target.files?.[0]){toast('Demo: '+e.target.files[
 cameraInput.onchange=e=>{if(e.target.files?.[0]){toast('Demo: Kamera-Medium ausgewählt.');e.target.value=''}};
 scoreInput.onchange=e=>{if(e.target.files?.[0]){toast('Demo: Highscore-Screenshot ausgewählt.');e.target.value=''}};
 
+applyAppAppearance(getAppAppearance());
 show('chat');
-console.info('Cirvela build V26 loaded');
+console.info('Cirvela build V27 loaded');
 
 if(circleSwitchBtn){circleSwitchBtn.onclick=openCircleSwitcher;} document.body.dataset.circle=activeCircle().theme; applyCircleDesign(currentCircleId); updateCircleHeader(); renderCircleCarousel();
 
