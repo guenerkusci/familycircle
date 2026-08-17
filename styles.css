@@ -1269,3 +1269,189 @@ html[data-app-appearance="dark"] .circle-design-card small{color:#A8B0BE!importa
 .circle-design-card.selected .design-apply-btn{
   background:color-mix(in srgb,var(--preview-accent) 82%,#111827)!important;
 }
+
+
+/* ==========================================================
+   V28 – gezielte Korrekturen
+   ========================================================== */
+
+/* Keyboard: kein großer leerer Zwischenraum mehr. */
+body.keyboard-open .chat-screen{
+  position:relative!important;
+  inset:auto!important;
+  height:auto!important;
+  min-height:0!important;
+  overflow:visible!important;
+}
+body.keyboard-open .messages{
+  height:auto!important;
+  min-height:220px!important;
+  max-height:calc(var(--cirvela-vv-height,100dvh) - 126px)!important;
+  overflow-y:auto!important;
+  background-color:var(--circle-chat)!important;
+}
+body.keyboard-open .chat-composer{
+  position:fixed!important;
+  left:0!important;
+  right:0!important;
+  bottom:0!important;
+  z-index:80!important;
+  margin:0!important;
+  border-radius:0!important;
+  min-height:50px!important;
+  max-height:94px!important;
+  padding:5px 8px calc(5px + env(safe-area-inset-bottom))!important;
+}
+body.keyboard-open .messages{
+  padding-bottom:62px!important;
+}
+
+/* Chat-Kopfzeile: schmaler + fest, Schrift und Icons proportional kleiner */
+.chat-header{
+  min-height:58px!important;
+  padding:6px 14px!important;
+}
+.chat-header .contact-btn,
+.chat-header .chat-title,
+.chat-header .chat-subtitle,
+.chat-header button{
+  transform-origin:center!important;
+}
+.chat-header .chat-title{font-size:18px!important;line-height:1.05!important}
+.chat-header .chat-subtitle{font-size:13px!important;line-height:1.1!important}
+.chat-header .contact-btn{font-size:13px!important;padding:8px 12px!important}
+.chat-header .chat-avatar{width:42px!important;height:42px!important;font-size:24px!important}
+.chat-header .chat-actions button{font-size:21px!important;width:36px!important;height:36px!important}
+.chat-screen .chat-header{
+  position:sticky!important;
+  top:var(--cirvela-topbar-offset,138px)!important;
+  z-index:45!important;
+}
+body.keyboard-open .chat-header{
+  position:sticky!important;
+  top:0!important;
+  z-index:85!important;
+}
+
+/* Circle-Leiste kompakter: 6 Stück sichtbar */
+.circle-carousel{
+  gap:6px!important;
+  padding:6px 6px 7px!important;
+  overflow-x:auto!important;
+  scroll-snap-type:x proximity!important;
+}
+.circle-carousel-item{
+  flex:0 0 calc((100% - 30px)/6)!important;
+  min-width:0!important;
+  padding:0!important;
+  scroll-snap-align:start!important;
+}
+.circle-avatar-ring{
+  width:52px!important;
+  height:52px!important;
+  margin:0 auto 3px!important;
+}
+.circle-avatar{
+  width:44px!important;
+  height:44px!important;
+  font-size:24px!important;
+}
+.circle-carousel-name{
+  font-size:9px!important;
+  line-height:1.05!important;
+  white-space:nowrap!important;
+  overflow:hidden!important;
+  text-overflow:ellipsis!important;
+}
+.circle-unread{
+  min-width:18px!important;
+  height:18px!important;
+  padding:0 4px!important;
+  font-size:10px!important;
+  top:-4px!important;
+  right:-3px!important;
+}
+.circle-pin-dot{
+  position:absolute;
+  left:-2px;
+  top:-2px;
+  font-size:8px;
+  color:#111;
+  background:#fff;
+  border-radius:50%;
+  width:14px;
+  height:14px;
+  display:grid;
+  place-items:center;
+}
+.circle-carousel-item.pinned .circle-avatar-ring{
+  box-shadow:0 0 0 2px rgba(17,24,39,.18)!important;
+}
+.circle-carousel-item.circle-dragging{
+  opacity:.65!important;
+  transform:scale(.96)!important;
+}
+.circle-carousel-item{
+  position:relative!important;
+  touch-action:pan-x!important;
+}
+.circle-pin-pop{
+  position:absolute!important;
+  top:54px!important;
+  left:50%!important;
+  transform:translateX(-50%)!important;
+  z-index:120!important;
+  border:1px solid rgba(0,0,0,.12)!important;
+  background:#fff!important;
+  color:#111!important;
+  border-radius:10px!important;
+  padding:6px 10px!important;
+  font-size:11px!important;
+  font-weight:800!important;
+  box-shadow:0 8px 24px rgba(0,0,0,.16)!important;
+}
+
+/* Dark Mode: Chattexte klar und kontrastreich */
+html[data-app-appearance="dark"] .messages .message-bubble,
+html[data-app-appearance="dark"] .messages .message-bubble *,
+html[data-app-appearance="dark"] .messages .msg,
+html[data-app-appearance="dark"] .messages .msg *{
+  opacity:1!important;
+}
+html[data-app-appearance="dark"] .messages .incoming,
+html[data-app-appearance="dark"] .messages .message-in,
+html[data-app-appearance="dark"] .messages .msg.in{
+  background:#1B2430!important;
+  color:#F7FAFC!important;
+}
+html[data-app-appearance="dark"] .messages .outgoing,
+html[data-app-appearance="dark"] .messages .message-out,
+html[data-app-appearance="dark"] .messages .msg.out{
+  background:#244B40!important;
+  color:#F7FAFC!important;
+}
+html[data-app-appearance="dark"] .messages b,
+html[data-app-appearance="dark"] .messages strong{
+  color:#FFFFFF!important;
+}
+html[data-app-appearance="dark"] .messages small,
+html[data-app-appearance="dark"] .messages .time{
+  color:#C4CBD6!important;
+  opacity:1!important;
+}
+
+/* Einstellungen: fixierte Circles */
+.pinned-circle-settings{
+  margin-top:18px!important;
+  padding-top:14px!important;
+  border-top:1px solid var(--line)!important;
+}
+.pin-setting-row{
+  display:flex!important;
+  align-items:center!important;
+  justify-content:space-between!important;
+  gap:12px!important;
+  padding:12px 0!important;
+  border-bottom:1px solid var(--line)!important;
+  font-weight:750!important;
+}

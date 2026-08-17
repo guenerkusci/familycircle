@@ -192,3 +192,18 @@ V27 – gezielte Korrekturen gegenüber V26:
 - Direkt unter der Circle-Auswahl gibt es „Auswahl übernehmen“.
 - Jede einzelne Designvorlage besitzt eine eigene „Übernehmen“-Taste.
 - Sonstige Funktionen und Navigation wurden nicht absichtlich verändert.
+
+
+V28 – gezielte Änderungen gegenüber V27:
+- Beim Schreiben wird der unnötige große Leerraum oberhalb der Tastatur entfernt; die Schreibleiste sitzt direkt am sichtbaren unteren Rand.
+- Gewählter Chat-Hintergrund bleibt sichtbar.
+- Dark Mode: Nachrichtentexte, Namen und Zeitstempel bleiben kontrastreich lesbar.
+- Chat-Kopfzeile ist schmaler und bleibt beim Scrollen fixiert.
+- Circle-Leiste ist kleiner; 6 Circles passen gleichzeitig.
+- Circles können per Drag neu sortiert werden.
+- Langes Drücken ohne Bewegung öffnet „Fixieren“/„Lösen“.
+- Maximal 2 Circles sind fixierbar und bleiben auf Position 1 und 2.
+- Fixierte Circles können nur untereinander auf Position 1/2 getauscht werden; erst nach Lösen sind sie wieder frei sortierbar.
+- Fixierte Circles können zusätzlich in Einstellungen → Circle-Management ausgewählt werden.
+- Reihenfolge und Fixierungen werden gespeichert.
+- Andere Funktionen wurden nicht absichtlich verändert.

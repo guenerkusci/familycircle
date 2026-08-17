@@ -1,5 +1,5 @@
 
-// Cirvela V27: aggressively remove stale demo caches/service workers from older test builds.
+// Cirvela V28: aggressively remove stale demo caches/service workers from older test builds.
 (async function resetOldDemoCache(){
   try{
     if ('caches' in window){
@@ -312,19 +312,131 @@ function circleUnreadCount(c){
  const chatTotal=(c.chats||[]).reduce((sum,x)=>sum+(Number(x.badge)||0),0);
  return Math.max(Number(c.unread)||0,chatTotal);
 }
+
+function getCircleOrder(){
+ const saved=JSON.parse(localStorage.getItem('cirvela-circle-order')||'null');
+ const ids=Object.keys(circlePresets);
+ if(Array.isArray(saved)){
+   const clean=saved.filter(id=>ids.includes(id));
+   ids.forEach(id=>{if(!clean.includes(id))clean.push(id)});
+   return clean;
+ }
+ return ids;
+}
+function saveCircleOrder(order){localStorage.setItem('cirvela-circle-order',JSON.stringify(order))}
+function getPinnedCircles(){
+ const saved=JSON.parse(localStorage.getItem('cirvela-pinned-circles')||'[]');
+ return Array.isArray(saved)?saved.filter(id=>circlePresets[id]).slice(0,2):[];
+}
+function savePinnedCircles(ids){
+ const clean=[...new Set(ids.filter(id=>circlePresets[id]))].slice(0,2);
+ localStorage.setItem('cirvela-pinned-circles',JSON.stringify(clean));
+}
+function normalizedCircleOrder(){
+ const order=getCircleOrder();
+ const pinned=getPinnedCircles();
+ const rest=order.filter(id=>!pinned.includes(id));
+ return [...pinned,...rest];
+}
+function toggleCirclePin(id){
+ const pinned=getPinnedCircles();
+ if(pinned.includes(id)){
+   savePinnedCircles(pinned.filter(x=>x!==id));
+   saveCircleOrder(normalizedCircleOrder());
+   renderCircleCarousel();
+   toast(circlePresets[id].name+' gelöst');
+   return;
+ }
+ if(pinned.length>=2){
+   toast('Maximal zwei Circles können fixiert werden.');
+   return;
+ }
+ savePinnedCircles([...pinned,id]);
+ saveCircleOrder(normalizedCircleOrder());
+ renderCircleCarousel();
+ toast(circlePresets[id].name+' fixiert');
+}
+function moveCircle(id,targetId){
+ if(id===targetId)return;
+ const pinned=getPinnedCircles();
+ let order=normalizedCircleOrder();
+ const from=order.indexOf(id), to=order.indexOf(targetId);
+ if(from<0||to<0)return;
+ const idPinned=pinned.includes(id), targetPinned=pinned.includes(targetId);
+
+ if(idPinned){
+   if(!targetPinned)return;
+   order.splice(from,1);
+   order.splice(to,0,id);
+ }else{
+   if(targetPinned)return;
+   order.splice(from,1);
+   const pinCount=pinned.length;
+   const safeTo=Math.max(pinCount,to);
+   order.splice(safeTo,0,id);
+ }
+ saveCircleOrder(order);
+ renderCircleCarousel();
+}
+function bindCircleGestures(){
+ const items=[...document.querySelectorAll('.circle-carousel-item')];
+ items.forEach(el=>{
+   let timer=null,dragging=false,moved=false,startX=0,startY=0,dragId=el.dataset.circle;
+   const cancel=()=>{if(timer){clearTimeout(timer);timer=null}};
+   el.addEventListener('pointerdown',e=>{
+     startX=e.clientX;startY=e.clientY;moved=false;dragging=false;
+     timer=setTimeout(()=>{
+       if(!moved){
+         el.classList.add('circle-hold');
+         const pinned=getPinnedCircles().includes(dragId);
+         const menu=document.createElement('button');
+         menu.className='circle-pin-pop';
+         menu.textContent=pinned?'Lösen':'Fixieren';
+         menu.onclick=ev=>{ev.stopPropagation();toggleCirclePin(dragId);menu.remove();el.classList.remove('circle-hold')};
+         el.appendChild(menu);
+         setTimeout(()=>{if(menu.isConnected)menu.remove();el.classList.remove('circle-hold')},2200);
+       }
+     },520);
+   });
+   el.addEventListener('pointermove',e=>{
+     const dx=e.clientX-startX,dy=e.clientY-startY;
+     if(Math.hypot(dx,dy)>9){
+       moved=true;cancel();
+       dragging=true;
+       el.classList.add('circle-dragging');
+       el.setPointerCapture?.(e.pointerId);
+     }
+   });
+   el.addEventListener('pointerup',e=>{
+     cancel();
+     if(dragging){
+       el.classList.remove('circle-dragging');
+       const target=document.elementFromPoint(e.clientX,e.clientY)?.closest('.circle-carousel-item');
+       if(target)moveCircle(dragId,target.dataset.circle);
+       setTimeout(()=>dragging=false,0);
+     }
+   });
+   el.addEventListener('pointercancel',()=>{cancel();el.classList.remove('circle-dragging')});
+ });
+}
+
 function renderCircleCarousel(){
- if(!circleCarousel)return;
- circleCarousel.innerHTML=Object.values(circlePresets).map(c=>{
-   const d=designData(c.id,getCircleDesignConfig(c.id).top);
-   const unread=circleUnreadCount(c);
-   return `<button class="circle-tile ${c.id===currentCircleId?'selected':''}" data-circle-carousel="${c.id}" style="--tile-accent:${d.accent}">
-      <span class="circle-photo"><span>${c.icon}</span>${unread?`<em>${unreadLabel(unread)}</em>`:''}</span>
-      <small>${c.name}</small>
+ const host=document.getElementById('circleCarousel'); if(!host)return;
+ const order=normalizedCircleOrder();
+ const pinned=getPinnedCircles();
+ host.innerHTML=order.map(id=>{
+   const c=circlePresets[id],cfg=getCircleDesignConfig(id),theme=designById(id,cfg.top);
+   const unread=c.unread||0;
+   return `<button class="circle-carousel-item ${id===currentCircleId?'active':''} ${pinned.includes(id)?'pinned':''}" data-circle="${id}" style="--circle-accent:${theme.accent}">
+     <span class="circle-avatar-ring"><span class="circle-avatar">${c.icon||c.avatar||'◯'}</span>${unread?`<span class="circle-unread">${unread}</span>`:''}${pinned.includes(id)?'<span class="circle-pin-dot">●</span>':''}</span>
+     <span class="circle-carousel-name">${c.name}</span>
    </button>`;
  }).join('');
- circleCarousel.querySelectorAll('[data-circle-carousel]').forEach(b=>b.onclick=()=>applyCircle(b.dataset.circleCarousel));
- const active=circleCarousel.querySelector('.circle-tile.selected');
- active?.scrollIntoView({inline:'center',block:'nearest',behavior:'smooth'});
+ host.querySelectorAll('.circle-carousel-item').forEach(b=>b.onclick=e=>{
+   if(e.target.closest('.circle-pin-pop'))return;
+   applyCircle(b.dataset.circle);
+ });
+ bindCircleGestures();
 }
 function updateCircleHeader(){
  const c=activeCircle();
@@ -354,7 +466,7 @@ function applyCircle(id){
  const keepSection=['calendar','location','games','status','feed'].includes(sectionBeforeSwitch);
  if(sectionBeforeSwitch==='feed') feedCircleFocus=id;
  show(keepSection?sectionBeforeSwitch:'chat');
- console.info('Cirvela build V27 loaded');
+ console.info('Cirvela build V28 loaded');
  toast(c.name+' geöffnet');
 }
 function openCircleSwitcher(){
@@ -1196,7 +1308,22 @@ function openSetting(key){
      if(saved)saved.textContent='Gespeichert: '+feedScopeLabel(r.value);
    }));
  }
- if(key==='appearance'){
+ 
+if(key==='circle'){
+   const box=s.querySelector('.sheet-card')||s;
+   const wrap=document.createElement('div');
+   wrap.className='pinned-circle-settings';
+   wrap.innerHTML=`<h3>Fixierte Circles</h3><p class="muted">Maximal zwei Circles können ganz links fixiert werden.</p>
+   ${Object.values(circlePresets).map(c=>`<label class="pin-setting-row"><span>${c.name}</span><input type="checkbox" data-pin-circle="${c.id}" ${getPinnedCircles().includes(c.id)?'checked':''}></label>`).join('')}`;
+   box.appendChild(wrap);
+   wrap.querySelectorAll('[data-pin-circle]').forEach(ch=>ch.onchange=()=>{
+     let ids=[...wrap.querySelectorAll('[data-pin-circle]:checked')].map(x=>x.dataset.pinCircle);
+     if(ids.length>2){ch.checked=false;toast('Maximal zwei Circles können fixiert werden.');return}
+     savePinnedCircles(ids);saveCircleOrder(normalizedCircleOrder());renderCircleCarousel();
+   });
+ }
+
+if(key==='appearance'){
    const select=s.querySelector('#circleDesignSelect');
    const choices=s.querySelector('#circleDesignChoices');
    const appearanceSelect=s.querySelector('#appAppearance');
@@ -1304,7 +1431,7 @@ scoreInput.onchange=e=>{if(e.target.files?.[0]){toast('Demo: Highscore-Screensho
 
 applyAppAppearance(getAppAppearance());
 show('chat');
-console.info('Cirvela build V27 loaded');
+console.info('Cirvela build V28 loaded');
 
 if(circleSwitchBtn){circleSwitchBtn.onclick=openCircleSwitcher;} document.body.dataset.circle=activeCircle().theme; applyCircleDesign(currentCircleId); updateCircleHeader(); renderCircleCarousel();
 
