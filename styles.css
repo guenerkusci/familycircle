@@ -2443,3 +2443,88 @@ body.keyboard-open .chat-composer{
   font-size:25px!important;
   color:#98a2b3!important;
 }
+
+
+/* ==========================================================
+   V36 – ausschließlich die drei vereinbarten Circle-Anpassungen
+   ========================================================== */
+
+/* 1) Fixierte Circles: dezentes verblasstes Rechteck */
+.circle-pinned-track.has-pinned{
+  position:relative!important;
+  padding:3px 5px 4px!important;
+  margin:0 4px 0 0!important;
+  border:1px solid rgba(104,120,145,.18)!important;
+  border-radius:12px!important;
+  background:linear-gradient(180deg,rgba(255,255,255,.34) 0%,rgba(214,224,240,.20) 100%)!important;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.55),0 3px 10px rgba(50,60,80,.05)!important;
+  backdrop-filter:blur(3px)!important;
+  -webkit-backdrop-filter:blur(3px)!important;
+}
+.circle-pinned-track.has-pinned .circle-carousel-item{
+  position:relative!important;
+  z-index:1!important;
+}
+
+/* 2) Lebendiger / 3D-artiger Circle-Look */
+.circle-avatar-ring{
+  position:relative!important;
+  isolation:isolate!important;
+  background:radial-gradient(circle at 34% 26%,rgba(255,255,255,.98) 0 16%,rgba(255,255,255,.70) 28%,rgba(255,255,255,.22) 60%,rgba(255,255,255,.08) 100%)!important;
+  border-color:var(--circle-accent,#64748b)!important;
+  box-shadow:
+    0 3px 8px rgba(25,35,55,.18),
+    0 1px 2px rgba(25,35,55,.14),
+    inset 0 2px 2px rgba(255,255,255,.88),
+    inset 0 -2px 4px rgba(25,35,55,.10)!important;
+  transform:translateZ(0)!important;
+  transition:transform .18s ease,box-shadow .18s ease,filter .18s ease!important;
+}
+.circle-avatar-ring::before{
+  content:""!important;
+  position:absolute!important;
+  inset:2px!important;
+  border-radius:50%!important;
+  border:1px solid color-mix(in srgb,var(--circle-accent,#64748b) 62%,#ffffff)!important;
+  box-shadow:
+    inset 0 0 0 1px rgba(255,255,255,.55),
+    inset 0 -3px 6px color-mix(in srgb,var(--circle-accent,#64748b) 18%,transparent)!important;
+  pointer-events:none!important;
+  z-index:-1!important;
+}
+.circle-avatar-ring::after{
+  content:""!important;
+  position:absolute!important;
+  left:8px!important;
+  top:5px!important;
+  width:11px!important;
+  height:5px!important;
+  border-radius:50%!important;
+  background:rgba(255,255,255,.72)!important;
+  filter:blur(.2px)!important;
+  transform:rotate(-22deg)!important;
+  pointer-events:none!important;
+}
+.circle-avatar{
+  background:radial-gradient(circle at 38% 30%,#ffffff 0 28%,#f7f8fb 58%,#e9edf3 100%)!important;
+  box-shadow:inset 0 1px 2px rgba(255,255,255,.95),inset 0 -2px 4px rgba(40,50,70,.10)!important;
+  filter:drop-shadow(0 1px 1px rgba(20,30,45,.12))!important;
+}
+
+/* 3) Long Press: Circle vergrößern und hervorheben */
+.circle-carousel-item.circle-hold{
+  z-index:500!important;
+}
+.circle-carousel-item.circle-hold .circle-avatar-ring{
+  transform:scale(1.18) translateY(-2px)!important;
+  filter:saturate(1.12) brightness(1.04)!important;
+  box-shadow:
+    0 8px 18px rgba(25,35,55,.26),
+    0 0 0 3px color-mix(in srgb,var(--circle-accent,#64748b) 24%,transparent),
+    0 0 16px color-mix(in srgb,var(--circle-accent,#64748b) 34%,transparent),
+    inset 0 2px 2px rgba(255,255,255,.92),
+    inset 0 -3px 5px rgba(25,35,55,.12)!important;
+}
+.circle-carousel-item.circle-hold .circle-carousel-name{
+  transform:translateY(2px)!important;
+}

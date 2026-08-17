@@ -277,3 +277,13 @@ V35 – GitHub-Pages-Bereitstellung korrigiert:
 - Service-Worker-Pfade vereinheitlicht.
 - 404.html als Fallback hinzugefügt.
 - Keine UI-/Funktionsänderungen gegenüber V34.
+
+
+V36 – ausschließlich die drei vereinbarten Circle-Anpassungen:
+- Fixierte Circles werden als Gruppe durch ein dezentes, verblasstes Rechteck hervorgehoben.
+  Das Rechteck passt sich automatisch an 1, 2 oder 3 fixierte Circles an.
+- Beim langen Drücken wird der gehaltene Circle vergrößert und hervorgehoben;
+  nach dem Loslassen kehrt er in die normale Größe zurück.
+- Alle Circles erhalten einen lebendigeren 3D-Look mit Tiefe, Glanz, Schatten und Highlights.
+  Die jeweilige Circle-Farbe bleibt dabei unverändert.
+- Keine weiteren UI- oder Funktionsänderungen.

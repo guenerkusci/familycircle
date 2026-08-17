@@ -1,5 +1,5 @@
 
-// Cirvela V35: aggressively remove stale demo caches/service workers from older test builds.
+// Cirvela V36: aggressively remove stale demo caches/service workers from older test builds.
 (async function resetOldDemoCache(){
   try{
     if ('caches' in window){
@@ -444,6 +444,7 @@ function bindCircleGestures(){
    };
    const finish=(x,y)=>{
      clearTimer();
+     el.classList.remove('circle-hold');
      if(dragging){
        el.classList.remove('circle-dragging');
        const target=document.elementFromPoint(x,y)?.closest('.circle-loose-track .circle-carousel-item');
@@ -460,7 +461,7 @@ function bindCircleGestures(){
    el.addEventListener('pointerdown',e=>begin(e.clientX,e.clientY));
    el.addEventListener('pointermove',e=>move(e.clientX,e.clientY,e),{passive:false});
    el.addEventListener('pointerup',e=>finish(e.clientX,e.clientY));
-   el.addEventListener('pointercancel',()=>{clearTimer();clearMenu();el.classList.remove('circle-dragging')});
+   el.addEventListener('pointercancel',()=>{clearTimer();clearMenu();el.classList.remove('circle-dragging');el.classList.remove('circle-hold')});
 
    el.addEventListener('touchstart',e=>{
      if(e.touches.length!==1)return;
@@ -499,7 +500,7 @@ function renderCircleCarousel(){
    </button>`;
  };
 
- host.innerHTML=`<div class="circle-pinned-track">${pinnedOrder.map(tile).join('')}</div><div class="circle-loose-track">${looseOrder.map(tile).join('')}</div>`;
+ host.innerHTML=`<div class="circle-pinned-track ${pinnedOrder.length?'has-pinned':''}">${pinnedOrder.map(tile).join('')}</div><div class="circle-loose-track">${looseOrder.map(tile).join('')}</div>`;
 
  host.querySelectorAll('.circle-carousel-item').forEach(b=>b.onclick=e=>{
    if(e.defaultPrevented||e.target.closest('.circle-pin-pop')||b.classList.contains('circle-dragging'))return;
@@ -535,7 +536,7 @@ function applyCircle(id){
  const keepSection=['calendar','location','games','status','feed'].includes(sectionBeforeSwitch);
  if(sectionBeforeSwitch==='feed') feedCircleFocus=id;
  show(keepSection?sectionBeforeSwitch:'chat');
- console.info('Cirvela build V35 loaded');
+ console.info('Cirvela build V36 loaded');
  toast(c.name+' geöffnet');
 }
 function openCircleSwitcher(){
@@ -1551,7 +1552,7 @@ scoreInput.onchange=e=>{if(e.target.files?.[0]){toast('Demo: Highscore-Screensho
 
 applyAppAppearance(getAppAppearance());
 show('chat');
-console.info('Cirvela build V35 loaded');
+console.info('Cirvela build V36 loaded');
 
 if(circleSwitchBtn){circleSwitchBtn.onclick=openCircleSwitcher;} document.body.dataset.circle=activeCircle().theme; applyCircleDesign(currentCircleId); updateCircleHeader(); renderCircleCarousel();
 
