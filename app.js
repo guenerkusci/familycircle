@@ -1,5 +1,5 @@
 
-// Cirvela V31: aggressively remove stale demo caches/service workers from older test builds.
+// Cirvela V33: aggressively remove stale demo caches/service workers from older test builds.
 (async function resetOldDemoCache(){
   try{
     if ('caches' in window){
@@ -359,21 +359,18 @@ function toggleCirclePin(id){
 function moveCircle(id,targetId){
  if(id===targetId)return;
  const pinned=getPinnedCircles();
- // Fixierte Circles bleiben vollständig an ihrem Platz, bis sie gelöst werden.
  if(pinned.includes(id))return;
- // Lose Circles dürfen nicht vor/auf einen fixierten Platz gezogen werden.
  if(pinned.includes(targetId))return;
 
- let order=normalizedCircleOrder();
+ const order=normalizedCircleOrder();
  const from=order.indexOf(id),to=order.indexOf(targetId);
  if(from<0||to<0)return;
 
  order.splice(from,1);
- const pinCount=pinned.length;
- let safeTo=order.indexOf(targetId);
- if(safeTo<0)safeTo=order.length;
- safeTo=Math.max(pinCount,safeTo);
- order.splice(safeTo,0,id);
+ let insertAt=order.indexOf(targetId);
+ if(insertAt<0)insertAt=order.length;
+ insertAt=Math.max(pinned.length,insertAt);
+ order.splice(insertAt,0,id);
  saveCircleOrder(order);
  renderCircleCarousel();
 }
@@ -383,14 +380,11 @@ function bindCircleGestures(){
  items.forEach(el=>{
    const id=el.dataset.circle;
    let longTimer=null;
-   let dragTimer=null;
-   let startX=0,startY=0;
+   let startX=0,startY=0,startedAt=0;
    let moved=false,dragging=false,longOpened=false,suppressClick=false;
 
-   const clearTimers=()=>{
-     if(longTimer){clearTimeout(longTimer);longTimer=null}
-     if(dragTimer){clearTimeout(dragTimer);dragTimer=null}
-   };
+   const pinnedNow=()=>getPinnedCircles().includes(id);
+   const clearTimer=()=>{if(longTimer){clearTimeout(longTimer);longTimer=null}};
    const clearMenu=()=>{
      el.querySelector('.circle-pin-pop')?.remove();
      el.classList.remove('circle-hold');
@@ -399,14 +393,12 @@ function bindCircleGestures(){
      if(moved||dragging||longOpened)return;
      longOpened=true;
      el.classList.add('circle-hold');
-     const pinned=getPinnedCircles().includes(id);
      const menu=document.createElement('button');
      menu.type='button';
      menu.className='circle-pin-pop';
-     menu.textContent=pinned?'Lösen':'Fixieren';
+     menu.textContent=pinnedNow()?'Lösen':'Fixieren';
      menu.addEventListener('click',ev=>{
-       ev.preventDefault();
-       ev.stopPropagation();
+       ev.preventDefault();ev.stopPropagation();
        suppressClick=true;
        toggleCirclePin(id);
        clearMenu();
@@ -415,32 +407,30 @@ function bindCircleGestures(){
      el.appendChild(menu);
    };
    const begin=(x,y)=>{
-     clearTimers();clearMenu();
-     startX=x;startY=y;
+     clearTimer();clearMenu();
+     startX=x;startY=y;startedAt=Date.now();
      moved=false;dragging=false;longOpened=false;suppressClick=false;
-     // Ohne Bewegung: nach 650 ms Fixieren/Lösen.
      longTimer=setTimeout(openPinMenu,650);
-     // Nach 280 ms darf Bewegung als Sortieren interpretiert werden.
-     dragTimer=setTimeout(()=>{},280);
    };
    const move=(x,y,event)=>{
      const dx=x-startX,dy=y-startY;
-     const dist=Math.hypot(dx,dy);
-     if(dist<=10)return;
+     if(Math.hypot(dx,dy)<=9)return;
 
      moved=true;
+     clearTimer();
      clearMenu();
-     if(longTimer){clearTimeout(longTimer);longTimer=null}
 
-     const pinned=getPinnedCircles().includes(id);
-     if(pinned){
-       // Fixierte Circles bewegen sich nicht.
+     // Fixierte Circles bleiben vollständig unbeweglich.
+     if(pinnedNow()){
        dragging=false;
+       suppressClick=true;
        return;
      }
 
-     // Nur deutliche horizontale Bewegung nach kurzem Halten startet Sortieren.
-     if(Math.abs(dx)>Math.abs(dy)){
+     // Schnelles horizontales Wischen = normales Scrollen.
+     // Sortieren erst nach bewusstem Halten + Ziehen.
+     const held=Date.now()-startedAt;
+     if(held>=320 && Math.abs(dx)>Math.abs(dy)){
        dragging=true;
        suppressClick=true;
        el.classList.add('circle-dragging');
@@ -448,53 +438,42 @@ function bindCircleGestures(){
      }
    };
    const finish=(x,y)=>{
-     clearTimers();
+     clearTimer();
      if(dragging){
        el.classList.remove('circle-dragging');
-       const target=document.elementFromPoint(x,y)?.closest('.circle-carousel-item');
+       const target=document.elementFromPoint(x,y)?.closest('.circle-loose-track .circle-carousel-item');
        if(target)moveCircle(id,target.dataset.circle);
        suppressClick=true;
        setTimeout(()=>suppressClick=false,300);
      }else if(moved){
        suppressClick=true;
-       setTimeout(()=>suppressClick=false,180);
+       setTimeout(()=>suppressClick=false,140);
      }
      dragging=false;
    };
 
-   // Pointer Events (Desktop / moderne Browser)
    el.addEventListener('pointerdown',e=>begin(e.clientX,e.clientY));
    el.addEventListener('pointermove',e=>move(e.clientX,e.clientY,e),{passive:false});
    el.addEventListener('pointerup',e=>finish(e.clientX,e.clientY));
-   el.addEventListener('pointercancel',()=>{clearTimers();clearMenu();el.classList.remove('circle-dragging')});
+   el.addEventListener('pointercancel',()=>{clearTimer();clearMenu();el.classList.remove('circle-dragging')});
 
-   // Explizite Touch Events für iPhone/Safari.
    el.addEventListener('touchstart',e=>{
      if(e.touches.length!==1)return;
-     const t=e.touches[0];
-     begin(t.clientX,t.clientY);
+     const t=e.touches[0]; begin(t.clientX,t.clientY);
    },{passive:true});
-
    el.addEventListener('touchmove',e=>{
      if(e.touches.length!==1)return;
-     const t=e.touches[0];
-     move(t.clientX,t.clientY,e);
+     const t=e.touches[0]; move(t.clientX,t.clientY,e);
    },{passive:false});
-
    el.addEventListener('touchend',e=>{
      const t=e.changedTouches&&e.changedTouches[0];
      if(t)finish(t.clientX,t.clientY);
    },{passive:true});
 
-   el.addEventListener('contextmenu',e=>{
-     e.preventDefault();
-     openPinMenu();
-   });
-
+   el.addEventListener('contextmenu',e=>{e.preventDefault();openPinMenu()});
    el.addEventListener('click',e=>{
      if(suppressClick||longOpened||e.target.closest('.circle-pin-pop')){
-       e.preventDefault();
-       e.stopImmediatePropagation();
+       e.preventDefault();e.stopImmediatePropagation();
      }
    },true);
  });
@@ -503,14 +482,20 @@ function renderCircleCarousel(){
  const host=document.getElementById('circleCarousel'); if(!host)return;
  const order=normalizedCircleOrder();
  const pinned=getPinnedCircles();
- host.innerHTML=order.map(id=>{
+ const pinnedOrder=pinned.filter(id=>order.includes(id));
+ const looseOrder=order.filter(id=>!pinned.includes(id));
+
+ const tile=id=>{
    const c=circlePresets[id],cfg=getCircleDesignConfig(id),theme=designData(id,cfg.top);
    const unread=c.unread||0;
    return `<button class="circle-carousel-item ${id===currentCircleId?'active':''} ${pinned.includes(id)?'pinned':''}" data-circle="${id}" style="--circle-accent:${theme.accent}">
      <span class="circle-avatar-ring"><span class="circle-avatar">${c.icon||c.avatar||'◯'}</span>${unread?`<span class="circle-unread">${unread}</span>`:''}${pinned.includes(id)?'<span class="circle-pin-dot">●</span>':''}</span>
      <span class="circle-carousel-name">${c.name}</span>
    </button>`;
- }).join('');
+ };
+
+ host.innerHTML=`<div class="circle-pinned-track">${pinnedOrder.map(tile).join('')}</div><div class="circle-loose-track">${looseOrder.map(tile).join('')}</div>`;
+
  host.querySelectorAll('.circle-carousel-item').forEach(b=>b.onclick=e=>{
    if(e.defaultPrevented||e.target.closest('.circle-pin-pop')||b.classList.contains('circle-dragging'))return;
    applyCircle(b.dataset.circle);
@@ -545,7 +530,7 @@ function applyCircle(id){
  const keepSection=['calendar','location','games','status','feed'].includes(sectionBeforeSwitch);
  if(sectionBeforeSwitch==='feed') feedCircleFocus=id;
  show(keepSection?sectionBeforeSwitch:'chat');
- console.info('Cirvela build V31 loaded');
+ console.info('Cirvela build V33 loaded');
  toast(c.name+' geöffnet');
 }
 function openCircleSwitcher(){
@@ -1515,7 +1500,7 @@ scoreInput.onchange=e=>{if(e.target.files?.[0]){toast('Demo: Highscore-Screensho
 
 applyAppAppearance(getAppAppearance());
 show('chat');
-console.info('Cirvela build V31 loaded');
+console.info('Cirvela build V33 loaded');
 
 if(circleSwitchBtn){circleSwitchBtn.onclick=openCircleSwitcher;} document.body.dataset.circle=activeCircle().theme; applyCircleDesign(currentCircleId); updateCircleHeader(); renderCircleCarousel();
 

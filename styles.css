@@ -1832,3 +1832,502 @@ html[data-app-appearance="dark"] .messages .inline-smart{
 @media(max-width:430px){
   :root{--cirvela-topbar-offset:114px}
 }
+
+
+/* ==========================================================
+   V32 – gezielte Größenkorrektur mit den tatsächlich verwendeten DOM-Klassen
+   ========================================================== */
+
+/* Oberer Bereich deutlich flacher */
+.topbar{
+  padding:6px 10px 2px!important;
+  min-height:0!important;
+}
+.brandline{
+  min-height:42px!important;
+  align-items:center!important;
+}
+.cirvela-wordmark{
+  font-size:32px!important;
+  line-height:.92!important;
+  letter-spacing:-1.3px!important;
+}
+.subtitle{
+  margin-top:2px!important;
+  font-size:10px!important;
+  line-height:1!important;
+}
+.build-badge{
+  font-size:9px!important;
+  padding:2px 6px!important;
+}
+.header-tools{
+  gap:5px!important;
+  padding-top:0!important;
+}
+#settingsTop,
+#hubTop{
+  width:34px!important;
+  height:34px!important;
+  min-width:34px!important;
+  min-height:34px!important;
+  padding:4px!important;
+}
+#settingsTop svg{
+  width:25px!important;
+  height:25px!important;
+}
+#hubTop b{
+  font-size:0!important;
+}
+#hubTop b::before{
+  content:"⌁";
+  font-size:17px!important;
+}
+
+/* Circle-Leiste: flacher und 6 Stück gleichzeitig */
+.circle-carousel{
+  min-height:52px!important;
+  height:52px!important;
+  padding:2px 2px 3px!important;
+  margin-top:1px!important;
+  gap:2px!important;
+  align-items:flex-start!important;
+}
+.circle-carousel-item{
+  flex:0 0 calc((100% - 10px)/6)!important;
+  width:calc((100% - 10px)/6)!important;
+  max-width:calc((100% - 10px)/6)!important;
+  min-height:48px!important;
+}
+.circle-avatar-ring{
+  width:38px!important;
+  height:38px!important;
+  border-width:2px!important;
+  margin:0 auto 1px!important;
+}
+.circle-avatar{
+  width:30px!important;
+  height:30px!important;
+  font-size:18px!important;
+}
+.circle-carousel-name{
+  font-size:7px!important;
+  line-height:.95!important;
+  margin-top:0!important;
+}
+.circle-unread{
+  min-width:14px!important;
+  height:14px!important;
+  font-size:8px!important;
+  padding:0 3px!important;
+  top:-3px!important;
+  right:-2px!important;
+}
+.circle-pin-dot{
+  width:10px!important;
+  height:10px!important;
+  font-size:6px!important;
+}
+
+/* Chat-Kopfzeile flacher */
+.chat-header{
+  min-height:42px!important;
+  padding:3px 8px!important;
+}
+.contacts-button,
+.chat-header .contact-btn{
+  font-size:10px!important;
+  padding:5px 8px!important;
+  border-radius:11px!important;
+}
+.chat-header .avatar.small,
+.chat-header .chat-avatar{
+  width:30px!important;
+  height:30px!important;
+  font-size:18px!important;
+}
+.chat-header .chat-person b,
+.chat-header .chat-title{
+  font-size:14px!important;
+  line-height:1!important;
+}
+.chat-header .chat-person span,
+.chat-header .chat-subtitle{
+  font-size:9.5px!important;
+  line-height:1.05!important;
+}
+.chat-header-actions{
+  gap:3px!important;
+}
+.chat-header-actions .icon-button,
+.chat-header .chat-actions button{
+  width:27px!important;
+  height:27px!important;
+  font-size:16px!important;
+  padding:1px!important;
+}
+
+/* Untere Leiste: tatsächliche Klassen .nav-glyph und <b> */
+body{
+  padding-bottom:calc(62px + env(safe-area-inset-bottom))!important;
+}
+.bottom-nav{
+  height:62px!important;
+  min-height:62px!important;
+  grid-template-columns:repeat(3,minmax(0,1fr)) 58px repeat(3,minmax(0,1fr))!important;
+  padding:2px 3px calc(2px + env(safe-area-inset-bottom))!important;
+  align-items:center!important;
+}
+.bottom-nav .nav-item{
+  min-height:46px!important;
+  height:46px!important;
+  padding:2px 1px!important;
+  gap:1px!important;
+  border-radius:9px!important;
+}
+.bottom-nav .nav-item .nav-glyph{
+  width:22px!important;
+  height:22px!important;
+  font-size:20px!important;
+  line-height:1!important;
+}
+.bottom-nav .nav-item .nav-glyph svg{
+  width:22px!important;
+  height:22px!important;
+}
+.bottom-nav .nav-item b{
+  font-size:7.3px!important;
+  line-height:1!important;
+}
+.bottom-nav .controller-glyph svg{
+  width:23px!important;
+  height:18px!important;
+}
+#sosBtn.sos-button{
+  width:54px!important;
+  height:54px!important;
+  min-width:54px!important;
+  min-height:54px!important;
+  font-size:15px!important;
+  border-width:4px!important;
+  margin:0!important;
+}
+
+/* Composer follows the genuinely smaller bottom nav */
+body:not(.keyboard-open) .chat-composer{
+  bottom:calc(62px + env(safe-area-inset-bottom))!important;
+}
+
+/* Sticky offset follows the compact header */
+:root{
+  --cirvela-topbar-offset:103px;
+}
+@media(max-width:430px){
+  :root{--cirvela-topbar-offset:101px}
+}
+
+
+/* ==========================================================
+   V33 – nur die ausdrücklich angeforderten Änderungen
+   ========================================================== */
+
+/* Oberer Bereich kleiner: weniger Leerfläche */
+.topbar{
+  padding:4px 8px 2px!important;
+  min-height:0!important;
+}
+.brandline{
+  min-height:36px!important;
+  height:36px!important;
+  align-items:center!important;
+}
+.cirvela-wordmark{
+  font-size:29px!important;
+  line-height:.9!important;
+}
+.subtitle{
+  font-size:9px!important;
+  margin-top:1px!important;
+  line-height:1!important;
+}
+.build-badge{
+  font-size:8px!important;
+  padding:1px 5px!important;
+}
+
+/* Circle Hub / Einstellungen kompakt und sauber */
+.header-tools{
+  gap:4px!important;
+  align-items:center!important;
+}
+#hubTop,
+#settingsTop{
+  position:relative!important;
+  width:31px!important;
+  height:31px!important;
+  min-width:31px!important;
+  min-height:31px!important;
+  padding:3px!important;
+  border-radius:50%!important;
+  overflow:visible!important;
+}
+#hubTop{
+  font-size:0!important;
+}
+#hubTop b{
+  display:none!important;
+}
+#hubTop::before{
+  content:"⌁";
+  display:block;
+  font-size:16px!important;
+  line-height:1!important;
+  color:#475467!important;
+  font-weight:900!important;
+}
+#hubTop em{
+  position:absolute!important;
+  right:-4px!important;
+  top:-5px!important;
+  min-width:16px!important;
+  height:16px!important;
+  padding:0 3px!important;
+  font-size:8px!important;
+  border-radius:999px!important;
+}
+#settingsTop svg{
+  width:22px!important;
+  height:22px!important;
+}
+
+/* Circle-Leiste: kompakt, 6 sichtbare Plätze insgesamt */
+.circle-carousel{
+  display:flex!important;
+  align-items:flex-start!important;
+  width:100%!important;
+  height:49px!important;
+  min-height:49px!important;
+  padding:2px 0 2px!important;
+  margin:0!important;
+  gap:0!important;
+  overflow:visible!important;
+}
+
+/* Fixierte Circles: eigener fester linker Bereich */
+.circle-pinned-track{
+  flex:0 0 auto!important;
+  display:flex!important;
+  align-items:flex-start!important;
+  overflow:visible!important;
+}
+
+/* Lose Circles: eigener leichter horizontaler Scrollbereich */
+.circle-loose-track{
+  flex:1 1 auto!important;
+  min-width:0!important;
+  display:flex!important;
+  align-items:flex-start!important;
+  overflow-x:auto!important;
+  overflow-y:visible!important;
+  -webkit-overflow-scrolling:touch!important;
+  touch-action:pan-x!important;
+  scroll-behavior:smooth!important;
+  scrollbar-width:none!important;
+  overscroll-behavior-x:contain!important;
+}
+.circle-loose-track::-webkit-scrollbar{display:none!important}
+
+/* Exakt 6 Circles pro Bildschirmbreite */
+.circle-carousel-item{
+  flex:0 0 calc(100vw / 6)!important;
+  width:calc(100vw / 6)!important;
+  max-width:calc(100vw / 6)!important;
+  min-width:calc(100vw / 6)!important;
+  min-height:45px!important;
+  appearance:none!important;
+  -webkit-appearance:none!important;
+  background:transparent!important;
+  border:0!important;
+  border-radius:0!important;
+  box-shadow:none!important;
+  padding:0!important;
+  color:#111!important;
+  overflow:visible!important;
+}
+
+/* Circles bleiben rund */
+.circle-avatar-ring{
+  width:35px!important;
+  height:35px!important;
+  aspect-ratio:1/1!important;
+  margin:0 auto 1px!important;
+  border-radius:50%!important;
+  border:2px solid var(--circle-accent,#64748b)!important;
+  background:rgba(255,255,255,.94)!important;
+}
+.circle-avatar{
+  width:28px!important;
+  height:28px!important;
+  aspect-ratio:1/1!important;
+  font-size:17px!important;
+  border-radius:50%!important;
+}
+
+/* Circle-Namen schwarz */
+.circle-carousel-name{
+  color:#111!important;
+  -webkit-text-fill-color:#111!important;
+  font-size:6.7px!important;
+  font-weight:700!important;
+  line-height:.95!important;
+  margin-top:0!important;
+  text-align:center!important;
+}
+
+/* Badges proportional */
+.circle-unread{
+  min-width:13px!important;
+  height:13px!important;
+  padding:0 3px!important;
+  font-size:7.5px!important;
+  top:-3px!important;
+  right:-2px!important;
+}
+.circle-pin-dot{
+  width:9px!important;
+  height:9px!important;
+  font-size:5px!important;
+}
+
+/* Fixierte Circles: keine Drag-Bewegung */
+.circle-carousel-item.pinned{
+  touch-action:none!important;
+}
+.circle-carousel-item.pinned.circle-dragging{
+  transform:none!important;
+  opacity:1!important;
+}
+
+/* Long-Press Menü klein und sichtbar */
+.circle-pin-pop{
+  top:36px!important;
+  font-size:9px!important;
+  padding:5px 8px!important;
+  z-index:400!important;
+}
+
+/* Gruppenchat-Kopfzeile kleiner */
+.chat-header{
+  min-height:38px!important;
+  padding:2px 7px!important;
+}
+.contacts-button,
+.chat-header .contact-btn{
+  font-size:9.5px!important;
+  padding:4px 7px!important;
+}
+.chat-header .avatar.small,
+.chat-header .chat-avatar{
+  width:28px!important;
+  height:28px!important;
+  font-size:17px!important;
+}
+.chat-header .chat-person b,
+.chat-header .chat-title{
+  font-size:13px!important;
+}
+.chat-header .chat-person span,
+.chat-header .chat-subtitle{
+  font-size:8.5px!important;
+}
+.chat-header-actions{
+  gap:2px!important;
+}
+.chat-header-actions .icon-button,
+.chat-header .chat-actions button{
+  width:25px!important;
+  height:25px!important;
+  font-size:15px!important;
+}
+
+/* Untere Navigation kleiner */
+body{
+  padding-bottom:calc(54px + env(safe-area-inset-bottom))!important;
+}
+.bottom-nav{
+  height:54px!important;
+  min-height:54px!important;
+  grid-template-columns:repeat(3,minmax(0,1fr)) 50px repeat(3,minmax(0,1fr))!important;
+  padding:1px 3px calc(1px + env(safe-area-inset-bottom))!important;
+}
+.bottom-nav .nav-item{
+  height:40px!important;
+  min-height:40px!important;
+  padding:1px!important;
+  gap:0!important;
+}
+.bottom-nav .nav-item .nav-glyph{
+  width:19px!important;
+  height:19px!important;
+  font-size:17px!important;
+}
+.bottom-nav .nav-item .nav-glyph svg{
+  width:19px!important;
+  height:19px!important;
+}
+.bottom-nav .nav-item b{
+  font-size:6.5px!important;
+}
+.bottom-nav .controller-glyph svg{
+  width:20px!important;
+  height:16px!important;
+}
+#sosBtn.sos-button{
+  width:48px!important;
+  height:48px!important;
+  min-width:48px!important;
+  min-height:48px!important;
+  font-size:13px!important;
+  border-width:3px!important;
+}
+
+/* Composer passend zur kleineren unteren Leiste */
+body:not(.keyboard-open) .chat-composer{
+  bottom:calc(54px + env(safe-area-inset-bottom))!important;
+}
+
+/* Tastaturzustand nicht verschlechtern */
+body.keyboard-open .chat-screen{
+  position:fixed!important;
+  left:0!important;
+  right:0!important;
+  top:var(--cirvela-vv-top,0px)!important;
+  bottom:auto!important;
+  height:var(--cirvela-vv-height,100dvh)!important;
+  display:flex!important;
+  flex-direction:column!important;
+  overflow:hidden!important;
+}
+body.keyboard-open .messages{
+  flex:1 1 auto!important;
+  min-height:0!important;
+  max-height:none!important;
+  overflow-y:auto!important;
+  padding-bottom:8px!important;
+}
+body.keyboard-open .chat-composer{
+  position:relative!important;
+  left:auto!important;
+  right:auto!important;
+  bottom:auto!important;
+  flex:0 0 auto!important;
+  width:100%!important;
+  margin:0!important;
+}
+
+/* Sticky-Abstand an neuen kompakten Header angepasst */
+:root{--cirvela-topbar-offset:87px}
+@media(max-width:430px){
+  :root{--cirvela-topbar-offset:85px}
+}

@@ -1,6 +1,6 @@
 
-const CACHE='cirvela-v31';
-const ASSETS=['./','index.html','styles.css?v=31','app.js?v=31','manifest.json','icon-192.png','icon-512.png'];
+const CACHE='cirvela-v33';
+const ASSETS=['./','index.html','styles.css?v=33','app.js?v=33','manifest.json','icon-192.png','icon-512.png'];
 
 self.addEventListener('install', event => {
   event.waitUntil(caches.open(CACHE).then(c => c.addAll(ASSETS)).then(() => self.skipWaiting()));

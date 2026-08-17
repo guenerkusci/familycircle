@@ -236,3 +236,27 @@ V31 – nur Größenanpassungen:
 - Untere Navigationsleiste flacher; alle Symbole und Beschriftungen proportional kleiner.
 - SOS bleibt mittig, ist aber proportional kleiner.
 - Keine sonstigen Funktions- oder Designänderungen.
+
+
+V32 – Korrektur der V31-Größenanpassung:
+- V31 hat teils falsche CSS-Klassen angesprochen und den Cirvela-Schriftzug versehentlich vergrößert.
+- V32 verwendet die tatsächlich vorhandenen Klassen (.nav-glyph, .nav-item b, .subtitle usw.).
+- Oberer Bereich, Circle-Leiste, Chat-Kopfzeile und untere Navigation sind jetzt messbar kleiner.
+- Circles bleiben rund und 6 Circles passen gleichzeitig.
+- Alle enthaltenen Symbole und Beschriftungen wurden proportional verkleinert.
+- SOS bleibt mittig.
+- Keine Funktionsänderungen.
+
+
+V33 – ausschließlich die bestätigten Änderungen:
+- Obere Fläche und untere Navigation verkleinert.
+- Circle Hub / Einstellungen kompakter und ohne Textüberlauf.
+- Circle-Leiste kompakter, 6 Circles sichtbar.
+- Circle-Namen schwarz.
+- Maximal zwei fixierte Circles stehen fest links und scrollen nicht mit.
+- Nur lose Circles scrollen horizontal.
+- Normales Wischen scrollt; Halten+Ziehen sortiert nur lose Circles.
+- Langes Drücken ohne Bewegung öffnet Fixieren/Lösen.
+- Fixierte Circles können nicht verschoben werden, bis sie gelöst werden.
+- Tastatur-/Chat-Hintergrund-Verhalten bleibt erhalten.
+- Keine weiteren Design- oder Funktionsänderungen.
