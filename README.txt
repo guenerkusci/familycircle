@@ -299,3 +299,15 @@ V37 – ausschließlich die zuletzt angeforderten Circle-Änderungen:
 - Beim Long Press wird der Circle deutlicher vergrößert/hervorgehoben.
 - FIXIEREN/LÖSEN erscheint mit deutlich mehr Abstand zum gehaltenen Circle.
 - Keine weiteren UI- oder Funktionsänderungen.
+
+
+V38 – nur die zuletzt vereinbarten Änderungen:
+- FIXIEREN/LÖSEN erscheint fest oben neben Cirvela statt direkt auf dem Circle.
+- Circles haben einen deutlich stärkeren 3D-Look.
+- Lose Circles haben mehr Rand und weiche Fade-Outs, damit sie nicht hart abgeschnitten wirken.
+- Der Circles-Button ist hochwertiger und auffälliger.
+- Dynamischer Badge auf Circles: Er summiert nur ungelesene Nachrichten aus nicht sichtbaren losen Circles.
+  Sobald ein Circle sichtbar wird, wird seine ungelesene Anzahl aus dem Badge abgezogen.
+  Verlässt er den sichtbaren Bereich wieder, wird sie wieder addiert.
+  Der echte Gelesen/Ungelesen-Status bleibt davon unberührt.
+- Keine weiteren UI- oder Funktionsänderungen.

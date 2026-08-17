@@ -1,5 +1,5 @@
 
-// Cirvela V37: aggressively remove stale demo caches/service workers from older test builds.
+// Cirvela V38: aggressively remove stale demo caches/service workers from older test builds.
 (async function resetOldDemoCache(){
   try{
     if ('caches' in window){
@@ -374,6 +374,37 @@ function moveCircle(id,targetId){
  saveCircleOrder(order);
  renderCircleCarousel();
 }
+
+function ensureCirclePinAction(){
+ let btn=document.getElementById('circlePinHeaderAction');
+ if(btn)return btn;
+ btn=document.createElement('button');
+ btn.id='circlePinHeaderAction';
+ btn.type='button';
+ btn.className='circle-pin-header-action';
+ btn.hidden=true;
+ const brand=document.querySelector('.brandline')||document.querySelector('.topbar')||document.body;
+ brand.appendChild(btn);
+ return btn;
+}
+function showCirclePinAction(id){
+ const btn=ensureCirclePinAction();
+ const pinned=getPinnedCircles().includes(id);
+ btn.dataset.circle=id;
+ btn.textContent=pinned?'LÖSEN':'FIXIEREN';
+ btn.hidden=false;
+ btn.onclick=ev=>{
+   ev.preventDefault();ev.stopPropagation();
+   toggleCirclePin(id);
+   hideCirclePinAction();
+   document.querySelectorAll('.circle-carousel-item.circle-hold').forEach(x=>x.classList.remove('circle-hold'));
+ };
+}
+function hideCirclePinAction(){
+ const btn=document.getElementById('circlePinHeaderAction');
+ if(btn){btn.hidden=true;btn.onclick=null;btn.removeAttribute('data-circle')}
+}
+
 function bindCircleGestures(){
  const items=[...document.querySelectorAll('.circle-carousel-item')];
 
@@ -386,33 +417,14 @@ function bindCircleGestures(){
    const pinnedNow=()=>getPinnedCircles().includes(id);
    const clearTimer=()=>{if(longTimer){clearTimeout(longTimer);longTimer=null}};
    const clearMenu=()=>{
-     document.querySelectorAll('.circle-pin-pop').forEach(x=>x.remove());
+     hideCirclePinAction();
      el.classList.remove('circle-hold');
    };
    const openPinMenu=()=>{
      if(moved||dragging||longOpened)return;
      longOpened=true;
      el.classList.add('circle-hold');
-     document.querySelectorAll('.circle-pin-pop').forEach(x=>x.remove());
-     const menu=document.createElement('button');
-     menu.type='button';
-     menu.className='circle-pin-pop';
-     menu.textContent=pinnedNow()?'LÖSEN':'FIXIEREN';
-     const r=el.getBoundingClientRect();
-     const menuW=150, menuH=46, gap=30;
-     menu.style.left=Math.max(8,Math.min(window.innerWidth-menuW-8,r.left+r.width/2-menuW/2))+'px';
-     const below=r.bottom+gap;
-     const above=r.top-gap-menuH;
-     menu.style.top=(below+menuH<=window.innerHeight-8?below:Math.max(8,above))+'px';
-     menu.addEventListener('pointerdown',ev=>{ev.preventDefault();ev.stopPropagation()});
-     menu.addEventListener('click',ev=>{
-       ev.preventDefault();ev.stopPropagation();
-       suppressClick=true;
-       toggleCirclePin(id);
-       clearMenu();
-       setTimeout(()=>suppressClick=false,250);
-     });
-     document.body.appendChild(menu);
+     showCirclePinAction(id);
    };
    const begin=(x,y)=>{
      clearTimer();clearMenu();
@@ -510,6 +522,7 @@ function renderCircleCarousel(){
    applyCircle(b.dataset.circle);
  });
  bindCircleGestures();
+ bindHiddenCircleUnreadTracker();
 }
 function updateCircleHeader(){
  const c=activeCircle();
@@ -539,7 +552,7 @@ function applyCircle(id){
  const keepSection=['calendar','location','games','status','feed'].includes(sectionBeforeSwitch);
  if(sectionBeforeSwitch==='feed') feedCircleFocus=id;
  show(keepSection?sectionBeforeSwitch:'chat');
- console.info('Cirvela build V37 loaded');
+ console.info('Cirvela build V38 loaded');
  toast(c.name+' geöffnet');
 }
 function openCircleSwitcher(){
@@ -924,6 +937,54 @@ function openMediaDetail(name,icon,type){
  document.body.appendChild(d);d.querySelector('.close-sheet').onclick=()=>d.remove();d.querySelector('.media-detail-action').onclick=()=>toast(name+' geöffnet · Demo');d.onclick=e=>{if(e.target===d)d.remove()};
 }
 
+
+function getCircleUnreadValue(id){
+ const c=circlePresets[id];
+ return c ? Number(c.unread||0) : 0;
+}
+function isElementFullyVisibleInTrack(el,track){
+ if(!el||!track)return false;
+ const r=el.getBoundingClientRect(), t=track.getBoundingClientRect();
+ return r.left>=t.left-1 && r.right<=t.right+1;
+}
+function updateHiddenCircleUnreadBadge(){
+ const btn=document.getElementById('openCircles');
+ if(!btn)return;
+ const track=document.querySelector('.circle-loose-track');
+ if(!track){
+   btn.querySelector('.circles-hidden-unread')?.remove();
+   return;
+ }
+ let hiddenUnread=0;
+ track.querySelectorAll('.circle-carousel-item').forEach(el=>{
+   if(!isElementFullyVisibleInTrack(el,track)) hiddenUnread += getCircleUnreadValue(el.dataset.circle);
+ });
+ let badge=btn.querySelector('.circles-hidden-unread');
+ if(hiddenUnread>0){
+   if(!badge){
+     badge=document.createElement('span');
+     badge.className='circles-hidden-unread';
+     btn.appendChild(badge);
+   }
+   badge.textContent=hiddenUnread>99?'99+':String(hiddenUnread);
+   badge.hidden=false;
+ }else if(badge){
+   badge.remove();
+ }
+}
+function bindHiddenCircleUnreadTracker(){
+ const track=document.querySelector('.circle-loose-track');
+ if(!track)return;
+ const update=()=>requestAnimationFrame(updateHiddenCircleUnreadBadge);
+ track.addEventListener('scroll',update,{passive:true});
+ if(window.ResizeObserver){
+   const ro=new ResizeObserver(update);
+   ro.observe(track);
+   track.querySelectorAll('.circle-carousel-item').forEach(x=>ro.observe(x));
+ }
+ update();
+}
+
 function openFamilyChat(){
  current='chat'; currentChat=4; setActive('chat'); title.textContent='Chats';
  content.innerHTML=`<section class="chat-screen">
@@ -951,6 +1012,7 @@ function openFamilyChat(){
  </section>`;
  document.getElementById('openCircles').onclick=openCircleList;
  document.getElementById('openCircleMembers').onclick=openCircleMembers;
+ requestAnimationFrame(updateHiddenCircleUnreadBadge);
  document.getElementById('groupMedia').onclick=()=>openMedia('Gruppenmedien');
  document.getElementById('groupVoice').onclick=()=>openGroupCall(false);
  document.getElementById('groupVideo').onclick=()=>openGroupCall(true);
@@ -1555,7 +1617,7 @@ scoreInput.onchange=e=>{if(e.target.files?.[0]){toast('Demo: Highscore-Screensho
 
 applyAppAppearance(getAppAppearance());
 show('chat');
-console.info('Cirvela build V37 loaded');
+console.info('Cirvela build V38 loaded');
 
 if(circleSwitchBtn){circleSwitchBtn.onclick=openCircleSwitcher;} document.body.dataset.circle=activeCircle().theme; applyCircleDesign(currentCircleId); updateCircleHeader(); renderCircleCarousel();
 
