@@ -321,3 +321,11 @@ V39 – ausschließlich die zuletzt angeforderten Anpassungen:
 - Symbole der unteren Navigation wurden vergrößert.
 - SOS wurde proportional leicht vergrößert, ohne seine Position zu ändern.
 - Keine weiteren Design- oder Funktionsänderungen.
+
+
+V41 – ausschließlich die zuletzt bestätigten Korrekturen:
+- Circle-Kreise oben vollständig sichtbar; zusätzlicher vertikaler Freiraum verhindert Abschneiden.
+- Badge für ungelesene Nachrichten auf dem Circles-Button liegt klar im Vordergrund.
+- Ungelesen-Badges auf den einzelnen Circle-Kreisen verwenden denselben Stil wie der Circles-Badge.
+- Kamera in der Schreibleiste ist jetzt als klar erkennbarer Fotoapparat dargestellt.
+- Keine weiteren UI- oder Funktionsänderungen.
