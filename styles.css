@@ -3090,3 +3090,21 @@ body.keyboard-open .chat-composer{
   touch-action:pan-x!important;
   overscroll-behavior-x:contain!important;
 }
+
+
+/* ==========================================================
+   V44 – einzige Änderung: Circles-Sammelbadge sauber positioniert
+   ========================================================== */
+#openCircles{
+  position:relative!important;
+  overflow:visible!important;
+}
+#openCircles .circles-hidden-unread{
+  position:absolute!important;
+  top:-9px!important;
+  right:-8px!important;
+  z-index:30000!important;
+  transform:none!important;
+  margin:0!important;
+  pointer-events:none!important;
+}

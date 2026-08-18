@@ -332,3 +332,9 @@ V43:
 - Kamera als einzelner klar erkennbarer Fotoapparat; bestehende Kamera-Funktion unverändert.
 - Horizontales iPhone-Wischen der losen Circles ausdrücklich erhalten.
 - Maximal zwei fixierte Circles bleibt unverändert.
+
+
+V44:
+- Einzige funktionale/optische Änderung gegenüber V43:
+  Der ungelesene Sammelbadge auf dem „Circles“-Button wurde sauber oben rechts positioniert und in den Vordergrund gesetzt.
+- Keine weiteren UI- oder Funktionsänderungen.
