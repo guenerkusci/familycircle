@@ -329,3 +329,11 @@ V41 – ausschließlich die zuletzt bestätigten Korrekturen:
 - Ungelesen-Badges auf den einzelnen Circle-Kreisen verwenden denselben Stil wie der Circles-Badge.
 - Kamera in der Schreibleiste ist jetzt als klar erkennbarer Fotoapparat dargestellt.
 - Keine weiteren UI- oder Funktionsänderungen.
+
+
+V42 – ausschließlich die bestätigten Fehlerkorrekturen:
+- Circle-Zeile erhält genügend vertikalen Platz; die 3D-Kreise werden oben nicht mehr abgeschnitten.
+- Ungelesen-Badges auf den einzelnen Circles sitzen sauber oben rechts am Kreis und entsprechen dem roten Circles-Badge.
+- Der Sammelbadge auf „Circles“ liegt garantiert im Vordergrund.
+- In der Schreibleiste wird exakt ein klar erkennbarer Fotoapparat angezeigt; das doppelte/überlagerte Kamera-Symbol wurde entfernt.
+- Keine weiteren UI- oder Funktionsänderungen.

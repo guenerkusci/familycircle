@@ -3094,3 +3094,129 @@ body.keyboard-open .chat-composer{
   line-height:1!important;
   filter:none!important;
 }
+
+
+/* ==========================================================
+   V42 – nur die bestätigten Fehlerkorrekturen
+   ========================================================== */
+
+/* 1) Circle-Zeile vollständig sichtbar, ohne Abschneiden/Überlappen */
+.topbar{
+  --cirvela-topbar-offset:146px!important;
+  height:146px!important;
+  min-height:146px!important;
+  overflow:visible!important;
+  box-sizing:border-box!important;
+}
+.brandline{
+  height:48px!important;
+  min-height:48px!important;
+}
+.circle-carousel{
+  height:82px!important;
+  min-height:82px!important;
+  padding-top:16px!important;
+  padding-bottom:8px!important;
+  overflow:visible!important;
+  box-sizing:border-box!important;
+}
+.circle-pinned-track,
+.circle-loose-track,
+.circle-carousel-item,
+.circle-avatar-ring{
+  overflow:visible!important;
+}
+.chat-screen .chat-header{
+  top:var(--cirvela-topbar-offset,146px)!important;
+}
+
+/* 2) Ungelesen-Badges auf Circle-Kreisen: gleich wie Circles-Badge,
+      sauber oben rechts am jeweiligen Kreis */
+.circle-avatar-ring{
+  position:relative!important;
+}
+.circle-unread{
+  position:absolute!important;
+  top:-10px!important;
+  right:-9px!important;
+  z-index:12000!important;
+  min-width:23px!important;
+  height:23px!important;
+  padding:0 6px!important;
+  border-radius:999px!important;
+  border:2px solid #fff!important;
+  display:grid!important;
+  place-items:center!important;
+  background:#e53935!important;
+  color:#fff!important;
+  -webkit-text-fill-color:#fff!important;
+  font-size:11px!important;
+  font-weight:900!important;
+  line-height:1!important;
+  box-shadow:0 3px 8px rgba(150,20,20,.34)!important;
+  pointer-events:none!important;
+}
+
+/* 3) Circles-Sammelbadge garantiert vor Avatar/Schrift */
+.group-header,
+.chat-header,
+#openCircles{
+  overflow:visible!important;
+}
+#openCircles{
+  position:relative!important;
+  z-index:500!important;
+}
+.circles-hidden-unread{
+  position:absolute!important;
+  z-index:20000!important;
+  top:-12px!important;
+  right:-10px!important;
+  min-width:23px!important;
+  height:23px!important;
+  padding:0 6px!important;
+  border-radius:999px!important;
+  border:2px solid #fff!important;
+  display:grid!important;
+  place-items:center!important;
+  background:#e53935!important;
+  color:#fff!important;
+  -webkit-text-fill-color:#fff!important;
+  font-size:11px!important;
+  font-weight:900!important;
+  line-height:1!important;
+  box-shadow:0 3px 8px rgba(150,20,20,.34)!important;
+  pointer-events:none!important;
+}
+
+/* 4) Kamera: exakt ein klar erkennbarer Fotoapparat */
+.camera-black::before,
+#chatCamera.camera-black::before{
+  content:none!important;
+  display:none!important;
+}
+#chatCamera.camera-black{
+  display:grid!important;
+  place-items:center!important;
+  width:36px!important;
+  height:36px!important;
+  min-width:36px!important;
+  padding:0!important;
+  margin:0!important;
+  border:0!important;
+  border-radius:10px!important;
+  background:transparent!important;
+  box-shadow:none!important;
+  color:#111827!important;
+  -webkit-text-fill-color:#111827!important;
+  font-size:0!important;
+  filter:none!important;
+}
+#chatCamera.camera-black > span{
+  display:block!important;
+  visibility:visible!important;
+  opacity:1!important;
+  font-size:25px!important;
+  line-height:1!important;
+  filter:none!important;
+}

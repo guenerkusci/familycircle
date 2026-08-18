@@ -1007,7 +1007,7 @@ function openFamilyChat(){
   </div>
   <div class="chat-composer">
    <button id="attach">＋</button><textarea id="msg" class="chat-message-input" rows="1" maxlength="4000" placeholder="Nachricht an ${activeCircle().label}"></textarea>
-   <button id="chatCamera" class="camera-black" aria-label="Kamera"><span aria-hidden="true">📸</span></button><button id="mic">🎙️</button><button id="send" class="send">➤</button>
+   <button id="chatCamera" class="camera-black" aria-label="Kamera"><span aria-hidden="true">📷</span></button><button id="mic">🎙️</button><button id="send" class="send">➤</button>
   </div>
  </section>`;
  document.getElementById('openCircles').onclick=openCircleList;
@@ -1063,7 +1063,7 @@ function openChat(i){
   </div>
   <div class="chat-composer">
    <button id="attach">＋</button><textarea id="msg" class="chat-message-input" rows="1" maxlength="4000" placeholder="Nachricht"></textarea>
-   <button id="chatCamera" class="camera-black" aria-label="Kamera"><span aria-hidden="true">📸</span></button><button id="mic">🎙️</button><button id="send" class="send">➤</button>
+   <button id="chatCamera" class="camera-black" aria-label="Kamera"><span aria-hidden="true">📷</span></button><button id="mic">🎙️</button><button id="send" class="send">➤</button>
   </div>
  </section>`;
  document.getElementById('chatBack').onclick=openFamilyChat;
