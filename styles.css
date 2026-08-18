@@ -3108,3 +3108,55 @@ body.keyboard-open .chat-composer{
   margin:0!important;
   pointer-events:none!important;
 }
+
+
+/* ==========================================================
+   V45 – nur die bestätigte Anpassung des oberen Bereichs
+   ========================================================== */
+
+/* Die Leiste mit „Circles / Circle-Name / Aktionen“ wird leicht höher.
+   Der Badge bekommt dadurch mehr sichtbaren Raum. */
+.group-header{
+  min-height:46px!important;
+  padding:8px 7px 4px!important;
+  overflow:visible!important;
+  z-index:55!important;
+}
+
+/* Die Circle-Reihe wird proportional etwas nach oben gesetzt,
+   ohne Größe, 3D-Look, Breite oder Scrollmechanik zu verändern. */
+.circle-carousel{
+  padding-top:2px!important;
+}
+
+/* Obere Cirvela-Ebene minimal kompakter, damit nichts nach oben gedrückt wird. */
+.brandline{
+  min-height:43px!important;
+  height:43px!important;
+}
+.cirvela-wordmark{
+  font-size:28px!important;
+}
+#hubTop,
+#settingsTop{
+  width:29px!important;
+  height:29px!important;
+  min-width:29px!important;
+  min-height:29px!important;
+}
+#settingsTop svg{
+  width:20px!important;
+  height:20px!important;
+}
+#hubTop::before{
+  font-size:15px!important;
+}
+.header-tools{
+  gap:3px!important;
+}
+
+/* Der vorhandene Badge bleibt an derselben Position,
+   liegt aber sicher vor der oberen Ebene. */
+#openCircles .circles-hidden-unread{
+  z-index:30000!important;
+}

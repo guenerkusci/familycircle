@@ -338,3 +338,10 @@ V44:
 - Einzige funktionale/optische Änderung gegenüber V43:
   Der ungelesene Sammelbadge auf dem „Circles“-Button wurde sauber oben rechts positioniert und in den Vordergrund gesetzt.
 - Keine weiteren UI- oder Funktionsänderungen.
+
+
+V45:
+- Die Leiste mit „Circles“ wurde leicht höher gemacht, damit der ungelesene Badge vollständig sichtbar ist.
+- Die Circle-Reihe wurde proportional etwas nach oben gesetzt.
+- Cirvela-Schrift, Einstellungs-Symbol und das Symbol daneben wurden minimal verkleinert, damit die obere Ebene sauber bleibt.
+- Circle-Größe, 3D-Look, Fixierung, horizontales Scrollen, Chat, Tastatur und untere Navigation wurden nicht verändert.
