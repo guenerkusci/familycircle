@@ -2996,155 +2996,32 @@ body.keyboard-open .chat-composer{
 
 
 /* ==========================================================
-   V41 – nur die zuletzt bestätigten Korrekturen
+   V43 – stabile V40-Basis; nur lokal bestätigte Korrekturen
    ========================================================== */
 
-/* Circle-Kreise vollständig sichtbar: mehr Luft oberhalb der Ringe,
-   ohne den bestehenden 3D-Look zu verändern. */
-.topbar{
-  overflow:visible!important;
-}
-.circle-carousel{
-  box-sizing:border-box!important;
-  overflow:visible!important;
-  height:76px!important;
-  min-height:76px!important;
-  padding-top:14px!important;
-  padding-bottom:5px!important;
-}
-.circle-pinned-track,
-.circle-loose-track{
-  overflow-y:visible!important;
-  padding-top:1px!important;
-}
+/* Circle-Inhalte etwas tiefer innerhalb der bereits vorhandenen V40-Fläche.
+   Keine Änderung an Topbar-Höhe oder Scroll-Container-Breite. */
 .circle-carousel-item{
-  overflow:visible!important;
-}
-.circle-avatar-ring{
-  overflow:visible!important;
-  margin-top:0!important;
-}
-
-/* Badge am Circles-Button bleibt vollständig vor allen Nachbarelementen. */
-#openCircles{
-  position:relative!important;
-  overflow:visible!important;
-  z-index:100!important;
-}
-.circles-hidden-unread{
-  z-index:10000!important;
-  top:-11px!important;
-  right:-10px!important;
-  min-width:23px!important;
-  height:23px!important;
-  padding:0 6px!important;
-  border:2px solid #fff!important;
-  border-radius:999px!important;
-  background:#e53935!important;
-  color:#fff!important;
-  -webkit-text-fill-color:#fff!important;
-  font-size:11px!important;
-  font-weight:900!important;
-  line-height:1!important;
-  box-shadow:0 3px 8px rgba(150,20,20,.34)!important;
-}
-
-/* Ungelesen-Anzahl auf jedem Circle exakt im selben Badge-Stil. */
-.circle-unread{
-  z-index:1000!important;
-  top:-9px!important;
-  right:-8px!important;
-  min-width:23px!important;
-  height:23px!important;
-  padding:0 6px!important;
-  border:2px solid #fff!important;
-  border-radius:999px!important;
-  display:grid!important;
-  place-items:center!important;
-  background:#e53935!important;
-  color:#fff!important;
-  -webkit-text-fill-color:#fff!important;
-  font-size:11px!important;
-  font-weight:900!important;
-  line-height:1!important;
-  box-shadow:0 3px 8px rgba(150,20,20,.34)!important;
-}
-
-/* Kamera in der Schreibleiste: echter, klar erkennbarer Fotoapparat
-   statt schwarzer Block. Funktion bleibt identisch. */
-#chatCamera.camera-black{
-  display:grid!important;
-  place-items:center!important;
-  width:34px!important;
-  height:34px!important;
-  min-width:34px!important;
-  padding:0!important;
-  margin:0!important;
-  border:0!important;
-  border-radius:10px!important;
-  background:linear-gradient(180deg,#ffffff 0%,#eef1f5 100%)!important;
-  box-shadow:0 1px 3px rgba(20,30,45,.14),inset 0 1px 0 rgba(255,255,255,.95)!important;
-  color:#111827!important;
-  -webkit-text-fill-color:#111827!important;
-  filter:none!important;
-}
-#chatCamera.camera-black span{
-  display:block!important;
-  font-size:23px!important;
-  line-height:1!important;
-  filter:none!important;
-}
-
-
-/* ==========================================================
-   V42 – nur die bestätigten Fehlerkorrekturen
-   ========================================================== */
-
-/* 1) Circle-Zeile vollständig sichtbar, ohne Abschneiden/Überlappen */
-.topbar{
-  --cirvela-topbar-offset:146px!important;
-  height:146px!important;
-  min-height:146px!important;
-  overflow:visible!important;
+  padding-top:5px!important;
   box-sizing:border-box!important;
-}
-.brandline{
-  height:48px!important;
-  min-height:48px!important;
-}
-.circle-carousel{
-  height:82px!important;
-  min-height:82px!important;
-  padding-top:16px!important;
-  padding-bottom:8px!important;
   overflow:visible!important;
-  box-sizing:border-box!important;
 }
-.circle-pinned-track,
-.circle-loose-track,
-.circle-carousel-item,
 .circle-avatar-ring{
   overflow:visible!important;
-}
-.chat-screen .chat-header{
-  top:var(--cirvela-topbar-offset,146px)!important;
 }
 
-/* 2) Ungelesen-Badges auf Circle-Kreisen: gleich wie Circles-Badge,
-      sauber oben rechts am jeweiligen Kreis */
-.circle-avatar-ring{
-  position:relative!important;
-}
+/* Einzelne Ungelesen-Badges: derselbe klare rote Badge-Stil wie bei Circles,
+   oben rechts am jeweiligen Circle und über allen Circle-Ebenen. */
 .circle-unread{
   position:absolute!important;
-  top:-10px!important;
-  right:-9px!important;
-  z-index:12000!important;
-  min-width:23px!important;
-  height:23px!important;
+  top:-7px!important;
+  right:-7px!important;
+  z-index:1200!important;
+  min-width:22px!important;
+  height:22px!important;
   padding:0 6px!important;
-  border-radius:999px!important;
   border:2px solid #fff!important;
+  border-radius:999px!important;
   display:grid!important;
   place-items:center!important;
   background:#e53935!important;
@@ -3153,62 +3030,45 @@ body.keyboard-open .chat-composer{
   font-size:11px!important;
   font-weight:900!important;
   line-height:1!important;
-  box-shadow:0 3px 8px rgba(150,20,20,.34)!important;
+  box-shadow:0 2px 7px rgba(160,25,25,.30)!important;
   pointer-events:none!important;
 }
 
-/* 3) Circles-Sammelbadge garantiert vor Avatar/Schrift */
-.group-header,
-.chat-header,
-#openCircles{
-  overflow:visible!important;
-}
+/* Sammelbadge auf „Circles“ sicher im Vordergrund. */
 #openCircles{
   position:relative!important;
-  z-index:500!important;
+  overflow:visible!important;
+  z-index:1200!important;
 }
 .circles-hidden-unread{
-  position:absolute!important;
-  z-index:20000!important;
-  top:-12px!important;
-  right:-10px!important;
-  min-width:23px!important;
-  height:23px!important;
-  padding:0 6px!important;
-  border-radius:999px!important;
-  border:2px solid #fff!important;
-  display:grid!important;
-  place-items:center!important;
+  z-index:2400!important;
   background:#e53935!important;
   color:#fff!important;
   -webkit-text-fill-color:#fff!important;
-  font-size:11px!important;
-  font-weight:900!important;
-  line-height:1!important;
-  box-shadow:0 3px 8px rgba(150,20,20,.34)!important;
+  border:2px solid #fff!important;
+  box-shadow:0 2px 7px rgba(160,25,25,.30)!important;
   pointer-events:none!important;
 }
 
-/* 4) Kamera: exakt ein klar erkennbarer Fotoapparat */
+/* Kamera: genau ein gut erkennbarer Fotoapparat.
+   Bestehende Kamera-Funktion und Datei-Auswahl bleiben unangetastet. */
 .camera-black::before,
 #chatCamera.camera-black::before{
   content:none!important;
   display:none!important;
 }
 #chatCamera.camera-black{
-  display:grid!important;
-  place-items:center!important;
-  width:36px!important;
-  height:36px!important;
-  min-width:36px!important;
+  width:38px!important;
+  height:38px!important;
+  min-width:38px!important;
   padding:0!important;
-  margin:0!important;
   border:0!important;
   border-radius:10px!important;
+  display:grid!important;
+  place-items:center!important;
   background:transparent!important;
   box-shadow:none!important;
-  color:#111827!important;
-  -webkit-text-fill-color:#111827!important;
+  color:inherit!important;
   font-size:0!important;
   filter:none!important;
 }
@@ -3219,4 +3079,14 @@ body.keyboard-open .chat-composer{
   font-size:25px!important;
   line-height:1!important;
   filter:none!important;
+}
+
+/* iPhone: horizontales Wischen der losen Circles ausdrücklich erhalten.
+   Keine feste Breite/Positionierung und kein globales overflow wird gesetzt. */
+.circle-loose-track{
+  overflow-x:auto!important;
+  overflow-y:visible!important;
+  -webkit-overflow-scrolling:touch!important;
+  touch-action:pan-x!important;
+  overscroll-behavior-x:contain!important;
 }
