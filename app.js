@@ -326,10 +326,10 @@ function getCircleOrder(){
 function saveCircleOrder(order){localStorage.setItem('cirvela-circle-order',JSON.stringify(order))}
 function getPinnedCircles(){
  const saved=JSON.parse(localStorage.getItem('cirvela-pinned-circles')||'[]');
- return Array.isArray(saved)?saved.filter(id=>circlePresets[id]).slice(0,3):[];
+ return Array.isArray(saved)?saved.filter(id=>circlePresets[id]).slice(0,2):[];
 }
 function savePinnedCircles(ids){
- const clean=[...new Set(ids.filter(id=>circlePresets[id]))].slice(0,3);
+ const clean=[...new Set(ids.filter(id=>circlePresets[id]))].slice(0,2);
  localStorage.setItem('cirvela-pinned-circles',JSON.stringify(clean));
 }
 function normalizedCircleOrder(){
@@ -347,8 +347,8 @@ function toggleCirclePin(id){
    toast(circlePresets[id].name+' gelöst');
    return;
  }
- if(pinned.length>=3){
-   toast('Maximal drei Circles können fixiert werden.');
+ if(pinned.length>=2){
+   toast('Maximal zwei Circles können fixiert werden.');
    return;
  }
  savePinnedCircles([...pinned,id]);
@@ -1503,8 +1503,8 @@ if(key==='circle'){
    ${Object.values(circlePresets).map(c=>`<label class="pin-setting-row"><span>${c.name}</span><input type="checkbox" data-pin-circle="${c.id}" ${getPinnedCircles().includes(c.id)?'checked':''}></label>`).join('')}`;
    box.appendChild(wrap);
    wrap.querySelectorAll('[data-pin-circle]').forEach(ch=>ch.onchange=()=>{
-     let ids=[...wrap.querySelectorAll('[data-pin-circle]:checked')].map(x=>x.dataset.pinCircle);
-     if(ids.length>3){ch.checked=false;toast('Maximal drei Circles können fixiert werden.');return}
+     let ids=[...wrap.querySelectorAll('[data-pin-circle]:checked')].map(x=>x.dataset.pinCircle).slice(0,2);
+     if(ids.length>3){ch.checked=false;toast('Maximal zwei Circles können fixiert werden.');return}
      savePinnedCircles(ids);saveCircleOrder(normalizedCircleOrder());renderCircleCarousel();
    });
  }

@@ -2882,3 +2882,114 @@ body.keyboard-open .chat-composer{
   min-height:52px!important;
   font-size:14px!important;
 }
+
+/* ==========================================================
+   V40 – nur die zuletzt gewünschten Anpassungen
+   ========================================================== */
+
+/* Mehr Luft für Cirvela; Circle-Reihe größer und etwas weiter unten */
+.topbar{
+  --cirvela-topbar-offset:132px!important;
+  min-height:132px!important;
+  height:132px!important;
+  padding-top:8px!important;
+  overflow:visible!important;
+}
+.brandline{
+  min-height:47px!important;
+  height:47px!important;
+  align-items:flex-start!important;
+}
+.circle-carousel{
+  height:70px!important;
+  min-height:70px!important;
+  padding-top:8px!important;
+  padding-bottom:3px!important;
+  overflow:visible!important;
+}
+
+/* Genau fünf Circle-Plätze pro Bildschirmbreite */
+.circle-carousel-item{
+  flex:0 0 20vw!important;
+  width:20vw!important;
+  min-width:20vw!important;
+  max-width:20vw!important;
+  min-height:60px!important;
+  overflow:visible!important;
+}
+
+/* Größere, stärker plastische Circle-Kreise */
+.circle-avatar-ring{
+  width:52px!important;
+  height:52px!important;
+  min-width:52px!important;
+  min-height:52px!important;
+  border-width:3px!important;
+  box-shadow:
+    0 8px 15px rgba(17,28,48,.31),
+    0 2px 3px rgba(17,28,48,.20),
+    0 0 0 1px rgba(255,255,255,.94),
+    0 0 0 4px color-mix(in srgb,var(--circle-accent,#64748b) 27%,transparent),
+    inset 0 5px 4px rgba(255,255,255,.99),
+    inset 0 -6px 8px color-mix(in srgb,var(--circle-accent,#64748b) 39%,rgba(0,0,0,.17))!important;
+}
+.circle-avatar{
+  width:41px!important;
+  height:41px!important;
+  min-width:41px!important;
+  min-height:41px!important;
+  font-size:24px!important;
+}
+.circle-carousel-name{
+  font-size:9px!important;
+  line-height:1.05!important;
+  margin-top:2px!important;
+}
+
+/* Die fixierte Gruppe bleibt vollständig sichtbar */
+.circle-pinned-track.has-pinned{
+  overflow:visible!important;
+}
+.circle-loose-track{
+  padding-left:7px!important;
+  padding-right:20px!important;
+  overflow-x:auto!important;
+  overflow-y:visible!important;
+}
+
+/* Aktionen in der Chat-Kopfzeile weiter auseinander */
+.chat-header-actions{
+  margin-left:auto!important;
+  display:flex!important;
+  align-items:center!important;
+  gap:13px!important;
+  padding-left:8px!important;
+  padding-right:8px!important;
+}
+.chat-header-actions .icon-button{
+  margin:0!important;
+}
+
+/* Badge auf Circles sicher vor allen angrenzenden Elementen anzeigen */
+#openCircles{
+  position:relative!important;
+  overflow:visible!important;
+  z-index:30!important;
+}
+.circles-hidden-unread{
+  z-index:999!important;
+  right:-10px!important;
+  top:-11px!important;
+  min-width:22px!important;
+  height:22px!important;
+  padding:0 6px!important;
+  font-size:11px!important;
+  line-height:22px!important;
+  display:grid!important;
+  visibility:visible!important;
+  opacity:1!important;
+  pointer-events:none!important;
+}
+.chat-header{
+  overflow:visible!important;
+}
